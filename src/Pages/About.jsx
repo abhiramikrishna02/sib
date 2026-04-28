@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Target, Rocket, ShieldCheck, Users } from 'lucide-react';
 
 import bangaloreVideo from '../assets/Bangalore.mp4';
+import cubeModel from '../assets/free__rubiks_cube_3d.glb?url';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -56,7 +57,7 @@ const storyItems = [
    CUBE – Three.js model with idle rotation animation
 ───────────────────────────────────────────────────────────────── */
 function SolvingCube({ scale = 0.2 }) {
-  const { scene } = useGLTF('/src/assets/free__rubiks_cube_3d.glb');
+  const { scene } = useGLTF(cubeModel);
   const groupRef  = useRef(null);
 
   useEffect(() => {
@@ -523,4 +524,4 @@ const About = () => {
 
 export default About;
 
-useGLTF.preload('/src/assets/free__rubiks_cube_3d.glb');
+useGLTF.preload(cubeModel);
