@@ -1087,7 +1087,7 @@ function FinalCTASection() {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .outline-text {
           -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
         }

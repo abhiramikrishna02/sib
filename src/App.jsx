@@ -54,6 +54,7 @@ function App() {
     }
 
     const onPopState = () => {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
       setPathname(getPathname())
     }
 
@@ -86,6 +87,7 @@ function App() {
   const navigate = (to) => {
     const nextPath = to.replace(/\/+$/, '') || '/'
     if (nextPath === pathname) return
+    ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
     window.history.pushState({}, '', nextPath)
     setPathname(nextPath)
   }

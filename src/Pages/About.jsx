@@ -408,9 +408,9 @@ function EducationModel() {
   const { scene } = useGLTF('/3d_sketchbook_6_-_education_icon.glb');
   const ref = useRef();
 
-  useFrame(({ clock }) => {
+  useFrame((state) => {
     if (!ref.current) return;
-    const t = clock.getElapsedTime();
+    const t = state.clock.elapsedTime;
     // Adorable floating animation: gentle rotation and bobbing up/down
     ref.current.rotation.y = Math.sin(t / 3) * 0.15;
     ref.current.rotation.z = Math.cos(t / 4) * 0.05;
