@@ -1,527 +1,576 @@
-import React, { Suspense, useEffect, useLayoutEffect, useRef } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { useGLTF, Environment } from '@react-three/drei';
+import { useLayoutEffect, useRef, Suspense, Component, useMemo } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { Environment, ContactShadows, useGLTF, OrbitControls, PerspectiveCamera, Float as DreiFloat } from '@react-three/drei';
+import { Landmark, BookOpen, Building2, MousePointer2, Zap, GraduationCap, Headset } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Target, Rocket, ShieldCheck, Users } from 'lucide-react';
+import * as THREE from 'three';
 
-import bangaloreVideo from '../assets/Bangalore.mp4';
-import cubeModel from '../assets/free__rubiks_cube_3d.glb?url';
+import img1 from '../assets/img1.jpg';
+import img2 from '../assets/img2.jpg';
+import img3 from '../assets/img3.jpg';
+import img4 from '../assets/img4.jpg';
+import img5 from '../assets/img5.jpg';
+import img6 from '../assets/img6.jpg';
 
 gsap.registerPlugin(ScrollTrigger);
 
-/* ─────────────────────────────────────────────────────────────────
-   DATA
-   side = which side the TEXT goes → cube goes to OPPOSITE side
-───────────────────────────────────────────────────────────────── */
-const storyItems = [
-  {
-    step: '01',
-    eyebrow: 'Vision',
-    side: 'left',       // text left  → cube right
-    accent: '#d946ef',
-    icon: Target,
-    title: 'Our Vision',
-    text: `To transform Bengaluru into Asia's premier educational destination, offering world-class guidance, strong academic pathways, and partnerships that open the right doors.`,
-  },
-  {
-    step: '02',
-    eyebrow: 'Mission',
-    side: 'right',      // text right → cube left
-    accent: '#22d3ee',
-    icon: Rocket,
-    title: 'Our Mission',
-    text: `To connect students with trusted opportunities, simplify the admission journey, and create a clear route from ambition to achievement.`,
-  },
-  {
-    step: '03',
-    eyebrow: 'Values',
-    side: 'left',       // text left  → cube right
-    accent: '#f59e0b',
-    icon: ShieldCheck,
-    title: 'Our Values',
-    text: `Integrity, clarity, and care. We believe every student deserves honest direction, a calm process, and a future built with confidence.`,
-  },
-  {
-    step: '04',
-    eyebrow: 'Support',
-    side: 'right',      // text right → cube left
-    accent: '#a855f7',
-    icon: Users,
-    title: 'Our Support',
-    text: `From choosing the right course to understanding the next steps, we stay with students and families through the full journey.`,
-  },
-];
-
-/* ─────────────────────────────────────────────────────────────────
-   CUBE – Three.js model with idle rotation animation
-───────────────────────────────────────────────────────────────── */
-function SolvingCube({ scale = 0.2 }) {
-  const { scene } = useGLTF(cubeModel);
-  const groupRef  = useRef(null);
-
-  useEffect(() => {
-    if (!groupRef.current) return;
-    const rot = groupRef.current.rotation;
-    const pos = groupRef.current.position;
-
-    const tl = gsap.timeline({ repeat: -1, repeatDelay: 0.28 });
-    tl.to(rot, { y: 0.65,  x:  0.28, z:  0.08, duration: 0.80, ease: 'power2.inOut' })
-      .to(rot, { y: 1.25,  x: -0.16, z: -0.10, duration: 0.74, ease: 'power2.inOut' })
-      .to(rot, { y: 1.90,  x:  0.22, z:  0.08, duration: 0.74, ease: 'power2.inOut' })
-      .to(rot, { y: 2.55,  x:  0.02, z:  0.00, duration: 0.70, ease: 'power2.inOut' })
-      .to(rot, { y: 3.15,  x:  0.18, z: -0.08, duration: 0.74, ease: 'power2.inOut' })
-      .to(rot, { y: 3.80,  x: -0.08, z:  0.06, duration: 0.74, ease: 'power2.inOut' })
-      .to(rot, { y: 4.28,  x:  0.00, z:  0.00, duration: 0.72, ease: 'power2.inOut' });
-
-    const floatTween = gsap.to(pos, {
-      y: 0.08, duration: 1.5, repeat: -1, yoyo: true, ease: 'sine.inOut',
-    });
-
-    return () => { tl.kill(); floatTween.kill(); };
-  }, []);
-
-  return (
-    <group ref={groupRef} position={[0, 0, 0]}>
-      <primitive object={scene} scale={scale} position={[0, 0, 0]} rotation={[0.35, 0.55, 0]} />
-    </group>
-  );
+/* ── ERROR BOUNDARY ─────────────────────────────────────────────── */
+class CanvasErrorBoundary extends Component {
+  state = { hasError: false };
+  static getDerivedStateFromError() { return { hasError: true }; }
+  render() {
+    if (this.state.hasError) return <div className="hidden" />;
+    return this.props.children;
+  }
 }
 
-function CubeCanvas({ scale = 0.2, cameraZ = 9.2 }) {
-  return (
-    <Canvas
-      dpr={[1, 1.5]}
-      gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-      camera={{ position: [0, 0, cameraZ], fov: 40 }}
-      style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
-    >
-      <ambientLight intensity={0.85} />
-      <directionalLight position={[5, 8, 6]}   intensity={1.5} color="#ffffff" />
-      <directionalLight position={[-4, 2, 4]}  intensity={0.9} color="#b5ff4d" />
-      <pointLight      position={[2, -2, 4]}   intensity={0.9} color="#64c8ff" />
-      <Suspense fallback={null}>
-        <SolvingCube scale={scale} />
-        <Environment preset="city" />
-      </Suspense>
-    </Canvas>
-  );
-}
+const aboutCards = [
+  {
+    title: 'Diverse Programs',
+    desc: 'Explore a wide range of undergraduate, postgraduate, and doctoral programs in various disciplines.',
+    icon: BookOpen,
+    color: 'from-cyan-400 to-blue-600',
+    shadow: 'shadow-cyan-500/20',
+  },
+  {
+    title: 'Top Institutions',
+    desc: 'Access to premier universities and colleges across Bengaluru with diverse program offerings.',
+    icon: Landmark,
+    color: 'from-fuchsia-400 to-violet-600',
+    shadow: 'shadow-fuchsia-500/20',
+  },
+  {
+    title: 'City Advantages',
+    desc: "Benefit from Bengaluru's tech ecosystem, cultural diversity, and excellent career opportunities.",
+    icon: Building2,
+    color: 'from-amber-400 to-orange-500',
+    shadow: 'shadow-amber-500/20',
+  },
+]
 
-/* ─────────────────────────────────────────────────────────────────
-   STORY PANEL — one cinematic section
-───────────────────────────────────────────────────────────────── */
-function StorySection({ item, sectionRef, panelRef }) {
-  const isLeft = item.side === 'left';  // true = text on left
-  const Icon   = item.icon;
+const bengaluruData = [
+  { title: 'Innovation Hub', desc: 'India’s Silicon Valley, a global leader in IT, biotechnology, and innovation.', img: img1, color: 'from-blue-600/20' },
+  { title: 'Global Opportunities', desc: 'A thriving economy and multinational companies, the perfect launchpad for a career.', img: img2, color: 'from-purple-600/20' },
+  { title: 'Top Institutions', desc: 'Home to prestigious universities offering world-class education for every student.', img: img3, color: 'from-cyan-600/20' },
+  { title: 'Cultural Melting Pot', desc: 'A vibrant mix of cultures and traditions, making it a welcoming city for everyone.', img: img4, color: 'from-orange-600/20' },
+  { title: 'Affordable Living', desc: 'High quality of life at a reasonable cost for students and professionals alike.', img: img5, color: 'from-emerald-600/20' },
+  { title: 'Thriving Ecosystem', desc: 'From startups to giants, a dynamic ecosystem for learning and growth.', img: img6, color: 'from-pink-600/20' },
+]
+
+function AboutCardsSection() {
+  const sectionRef = useRef(null)
+
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      const cards = Array.from(sectionRef.current?.querySelectorAll('.about-card') || [])
+      if (!cards.length) return
+
+      gsap.set(cards, {
+        y: window.innerHeight,
+        scale: 0.4,
+        opacity: 0,
+        rotationX: 45,
+        transformOrigin: 'center bottom',
+      })
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: '+=200%',
+          scrub: 1,
+          pin: true,
+          anticipatePin: 1,
+        },
+      })
+
+      tl.to(cards[1], { y: 0, scale: 1.1, opacity: 1, rotationX: 0, duration: 1, ease: 'power2.out' })
+        .to(cards[0], { y: 40, scale: 0.95, opacity: 1, rotationX: 0, rotationZ: -6, duration: 1, ease: 'power2.out' }, '-=0.4')
+        .to(cards[2], { y: 40, scale: 0.95, opacity: 1, rotationX: 0, rotationZ: 6, duration: 1, ease: 'power2.out' }, '-=0.8')
+    }, sectionRef)
+
+    return () => ctx.revert()
+  }, [])
+
+  const handleMouseMove = (e) => {
+    const card = e.currentTarget
+    const rect = card.getBoundingClientRect()
+    const x = e.clientX - rect.left - rect.width / 2
+    const y = e.clientY - rect.top - rect.height / 2
+
+    gsap.to(card, {
+      x: x * 0.1,
+      y: y * 0.1,
+      rotationY: x * 0.05,
+      rotationX: -y * 0.05,
+      duration: 0.5,
+      ease: 'power2.out',
+    })
+  }
+
+  const handleMouseLeave = (e) => {
+    gsap.to(e.currentTarget, {
+      x: 0,
+      y: 0,
+      rotationY: 0,
+      rotationX: 0,
+      duration: 0.5,
+      ease: 'power2.out',
+    })
+  }
 
   return (
     <section
       ref={sectionRef}
-      className="relative flex min-h-screen items-center overflow-hidden px-4 sm:px-6 lg:px-8"
-      style={{
-        background:
-          'linear-gradient(180deg,rgba(5,5,5,0.98) 0%,rgba(10,7,17,0.96) 50%,rgba(5,5,5,0.99) 100%)',
-      }}
+      className="relative flex h-screen w-full items-center justify-center overflow-hidden"
+      style={{ perspective: '2000px' }}
     >
-      {/* subtle bg tint per section */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background: `radial-gradient(circle at ${isLeft ? '25% 50%' : '75% 50%'}, ${item.accent}12 0%, transparent 55%)`,
-        }}
-      />
-
-      <div className="mx-auto grid w-full max-w-[1500px] items-center gap-10 lg:grid-cols-2">
-        {/*
-          Text column — order-1 when left, order-2 when right
-          Cube column is a visual placeholder ONLY on desktop so the
-          grid splits correctly; the real cube is in the fixed overlay.
-        */}
-
-        {/* TEXT PANEL */}
-        <div className={isLeft ? 'lg:order-1' : 'lg:order-2'}>
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute left-1/2 top-1/2 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[150px]" />
+      </div>
+      <div className="relative z-10 grid w-full max-w-6xl grid-cols-1 gap-6 px-6 md:grid-cols-3 md:gap-2">
+        {aboutCards.map((card, i) => (
           <div
-            ref={panelRef}
-            style={{
-              maxWidth: 640,
-              width: '100%',
-              marginLeft:  isLeft ? 0 : 'auto',
-              marginRight: isLeft ? 'auto' : 0,
-              opacity: 0,
-              borderRadius: '2rem',
-              border: '1px solid rgba(255,255,255,0.10)',
-              background: 'rgba(8,8,18,0.55)',
-              backdropFilter: 'blur(28px)',
-              WebkitBackdropFilter: 'blur(28px)',
-              padding: 'clamp(1.6rem,3vw,2.8rem)',
-              boxShadow:
-                '0 32px 80px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.06)',
-              position: 'relative',
-              overflow: 'hidden',
-            }}
+            key={card.title}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            className={`about-card group relative flex flex-col items-center rounded-[3.5rem] border border-white/10 bg-[#160a26]/80 p-8 text-center backdrop-blur-2xl shadow-2xl will-change-transform md:p-12 ${
+              i === 1 ? 'z-20' : 'z-10'
+            }`}
           >
-            {/* top glow line */}
-            <div style={{
-              position: 'absolute', top: 0, left: '12%', right: '12%', height: 1,
-              background: `linear-gradient(to right,transparent,${item.accent}90,transparent)`,
-            }} />
-
-            {/* corner blob */}
-            <div style={{
-              position: 'absolute',
-              top: '-45%', [isLeft ? 'left' : 'right']: '-16%',
-              width: '75%', height: '75%', borderRadius: '50%',
-              background: `radial-gradient(circle,${item.accent}22 0%,transparent 70%)`,
-              filter: 'blur(38px)', pointerEvents: 'none',
-            }} />
-
-            {/* icon */}
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              width: 52, height: 52, borderRadius: 14,
-              background: `${item.accent}18`,
-              border: `1px solid ${item.accent}35`,
-              boxShadow: `0 0 22px ${item.accent}20`,
-              marginBottom: '1.3rem',
-            }}>
-              <Icon size={22} color={item.accent} />
+            <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/5 blur-[40px] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <div className={`mb-8 flex h-24 w-24 items-center justify-center rounded-[2rem] bg-gradient-to-br ${card.color} shadow-2xl ${card.shadow} transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6`}>
+              <card.icon className="h-12 w-12 text-white" />
             </div>
-
-            {/* eyebrow */}
-            <p style={{
-              fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.55em',
-              textTransform: 'uppercase', color: item.accent,
-              marginBottom: '0.6rem', fontFamily: "'DM Sans',sans-serif",
-            }}>
-              {item.step} / {item.eyebrow}
-            </p>
-
-            {/* title */}
-            <h2 style={{
-              fontFamily: "'Bebas Neue',sans-serif",
-              fontSize: 'clamp(2.6rem,4.7vw,4.4rem)',
-              lineHeight: 0.95, letterSpacing: '0.02em',
-              color: '#f0f0f0', marginBottom: '1rem',
-            }}>
-              {item.title}
-            </h2>
-
-            {/* rule */}
-            <div style={{
-              width: 40, height: 2,
-              background: `linear-gradient(to right,${item.accent},transparent)`,
-              marginBottom: '1rem',
-            }} />
-
-            {/* body */}
-            <p style={{
-              fontSize: 'clamp(0.92rem,1.12vw,1.05rem)',
-              color: 'rgba(255,255,255,0.58)',
-              lineHeight: 1.9, fontWeight: 300,
-              fontFamily: "'DM Sans',sans-serif",
-            }}>
-              {item.text}
-            </p>
+            <h3 className="mb-6 text-2xl font-black uppercase tracking-tight text-white md:text-3xl">{card.title}</h3>
+            <p className="text-lg font-light leading-relaxed text-white/60">{card.desc}</p>
           </div>
-        </div>
-
-        {/*
-          Spacer column — occupies the grid cell where the cube visually sits.
-          The real cube travels through this space in the fixed overlay.
-          Hidden on mobile (cube is centered on mobile instead).
-        */}
-        <div
-          className={['hidden lg:block', isLeft ? 'lg:order-2' : 'lg:order-1'].join(' ')}
-          aria-hidden="true"
-        />
+        ))}
       </div>
     </section>
-  );
+  )
 }
 
-/* ─────────────────────────────────────────────────────────────────
-   MAIN ABOUT PAGE
-───────────────────────────────────────────────────────────────── */
-const About = () => {
-  const introRef         = useRef(null);
-  const introTitleRef    = useRef(null);
-  const introSubRef      = useRef(null);
-  const storyRef         = useRef(null);   // wraps all 4 story sections
-  const cubeWrapRef      = useRef(null);   // the fixed positioned cube box
+/* ── BACKGROUND PARTICLES ────────────────────── */
+const features = [
+  {
+    title: 'Direct Access',
+    desc: 'Connect with top educational institutions directly.',
+    icon: GraduationCap,
+    final: { top: '-140px', left: '0' },
+    color: 'from-blue-500 to-cyan-400',
+  },
+  {
+    title: 'Simple Process',
+    desc: 'Effortless and efficient application management.',
+    icon: MousePointer2,
+    final: { top: '0', right: '-220px' },
+    color: 'from-fuchsia-500 to-purple-600',
+  },
+  {
+    title: 'Expert Guidance',
+    desc: 'Get personalized consultations from industry pros.',
+    icon: Zap,
+    final: { bottom: '0', left: '-220px' },
+    color: 'from-amber-400 to-orange-500',
+  },
+  {
+    title: 'End-to-End Support',
+    desc: 'Guidance from initial inquiry to final admission.',
+    icon: Headset,
+    final: { bottom: '-140px', right: '0' },
+    color: 'from-emerald-400 to-teal-500',
+  },
+]
 
-  const sectionRefs = useRef([]);
-  const panelRefs   = useRef([]);
-
-  const setSectionRef = (i) => (el) => { sectionRefs.current[i] = el; };
-  const setPanelRef   = (i) => (el) => { panelRefs.current[i]   = el; };
+function WhyChooseSection() {
+  const containerRef = useRef(null)
+  const coreRef = useRef(null)
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
+      const cards = Array.from(containerRef.current?.querySelectorAll('.why-card') || [])
+      if (!cards.length) return
 
-      /* ── 1. Cube starts centered, centered in viewport ── */
-      gsap.set(cubeWrapRef.current, {
-        left: '50%',
-        top:  '50%',
-        xPercent: -50,
-        yPercent: -50,
-        scale: 1,
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top top',
+          end: '+=150%',
+          scrub: 1,
+          pin: true,
+        },
+      })
+
+      tl.fromTo(
+        coreRef.current,
+        { x: -800, opacity: 0, scale: 1.5, filter: 'blur(15px)' },
+        { x: 0, opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.5, ease: 'power4.out' }
+      )
+
+      cards.forEach((card, i) => {
+        const { top, right, bottom, left } = features[i].final
+        tl.to(
+          card,
+          {
+            top: top || 'auto',
+            right: right || 'auto',
+            bottom: bottom || 'auto',
+            left: left || 'auto',
+            opacity: 1,
+            scale: 1,
+            duration: 1.2,
+            ease: 'back.out(1.7)',
+          },
+          '-=0.8'
+        )
+      })
+
+      tl.to('.orbital-container', {
+        rotate: 360,
+        duration: 3,
+        ease: 'power1.inOut',
+      })
+    }, containerRef)
+
+    return () => ctx.revert()
+  }, [])
+
+  return (
+    <section ref={containerRef} className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-[#080414]">
+      <div className="absolute inset-0 z-0">
+        <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-600/10 blur-[150px]" />
+      </div>
+      <div className="orbital-container relative z-10 flex h-[500px] w-full max-w-4xl items-center justify-center">
+        <div ref={coreRef} className="relative z-20 group">
+          <div className="absolute inset-0 rounded-full bg-white/10 blur-3xl scale-125" />
+          <div className="relative flex h-56 w-56 flex-col items-center justify-center rounded-full border border-white/20 bg-gradient-to-br from-white/10 to-white/5 p-6 text-center backdrop-blur-3xl shadow-2xl md:h-72 md:w-72">
+            <h2 className="text-xl font-black uppercase tracking-tighter text-white md:text-2xl">
+              Why Choose <br />
+              <span className="text-fuchsia-400">StudyIn</span><br />
+              Bengaluru?
+            </h2>
+            <div className="mt-4 h-1 w-10 overflow-hidden rounded-full bg-white/20">
+              <div className="h-full animate-[loading_2s_infinite] bg-fuchsia-500" />
+            </div>
+          </div>
+        </div>
+        {features.map((f, i) => (
+          <div
+            key={f.title}
+            className="why-card absolute scale-50 rounded-3xl bg-gradient-to-br p-[1px] opacity-0 transition-all duration-300 hover:z-50"
+            style={{
+              width: '240px',
+              top: i === 0 ? '-120%' : i === 1 ? '-120%' : i === 2 ? '120%' : '120%',
+              left: i === 0 || i === 2 ? '-120%' : 'auto',
+              right: i === 1 || i === 3 ? '-120%' : 'auto',
+            }}
+          >
+            <div className={`rounded-3xl bg-gradient-to-br ${f.color} p-[1.5px]`}>
+              <div className="h-full rounded-[calc(1.5rem-1px)] bg-[#0d041a] p-5 backdrop-blur-xl">
+                <div className={`mb-3 inline-flex rounded-xl bg-gradient-to-br ${f.color} p-2.5`}>
+                  <f.icon className="text-white" size={20} />
+                </div>
+                <h3 className="mb-1 text-lg font-bold uppercase tracking-tight text-white">{f.title}</h3>
+                <p className="text-xs leading-relaxed text-white/40">{f.desc}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function WhyBengaluruSection() {
+  const sectionRef = useRef(null)
+  const triggerRef = useRef(null)
+
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        sectionRef.current,
+        { x: 0 },
+        {
+          x: '-500vw',
+          ease: 'none',
+          scrollTrigger: {
+            trigger: triggerRef.current,
+            start: 'top top',
+            end: () => `+=${window.innerWidth * 5}`,
+            scrub: 0.6,
+            pin: true,
+            anticipatePin: 1,
+          },
+        }
+      )
+    }, triggerRef)
+
+    return () => ctx.revert()
+  }, [])
+
+  return (
+    <section ref={triggerRef} className="relative overflow-hidden bg-[#0a0516]">
+      <div className="absolute top-12 left-6 z-50 md:left-12">
+        <h2 className="text-3xl font-black uppercase tracking-tighter text-white/20 md:text-6xl">
+          Why Bengaluru?
+        </h2>
+      </div>
+
+      <div ref={sectionRef} className="relative flex h-screen w-[600vw] flex-row">
+        {bengaluruData.map((item, index) => (
+          <div key={item.title} className="relative flex h-screen w-screen items-center justify-center px-6 md:px-16 lg:px-32">
+            <div className={`absolute inset-0 bg-gradient-to-r ${item.color} to-transparent opacity-30`} />
+
+            <div className="relative z-10 flex w-full max-w-7xl flex-col items-center gap-10 md:flex-row md:gap-12">
+              <div className="w-full space-y-5 md:w-1/2">
+                <span className="font-mono text-lg text-fuchsia-500 md:text-xl">0{index + 1} / 06</span>
+                <h3 className="text-4xl font-bold leading-none text-white md:text-7xl">
+                  {item.title.split(' ').map((word, wordIndex) => (
+                    <span key={`${word}-${wordIndex}`} className="block">
+                      {word}
+                    </span>
+                  ))}
+                </h3>
+                <p className="max-w-md border-l-2 border-fuchsia-500 pl-5 text-base leading-relaxed text-white/60 md:text-xl">
+                  {item.desc}
+                </p>
+              </div>
+
+              <div className="group relative w-full md:w-1/2">
+                <div className="absolute -inset-4 rounded-full bg-fuchsia-500/20 opacity-0 blur-2xl transition-opacity duration-700 group-hover:opacity-100" />
+                <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-white/10 shadow-2xl">
+                  <img
+                    src={item.img}
+                    alt={item.title}
+                    className="h-full w-full scale-110 object-cover transition-transform duration-1000 group-hover:scale-100"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a0516] via-transparent to-transparent opacity-60" />
+                </div>
+              </div>
+            </div>
+
+            <div className="absolute bottom-10 left-1/2 flex -translate-x-1/2 gap-4">
+              {bengaluruData.map((_, i) => (
+                <div
+                  key={i}
+                  className={`h-1 transition-all duration-500 ${i === index ? 'w-12 bg-fuchsia-500' : 'w-4 bg-white/20'}`}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function EducationParticles({ count = 30 }) {
+  const particles = useMemo(() => {
+    const temp = [];
+    for (let i = 0; i < count; i++) {
+      const x = THREE.MathUtils.randFloatSpread(15);
+      const y = THREE.MathUtils.randFloatSpread(15);
+      const z = THREE.MathUtils.randFloatSpread(10) - 5;
+      const scale = THREE.MathUtils.randFloat(0.05, 0.2); // Smaller, more elegant particles
+      const speed = THREE.MathUtils.randFloat(0.1, 0.3);
+      const type = i % 3;
+      temp.push({ x, y, z, scale, speed, type });
+    }
+    return temp;
+  }, [count]);
+
+  return (
+    <group>
+      {particles.map((p, i) => (
+        <DreiFloat key={i} speed={p.speed * 4} rotationIntensity={1.5} floatIntensity={2}>
+          <mesh position={[p.x, p.y, p.z]} scale={p.scale}>
+            {p.type === 0 ? <boxGeometry args={[1, 1, 1]} /> : 
+             p.type === 1 ? <sphereGeometry args={[0.6, 16, 16]} /> : 
+             <torusGeometry args={[0.5, 0.15, 8, 20]} />}
+            <meshStandardMaterial 
+              color={p.type === 0 ? "#f472b6" : p.type === 1 ? "#22d3ee" : "#c084fc"} 
+              transparent 
+              opacity={0.3} 
+              roughness={0.2}
+              metalness={0.8}
+            />
+          </mesh>
+        </DreiFloat>
+      ))}
+    </group>
+  );
+}
+
+/* ── HERO MODEL ────────────────────────────────────────── */
+function EducationModel() {
+  const { scene } = useGLTF('/3d_sketchbook_6_-_education_icon.glb');
+  const ref = useRef();
+
+  useFrame(({ clock }) => {
+    if (!ref.current) return;
+    const t = clock.getElapsedTime();
+    // Adorable floating animation: gentle rotation and bobbing up/down
+    ref.current.rotation.y = Math.sin(t / 3) * 0.15;
+    ref.current.rotation.z = Math.cos(t / 4) * 0.05;
+    ref.current.position.y = -0.2 + Math.sin(t * 1.5) * 0.08; 
+  });
+
+  return (
+    <primitive 
+      ref={ref} 
+      object={scene} 
+      scale={0.55} // <-- SHRUNK THE MODEL HERE
+      position={[2.4, -0.2, 0]} // <-- REPOSITIONED TO FIT THE RIGHT COLUMN
+    />
+  );
+}
+
+/* ── SCENE ──────────────────────────────────────────────────────── */
+function Scene3D() {
+  return (
+    <CanvasErrorBoundary>
+      <Canvas dpr={[1, 2]} gl={{ antialias: true }}>
+        <PerspectiveCamera makeDefault position={[0, 0, 5.5]} fov={38} />
+        <ambientLight intensity={1.5} />
+        <spotLight position={[5, 10, 5]} angle={0.25} penumbra={1} intensity={3} color="#fdf4ff" />
+        <pointLight position={[-10, -10, -10]} color="#d946ef" intensity={2} />
+        <pointLight position={[10, -5, 5]} color="#22d3ee" intensity={1.5} />
+
+        <Suspense fallback={null}>
+          <EducationParticles />
+          <EducationModel />
+          <Environment preset="city" />
+          {/* Adjusted Contact Shadow to match new model position and scale */}
+          <ContactShadows position={[2.4, -1.5, 0]} opacity={0.4} scale={4} blur={2.5} color="#000000" />
+        </Suspense>
+
+        <OrbitControls 
+          enableZoom={false} 
+          enablePan={false} 
+          makeDefault 
+          rotateSpeed={0.4}
+          minPolarAngle={Math.PI / 2.5}
+          maxPolarAngle={Math.PI / 1.5}
+        />
+      </Canvas>
+    </CanvasErrorBoundary>
+  );
+}
+
+/* ── ABOUT PAGE ─────────────────────────────────────────────────── */
+const About = () => {
+  const containerRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      // Hero Entrance
+      gsap.from('.reveal', { 
+        y: 80, 
+        opacity: 0, 
+        skewY: 5,
+        duration: 1.2, 
+        stagger: 0.15, 
+        ease: 'power4.out', 
+        delay: 0.2 
       });
 
-      /* ── 2. Intro title / sub fade up on load ── */
-      gsap.fromTo(
-        [introTitleRef.current, introSubRef.current],
-        { opacity: 0, y: 24 },
-        { opacity: 1, y: 0, duration: 1.1, stagger: 0.1, ease: 'power3.out' }
-      );
-
-      /* ── 3. Intro text fades as user scrolls past hero ── */
-      gsap.to([introTitleRef.current, introSubRef.current], {
-        opacity: 0.1, y: -22,
+      // 3D Canvas Parallax
+      gsap.to('.parallax-canvas', {
         scrollTrigger: {
-          trigger: introRef.current,
-          start: 'top top',
-          end: 'bottom top',
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
+        y: 200,
+      });
+
+      // Background Text Parallax (Horizontal Scroll)
+      gsap.to('.parallax-text', {
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "+=150%",
           scrub: 1,
         },
+        xPercent: -30,
       });
 
-      /* ── 4. Cube travels through story sections ──────────────
-         The cube wrapper is `position: fixed` with `left / top`
-         as CSS properties. GSAP animates `left` and `top` directly
-         (percentage strings), so there's no conflict with xPercent.
-
-         We pre-calculate the target positions:
-           - When text is LEFT  → cube sits on the RIGHT  half → left ≈ 75%
-           - When text is RIGHT → cube sits on the LEFT   half → left ≈ 25%
-           - top stays centered vertically → top = 50%
-
-         The cube size is clamp(220px,28vw,380px) so center offset
-         is −50% via xPercent/yPercent which GSAP keeps constant;
-         we only animate `left` and `top` (absolute % of viewport).
-      ─────────────────────────────────────────────────────────── */
-
-      // Where the cube lives while hero is visible
-      const heroPose  = { left: '50%', top: '50%', scale: 1   };
-
-      // Per-section cube poses (opposite side from text)
-      const cubePoses = storyItems.map((item) => ({
-        left:  item.side === 'left' ? '74%' : '26%',
-        top:   '50%',
-        scale: 0.88,
-      }));
-
-      /* Build one scrubbed timeline across the entire story block */
-      const cubeTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: storyRef.current,
-          start:  'top bottom',   // begins as story block enters viewport
-          end:    'bottom bottom',
-          scrub:  1.2,
-          invalidateOnRefresh: true,
-        },
-      });
-
-      /* Move from hero center → section 1 pose */
-      cubeTl.to(cubeWrapRef.current, {
-        left:  cubePoses[0].left,
-        top:   cubePoses[0].top,
-        scale: cubePoses[0].scale,
-        duration: 1,
-        ease: 'power3.inOut',
-      });
-
-      /* Section 1 → 2 → 3 → 4 */
-      for (let i = 1; i < cubePoses.length; i++) {
-        cubeTl.to(cubeWrapRef.current, {
-          left:  cubePoses[i].left,
-          top:   cubePoses[i].top,
-          scale: cubePoses[i].scale,
-          duration: 1,
-          ease: 'power3.inOut',
-        });
-      }
-
-      /* ── 5. Panel reveal — each panel slides in from its side ── */
-      sectionRefs.current.forEach((sectionEl, index) => {
-        const panelEl = panelRefs.current[index];
-        if (!sectionEl || !panelEl) return;
-
-        const fromX = storyItems[index].side === 'left' ? -80 : 80;
-
-        gsap.fromTo(
-          panelEl,
-          { opacity: 0, x: fromX, y: 16, scale: 0.97 },
-          {
-            opacity: 1, x: 0, y: 0, scale: 1,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: sectionEl,
-              start: 'top 72%',
-              end:   'top 38%',
-              scrub: 1.0,
-            },
-          }
-        );
-      });
-
-    }); // end gsap.context
+    }, containerRef);
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,700;1,9..40,300&display=swap');
-        *, *::before, *::after { box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
+    <main ref={containerRef} className="relative bg-[#0d041a] overflow-hidden min-h-screen">
+      
+      {/* ── PARALLAX BACKGROUND TEXT ── */}
+      <div className="absolute top-[15%] left-0 z-0 pointer-events-none opacity-5 w-[200vw]">
+        <h2 className="parallax-text text-[18rem] font-black uppercase whitespace-nowrap text-white tracking-tighter">
+          Innovate • Empower • Transform • Discover •
+        </h2>
+      </div>
 
-        @keyframes sib-float {
-          0%, 100% { transform: translateY(0); }
-          50%       { transform: translateY(-8px); }
-        }
-      `}</style>
+      {/* Global Background Ambience */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-fuchsia-600/15 blur-[150px] rounded-full animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-cyan-600/10 blur-[150px] rounded-full" />
+        <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+      </div>
 
-      <main style={{ background: '#050505', color: '#f0f0f0', fontFamily: "'DM Sans',sans-serif", overflowX: 'hidden' }}>
-
-        {/* ── FIXED CUBE LAYER ──────────────────────────────────────
-            Lives in a fixed full-screen container (z-index 10).
-            The cube wrapper is moved by GSAP using left/top %.
-            xPercent/yPercent stay at -50/-50 permanently so the
-            cube is always centered around its own midpoint.
-        ─────────────────────────────────────────────────────────── */}
-        <div
-          aria-hidden="true"
-          style={{ position: 'fixed', inset: 0, zIndex: 10, pointerEvents: 'none' }}
-        >
-          <div
-            ref={cubeWrapRef}
-            style={{
-              position: 'absolute',
-              /* left / top are animated by GSAP — start values set via gsap.set */
-              left: '50%',
-              top:  '50%',
-              width:  'clamp(280px,34vw,520px)',
-              height: 'clamp(280px,34vw,520px)',
-              /* xPercent/yPercent handle the -50% centering offset */
-              transform: 'translate(-50%,-50%)',
-              filter: 'drop-shadow(0 32px 70px rgba(0,0,0,0.65))',
-              willChange: 'left, top, transform',
-            }}
-          >
-            <CubeCanvas scale={0.28} cameraZ={8.2} />
-          </div>
-
-          {/* radial vignette so cube blends with dark bg */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'radial-gradient(circle at center,transparent 16%,rgba(0,0,0,0.32) 50%,rgba(0,0,0,0.72) 100%)',
-          }} />
+      {/* ── 3D HERO CANVAS ── */}
+      <div className="parallax-canvas absolute inset-0 z-10 pointer-events-none h-screen">
+        <div className="absolute inset-0 pointer-events-auto">
+          <Scene3D />
         </div>
+      </div>
 
-        {/* ── HERO / INTRO ─────────────────────────────────────────── */}
-        <section
-          ref={introRef}
-          style={{ position: 'relative', minHeight: '100vh', overflow: 'hidden', background: '#050505' }}
-        >
-          {/* Video background */}
-          <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-            <video
-              autoPlay loop muted playsInline
-              style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.32, filter: 'brightness(0.7) saturate(0.88)' }}
-            >
-              <source src={bangaloreVideo} type="video/mp4" />
-            </video>
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(to bottom,rgba(5,5,5,0.76) 0%,rgba(5,5,5,0.30) 40%,rgba(5,5,5,0.42) 70%,rgba(5,5,5,0.94) 100%)',
-          }} />
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'radial-gradient(ellipse 88% 88% at 50% 50%,transparent 34%,rgba(5,5,5,0.82) 100%)',
-          }} />
-        </div>
+      {/* ── HERO SECTION ── */}
+      <section className="relative h-screen flex items-center px-8 lg:px-24 z-20 pointer-events-none">
+        <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="max-w-2xl text-center lg:text-left pointer-events-auto relative">
+            
+            {/* Adorable Floating Glass Badge */}
+            <div className="reveal absolute -top-12 -left-8 hidden md:flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md shadow-[0_10px_30px_rgba(217,70,239,0.15)] animate-[bounce_4s_infinite]">
+              <span className="h-2 w-2 rounded-full bg-fuchsia-400 shadow-[0_0_10px_#d946ef]"></span>
+              <span className="text-xs font-bold text-white/80 uppercase tracking-widest">Est. 2024</span>
+            </div>
 
-          {/* Hero text — sits above the cube (z-index 20) */}
-          <div style={{
-            position: 'relative', zIndex: 20,
-            minHeight: '100vh', display: 'grid', placeItems: 'center',
-            textAlign: 'center', padding: '2rem',
-          }}>
-            <div style={{ maxWidth: 1100 }}>
-              <p style={{
-                margin: 0, fontSize: '0.64rem', fontWeight: 700,
-                letterSpacing: '0.62em', textTransform: 'uppercase',
-                color: 'rgba(181,255,77,0.8)', marginBottom: '1.2rem',
-              }}>
-                About Us
-              </p>
-
-              <h1
-                ref={introTitleRef}
-                style={{
-                  margin: 0,
-                  fontFamily: "'Bebas Neue',sans-serif",
-                  fontSize: 'clamp(4.8rem,14vw,13.6rem)',
-                  lineHeight: 0.84, letterSpacing: '0.025em',
-                  color: '#ffffff',
-                  textShadow: '0 0 80px rgba(181,255,77,0.1)',
-                }}
-              >
+            <div className="reveal inline-block px-5 py-2 mb-8 rounded-full border border-cyan-500/20 bg-cyan-500/10 backdrop-blur-xl uppercase tracking-[0.4em] text-[10px] text-cyan-300 font-black shadow-[0_0_20px_rgba(34,211,238,0.1)]">
+              Our Identity
+            </div>
+            
+            <h1 className="reveal text-[clamp(4rem,9vw,8rem)] font-black leading-[0.85] tracking-tighter mb-8 text-white drop-shadow-2xl">
+              About <br />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-400 via-white to-cyan-400">
                 Study in
-                <br />
-                <span style={{ color: 'transparent', WebkitTextStroke: '2px rgba(255,255,255,0.32)' }}>
-                  Bengaluru
-                </span>
-              </h1>
+              </span><br />
+              Bengaluru
+            </h1>
+            
+            <p className="reveal max-w-lg text-xl text-white/60 font-light leading-relaxed mb-10 mx-auto lg:mx-0">
+              Welcome to the premier admission ecosystem. We don't just process applications; we engineer <span className="text-white font-medium italic">transformative educational journeys</span>.
+            </p>
 
-              <p
-                ref={introSubRef}
-                style={{
-                  margin: '1.4rem auto 0', maxWidth: 820,
-                  fontSize: 'clamp(0.95rem,1.4vw,1.25rem)', lineHeight: 1.8,
-                  color: 'rgba(255,255,255,0.80)',
-                }}
-              >
-                Welcome to the Admission Portal for Study in Bengaluru. We are dedicated to providing
-                a transformative educational experience and guiding you on your academic journey.
-              </p>
-
-              {/* Scroll indicator */}
-              <div style={{ marginTop: '2.2rem', display: 'flex', justifyContent: 'center' }}>
-                <div style={{
-                  width: 18, height: 28, border: '1px solid rgba(255,255,255,0.18)',
-                  borderRadius: 20, display: 'flex', justifyContent: 'center', paddingTop: 5,
-                  background: 'rgba(255,255,255,0.02)',
-                }}>
-                  <div style={{
-                    width: 3, height: 6, borderRadius: 3, background: '#b5ff4d',
-                    animation: 'sib-float 1.6s ease-in-out infinite',
-                  }} />
-                </div>
-              </div>
+            {/* Creative Scroll Indicator */}
+            <div className="reveal flex items-center gap-4 justify-center lg:justify-start opacity-60">
+               <div className="w-12 h-px bg-gradient-to-r from-transparent to-white"></div>
+               <span className="text-[9px] uppercase tracking-[0.5em] font-bold">Scroll to Explore</span>
             </div>
           </div>
-        </section>
+          
+          {/* Empty div to ensure layout holds space for the 3D canvas on the right */}
+          <div className="hidden lg:block h-[500px]" />
+        </div>
+      </section>
 
-        {/* ── STORY SECTIONS ────────────────────────────────────────── */}
-        <section ref={storyRef} style={{ position: 'relative' }}>
-          {storyItems.map((item, index) => (
-            <StorySection
-              key={item.step}
-              item={item}
-              sectionRef={setSectionRef(index)}
-              panelRef={setPanelRef(index)}
-            />
-          ))}
-        </section>
-
-      </main>
-    </>
+      <AboutCardsSection />
+      <WhyChooseSection />
+      <WhyBengaluruSection />
+    </main>
   );
 };
 
 export default About;
-
-useGLTF.preload(cubeModel);

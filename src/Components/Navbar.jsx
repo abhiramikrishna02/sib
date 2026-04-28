@@ -10,32 +10,32 @@ const links = [
 
 const themes = {
   home: {
-    from: "#22d3ee",
-    via: "#38bdf8",
-    to: "#0f172a",
-    glow: "rgba(34, 211, 238, 0.35)",
-    text: "#ecfeff",
+    from: "#7b2cbf",
+    via: "#a855f7",
+    to: "#1e0338",
+    glow: "rgba(123, 44, 191, 0.38)",
+    text: "#ffffff",
   },
   about: {
-    from: "#c084fc",
-    via: "#f472b6",
-    to: "#312e81",
-    glow: "rgba(244, 114, 182, 0.33)",
-    text: "#f5d0fe",
+    from: "#7b2cbf",
+    via: "#a855f7",
+    to: "#1e0338",
+    glow: "rgba(123, 44, 191, 0.38)",
+    text: "#ffffff",
   },
   services: {
-    from: "#f59e0b",
-    via: "#fb7185",
-    to: "#7c2d12",
-    glow: "rgba(245, 158, 11, 0.34)",
-    text: "#ffedd5",
+    from: "#7b2cbf",
+    via: "#a855f7",
+    to: "#1e0338",
+    glow: "rgba(123, 44, 191, 0.38)",
+    text: "#ffffff",
   },
   contact: {
-    from: "#34d399",
-    via: "#22c55e",
-    to: "#064e3b",
-    glow: "rgba(52, 211, 153, 0.34)",
-    text: "#d1fae5",
+    from: "#7b2cbf",
+    via: "#a855f7",
+    to: "#1e0338",
+    glow: "rgba(123, 44, 191, 0.38)",
+    text: "#ffffff",
   },
 };
 
@@ -85,8 +85,8 @@ function Navbar({ currentPath = "/", onNavigate }) {
             "relative overflow-hidden rounded-[1.75rem] border backdrop-blur-2xl",
             "transition-all duration-300 ease-out",
             scrolled
-              ? "border-white/12 bg-zinc-950/78 shadow-[0_22px_70px_rgba(0,0,0,0.5)]"
-              : "border-white/10 bg-zinc-950/60 shadow-[0_16px_48px_rgba(0,0,0,0.35)]",
+              ? "border-white/12 bg-[#1b0a21]/82 shadow-[0_22px_70px_rgba(0,0,0,0.5)]"
+              : "border-white/10 bg-[#1b0a21]/68 shadow-[0_16px_48px_rgba(0,0,0,0.35)]",
           ].join(" ")}
         >
           <motion.div
@@ -124,7 +124,7 @@ function Navbar({ currentPath = "/", onNavigate }) {
                 className="grid h-11 w-11 place-items-center rounded-[1rem] text-white font-black shadow-[0_10px_30px_rgba(0,0,0,0.35)]"
                 style={{
                   background:
-                    "linear-gradient(135deg, rgba(234,88,12,1) 0%, rgba(249,115,22,1) 50%, rgba(251,146,60,1) 100%)",
+                    "linear-gradient(135deg, rgba(123,44,191,1) 0%, rgba(168,85,247,1) 50%, rgba(30,3,56,1) 100%)",
                 }}
                 whileHover={{ scale: 1.06, rotate: -3 }}
                 whileTap={{ scale: 0.96 }}
@@ -243,12 +243,6 @@ function Navbar({ currentPath = "/", onNavigate }) {
           </div>
         </div>
       </motion.div>
-
-      <style>{`
-        html {
-          scroll-behavior: smooth;
-        }
-      `}</style>
     </header>
   );
 }

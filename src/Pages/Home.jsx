@@ -1,5 +1,6 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
+import { Canvas, useFrame } from '@react-three/fiber'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
@@ -16,20 +17,64 @@ import {
   Sparkles,
   ShieldCheck,
   ArrowUpRight,
+  ArrowDown,
+  ArrowRight,
   Target,
   Rocket,
+  School,
+  BookMarked,
+  Globe,
 } from 'lucide-react'
 
-import hero1 from '../assets/hero1.jpg'
-import hero2 from '../assets/hero2.jpg'
+import bangaloreVideo from '../assets/Bangalore.mp4'
 import graduateVideo from '../assets/graduate.mp4'
 
 gsap.registerPlugin(ScrollTrigger)
-ScrollTrigger.config({ ignoreMobileResize: true })
+ScrollTrigger.config({
+  ignoreMobileResize: true,
+  autoRefreshEvents: 'visibilitychange,DOMContentLoaded,load',
+})
 
-/* ─────────────────────────────────────────────────────────────────
-   DATA
-───────────────────────────────────────────────────────────────── */
+
+function MissionBackdropModel() {
+  const groupRef = useRef(null)
+
+  useFrame((_, delta) => {
+    if (!groupRef.current) return
+    groupRef.current.rotation.x += delta * 0.18
+    groupRef.current.rotation.y += delta * 0.28
+    groupRef.current.rotation.z += delta * 0.08
+  })
+
+  return (
+    <group ref={groupRef} scale={1.8} position={[0, 0, 0]}>
+      
+      <mesh rotation={[0.4, 0.2, 0]}>
+        <torusKnotGeometry args={[0.85, 0.28, 128, 16]} />
+        <meshStandardMaterial
+          color="#7c5cff"
+          emissive="#2d164f"
+          emissiveIntensity={0.6}
+          metalness={0.75}
+          roughness={0.25}
+        />
+      </mesh>
+      <mesh position={[0, 0, -0.25]} scale={1.12}>
+        <icosahedronGeometry args={[0.78, 1]} />
+        <meshStandardMaterial
+          color="#120a1f"
+          emissive="#0f1733"
+          emissiveIntensity={0.4}
+          metalness={0.45}
+          roughness={0.3}
+          transparent
+          opacity={0.4}
+        />
+      </mesh>
+    </group>
+  )
+}
+
 
 const items = [
   {
@@ -132,12 +177,10 @@ const stats = [
   },
 ]
 
-/* ─────────────────────────────────────────────────────────────────
-   COUNT-UP HELPER
-───────────────────────────────────────────────────────────────── */
 
-function CountUp({ start, value, suffix }) {
+const CountUp = memo(function CountUp({ start, value, suffix }) {
   const [count, setCount] = useState(0)
+
   useEffect(() => {
     if (!start) return
     let frameId
@@ -153,300 +196,400 @@ function CountUp({ start, value, suffix }) {
     frameId = requestAnimationFrame(animate)
     return () => cancelAnimationFrame(frameId)
   }, [start, value])
+
   return <span>{count}{suffix}</span>
+})
+
+
+function CyberGridTexture() {
+  const particles = useMemo(() => {
+    const temp = []
+    const colors = ['#f0abfc', '#22d3ee', '#c084fc']
+
+    for (let i = 0; i < 60; i += 1) {
+      const x = Math.random() * 100
+      const y = Math.random() * 100
+      const size = Math.random() * 0.4 + 0.1
+      const color = colors[Math.floor(Math.random() * colors.length)]
+      temp.push({ x, y, size, color })
+    }
+
+    return temp
+  }, [])
+
+  return (
+    <pattern id="cyberGridPattern" width="100" height="100" patternUnits="userSpaceOnUse">
+      <rect width="100" height="100" fill="transparent" />
+      <path d="M 10 0 L 10 100 M 0 10 L 100 10" stroke="#7b2cbf" strokeWidth="0.05" opacity="0.3" />
+      <path d="M 50 0 L 50 100 M 0 50 L 100 50" stroke="#7b2cbf" strokeWidth="0.1" opacity="0.5" />
+      {particles.map((p, i) => (
+        <circle
+          key={i}
+          className="cyber-node"
+          cx={p.x}
+          cy={p.y}
+          r={p.size}
+          fill={p.color}
+          opacity={0.6}
+        />
+      ))}
+    </pattern>
+  )
 }
 
-/* ─────────────────────────────────────────────────────────────────
-   SECTION 1 — HOME HERO (SHATTER)
-───────────────────────────────────────────────────────────────── */
-
 function HeroSection() {
-  const sectionRef    = useRef(null)
-  const frontRef      = useRef(null)
-  const backRef       = useRef(null)
-  const textOneRef    = useRef(null)
-  const textTwoRef    = useRef(null)
-  const pieceOneRef   = useRef(null)
-  const pieceTwoRef   = useRef(null)
-  const pieceThreeRef = useRef(null)
-  const pieceFourRef  = useRef(null)
+  const containerRef = useRef(null)
+  const maskGroupRef = useRef(null)
+  const videoRef = useRef(null)
+  const portalVeilRef = useRef(null)
+  const contentRevealRef = useRef(null)
+  const [isBrokenThrough, setIsBrokenThrough] = useState(false)
+  const brokenThroughRef = useRef(false)
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      const front  = frontRef.current
-      const back   = backRef.current
-      const textOne = textOneRef.current
-      const textTwo = textTwoRef.current
-      const pieces = [
-        pieceOneRef.current,
-        pieceTwoRef.current,
-        pieceThreeRef.current,
-        pieceFourRef.current,
-      ].filter(Boolean)
+      gsap.set(maskGroupRef.current, { transformOrigin: '50% 50%', scale: 1 })
+      gsap.set(contentRevealRef.current, { opacity: 0, y: 50 })
 
-      const moves = [
-        { x: '-28vw', y: '-28vh', rotate: -1.1 },
-        { x:  '28vw', y: '-28vh', rotate:  1.1 },
-        { x: '-28vw', y:  '28vh', rotate:  1.1 },
-        { x:  '28vw', y:  '28vh', rotate: -1.1 },
-      ]
-
-      gsap.set(back, {
-        position: 'absolute', inset: 0,
-        width: '100%', height: '100%', objectFit: 'cover',
-        scale: 1.04, opacity: 0,
-        transformOrigin: 'center center',
-        willChange: 'transform, opacity',
-        force3D: true,
-        backfaceVisibility: 'hidden',
-      })
-
-      gsap.set(front, {
-        position: 'absolute', inset: 0,
-        width: '100%', height: '100%', objectFit: 'cover',
-        scale: 1, opacity: 1,
-        transformOrigin: 'center center',
-        willChange: 'transform, opacity',
-        force3D: true,
-        backfaceVisibility: 'hidden',
-      })
-
-      const piecePositions = [
-        { top: '-4px',    left: '-4px',    backgroundPosition: '0% 0%',     zIndex: 30 },
-        { top: '-4px',    right: '-4px',   backgroundPosition: '100% 0%',   zIndex: 29 },
-        { bottom: '-4px', left: '-4px',    backgroundPosition: '0% 100%',   zIndex: 28 },
-        { bottom: '-4px', right: '-4px',   backgroundPosition: '100% 100%', zIndex: 27 },
-      ]
-      pieces.forEach((el, i) => {
-        gsap.set(el, {
-          position: 'absolute',
-          width: 'calc(50% + 8px)',
-          height: 'calc(50% + 8px)',
-          backgroundImage: `url(${hero1})`,
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: '200% 200%',
-          backgroundPosition: piecePositions[i].backgroundPosition,
-          opacity: 0,
-          x: 0, y: 0, rotate: 0,
-          scale: 0.995,
-          transformOrigin: 'center center',
-          willChange: 'transform, opacity',
-          force3D: true,
-          backfaceVisibility: 'hidden',
-          zIndex: piecePositions[i].zIndex,
-          ...piecePositions[i],
-        })
-      })
-
-      gsap.set([textOne, textTwo], {
-        opacity: 0, y: 28, scale: 0.985,
-        transformOrigin: 'center center',
-      })
-
-      const tl = gsap.timeline({
+      const breakthroughTl = gsap.timeline({
+        onComplete: () => {
+          brokenThroughRef.current = true
+          setIsBrokenThrough(true)
+          gsap.set(portalVeilRef.current, { display: 'none' })
+          ScrollTrigger.refresh()
+        },
         scrollTrigger: {
-          trigger: sectionRef.current,
+          trigger: containerRef.current,
           start: 'top top',
-          end: '+=300%',
-          scrub: 1.15,
+          end: '+=1000',
           pin: true,
-          anticipatePin: 1,
-          fastScrollEnd: true,
-          invalidateOnRefresh: true,
+          pinSpacing: true,
+          scrub: 1,
         },
       })
 
-      tl.to(back,   { opacity: 1, scale: 1, duration: 0.9, ease: 'sine.inOut' }, 0.18)
-      tl.to(front,  { opacity: 0, duration: 0.8, ease: 'sine.inOut' }, 0.7)
-      tl.to(pieces, { opacity: 1, scale: 1, duration: 0.5, ease: 'sine.out', stagger: 0.02 }, 0.06)
-      pieces.forEach((piece, i) => {
-        tl.to(piece, {
-          x: moves[i].x, y: moves[i].y,
-          rotate: moves[i].rotate, scale: 1.08, opacity: 1,
-          duration: 1.9, ease: 'power2.inOut',
-        }, 0.12)
+      breakthroughTl
+        .to(maskGroupRef.current, {
+          scale: 150,
+          duration: 1.5,
+          ease: 'expo.inOut',
+        })
+        .to(portalVeilRef.current, {
+          opacity: 0,
+          duration: 0.6,
+        }, '-=0.8')
+        .to(videoRef.current, { filter: 'brightness(1)', duration: 1 }, '-=0.3')
+        .to(contentRevealRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+        }, '-=0.2')
+
+      gsap.to('.cyber-node', {
+        opacity: 0.1,
+        stagger: { each: 0.05, repeat: -1, yoyo: true },
+        duration: 2,
+        ease: 'sine.inOut',
       })
-      tl.to(pieces, { opacity: 0, duration: 0.65, ease: 'sine.inOut', stagger: 0.02 }, 1.65)
-      tl.to(textOne, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: 'power3.out' }, 1.15)
-      tl.to({}, { duration: 1.25 }, 1.75)
-      tl.to(textOne, { opacity: 0, y: -16, scale: 0.99, duration: 0.4, ease: 'power3.in' }, 2.8)
-      tl.to(textTwo, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: 'power3.out' }, 2.92)
 
-    }, sectionRef)
+      const moveHandler = (e) => {
+        if (!brokenThroughRef.current) return
+        const xPos = (e.clientX / window.innerWidth - 0.5) * 20
+        const yPos = (e.clientY / window.innerHeight - 0.5) * 20
+        gsap.to('.revealed-content', {
+          x: xPos,
+          y: yPos,
+          duration: 1.5,
+          ease: 'power2.out',
+        })
+      }
 
-    // ✅ ctx.revert() kills all GSAP tweens AND removes the pin spacer div
-    requestAnimationFrame(() => ScrollTrigger.refresh())
+      window.addEventListener('mousemove', moveHandler)
+      return () => window.removeEventListener('mousemove', moveHandler)
+    }, containerRef)
+
     return () => ctx.revert()
   }, [])
 
   return (
-    <section
-      ref={sectionRef}
-      id="home"
-      className="relative h-screen w-full overflow-hidden bg-black"
-    >
-      <img ref={backRef} src={hero2} alt="" draggable="false"
-        className="absolute inset-0 h-full w-full object-cover"
-      />
-      <img ref={frontRef} src={hero1} alt="" draggable="false"
-        className="absolute inset-0 h-full w-full object-cover"
-      />
-
-      <div ref={pieceOneRef}   aria-hidden="true" className="absolute h-1/2 w-1/2"
-        style={{ top: '-4px', left: '-4px', backgroundImage: `url(${hero1})`, backgroundRepeat: 'no-repeat', backgroundSize: '200% 200%', backgroundPosition: '0% 0%' }}
-      />
-      <div ref={pieceTwoRef}   aria-hidden="true" className="absolute h-1/2 w-1/2"
-        style={{ top: '-4px', right: '-4px', backgroundImage: `url(${hero1})`, backgroundRepeat: 'no-repeat', backgroundSize: '200% 200%', backgroundPosition: '100% 0%' }}
-      />
-      <div ref={pieceThreeRef} aria-hidden="true" className="absolute h-1/2 w-1/2"
-        style={{ bottom: '-4px', left: '-4px', backgroundImage: `url(${hero1})`, backgroundRepeat: 'no-repeat', backgroundSize: '200% 200%', backgroundPosition: '0% 100%' }}
-      />
-      <div ref={pieceFourRef}  aria-hidden="true" className="absolute h-1/2 w-1/2"
-        style={{ bottom: '-4px', right: '-4px', backgroundImage: `url(${hero1})`, backgroundRepeat: 'no-repeat', backgroundSize: '200% 200%', backgroundPosition: '100% 100%' }}
+    <section ref={containerRef} className="relative h-screen w-full overflow-hidden bg-[#0a0510]">
+      <video
+        ref={videoRef}
+        src={bangaloreVideo}
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 z-0 h-full w-full object-cover brightness-[0.5] transition-all"
       />
 
-      <div className="pointer-events-none absolute inset-0 z-40 bg-gradient-to-b from-black/10 via-transparent to-black/20" />
+      <div ref={contentRevealRef} className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+        <div className="revealed-content px-6 text-center">
+          <p className="mb-6 font-mono text-sm uppercase tracking-[0.5em] text-white/70 drop-shadow-md">
+            Welcome To
+          </p>
+          <h2 className="text-[clamp(3rem,8vw,7rem)] font-black uppercase leading-[0.85] tracking-tight text-white">
+            Study India's <br />
+            <span className="bg-gradient-to-r from-violet-300 via-fuchsia-200 to-cyan-200 bg-clip-text font-serif font-light italic text-transparent drop-shadow-[0_10px_30px_rgba(123,44,191,0.5)]">
+              Silicon Valley
+            </span>
+          </h2>
+        </div>
+      </div>
 
-      <div className="pointer-events-none absolute inset-0 z-50 flex items-center justify-center px-4 text-center">
-        <div className="relative h-24 w-[min(92vw,60rem)] overflow-hidden sm:h-28">
-          <h1 ref={textOneRef}
-            className="absolute inset-0 flex items-center justify-center bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-[clamp(1.6rem,3.2vw,4rem)] font-semibold tracking-[0.12em] text-transparent drop-shadow-[0_2px_16px_rgba(0,0,0,0.5)]"
-          >
-            Study in Bengaluru
-          </h1>
-          <h1 ref={textTwoRef}
-            className="absolute inset-0 flex items-center justify-center bg-gradient-to-r from-cyan-200 via-sky-300 to-white bg-clip-text text-[clamp(1.6rem,3.2vw,4rem)] font-semibold tracking-[0.12em] text-transparent drop-shadow-[0_2px_16px_rgba(0,0,0,0.5)]"
-          >
-            Study in India&apos;s Silicon Valley
-          </h1>
+      <div ref={portalVeilRef} className="absolute inset-0 z-20 overflow-hidden pointer-events-none">
+        <svg className="h-full w-full" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <CyberGridTexture />
+            <mask id="breakthroughMask">
+              <rect width="100%" height="100%" fill="white" />
+              <g ref={maskGroupRef}>
+                <text
+                  x="500"
+                  y="450"
+                  textAnchor="middle"
+                  fill="black"
+                  className="font-black"
+                  style={{ fontSize: '140px', fontFamily: 'Impact, sans-serif' }}
+                >
+                  STUDY
+                </text>
+                <text
+                  x="500"
+                  y="580"
+                  textAnchor="middle"
+                  fill="black"
+                  className="font-black"
+                  style={{ fontSize: '100px', fontFamily: 'Impact, sans-serif' }}
+                >
+                  IN BENGALURU
+                </text>
+              </g>
+            </mask>
+            <radialGradient id="portalGlow">
+              <stop offset="0%" stopColor="#d946ef" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="transparent" />
+            </radialGradient>
+          </defs>
+
+          <g mask="url(#breakthroughMask)">
+            <rect width="100%" height="100%" fill="#1b0a21" />
+            <circle cx="10%" cy="10%" r="30%" fill="#5d3a80" filter="blur(120px)" opacity="0.6" />
+            <circle cx="90%" cy="90%" r="30%" fill="#9d4edd" filter="blur(120px)" opacity="0.4" />
+            <rect width="100%" height="100%" fill="url(#cyberGridPattern)" />
+          </g>
+
+          <g mask="url(#breakthroughMask)" opacity="0.5">
+            <circle cx="50%" cy="50%" r="40%" fill="url(#portalGlow)" />
+          </g>
+
+          <g className="opacity-40">
+            <text
+              x="500"
+              y="450"
+              textAnchor="middle"
+              stroke="white"
+              strokeWidth="2"
+              fill="none"
+              className="font-black"
+              style={{ fontSize: '140px', fontFamily: 'Impact, sans-serif' }}
+            >
+              STUDY
+            </text>
+            <text
+              x="500"
+              y="580"
+              textAnchor="middle"
+              stroke="white"
+              strokeWidth="2"
+              fill="none"
+              className="font-black"
+              style={{ fontSize: '100px', fontFamily: 'Impact, sans-serif' }}
+            >
+              IN BENGALURU
+            </text>
+          </g>
+        </svg>
+
+        <div className="absolute bottom-10 left-1/2 flex -translate-x-1/2 flex-col items-center gap-3">
+          <span className="text-[0.6rem] font-bold uppercase tracking-[0.7em] text-white/50">
+            Initiate Breakthrough
+          </span>
+          <ArrowDown className="h-4 w-4 animate-bounce text-fuchsia-400" />
         </div>
       </div>
     </section>
   )
 }
 
-/* ─────────────────────────────────────────────────────────────────
-   SECTION 2 — OPPORTUNITIES (GLASS GRID)
-───────────────────────────────────────────────────────────────── */
+const cardData = [
+  { title: 'Colleges', icon: School, color: '#3b82f6', shadow: 'shadow-blue-500/20' },
+  { title: 'Institutes', icon: BookMarked, color: '#a855f7', shadow: 'shadow-purple-500/20' },
+  { title: 'Internships', icon: BriefcaseBusiness, color: '#f59e0b', shadow: 'shadow-orange-500/20' },
+  { title: 'Courses', icon: Globe, color: '#10b981', shadow: 'shadow-emerald-500/20' },
+  { title: 'Scholarships', icon: Sparkles, color: '#ec4899', shadow: 'shadow-pink-500/20' },
+]
+
+const GlassCard = memo(function GlassCard({ item, index }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      whileHover={{ y: -10, scale: 1.02 }}
+      className="group relative min-w-[280px] h-[400px] rounded-[2.5rem] overflow-hidden p-[1px]"
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-transparent opacity-100 transition-all duration-500 group-hover:from-white/50" />
+
+      <div className="relative flex h-full w-full flex-col justify-between rounded-[2.5rem] border border-white/5 bg-[#1a0b2e]/60 p-8 shadow-2xl backdrop-blur-2xl">
+        <div
+          className="absolute -top-20 -left-20 h-40 w-40 rounded-full opacity-0 blur-[50px] transition-opacity duration-500 group-hover:opacity-20"
+          style={{ backgroundColor: item.color }}
+        />
+
+        <div
+          className={`flex h-16 w-16 items-center justify-center rounded-2xl shadow-lg transition-transform duration-500 group-hover:rotate-[10deg] group-hover:scale-110 ${item.shadow}`}
+          style={{ background: `linear-gradient(135deg, ${item.color} 0%, #000 150%)` }}
+        >
+          <item.icon className="h-8 w-8 text-white" />
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="text-3xl font-bold tracking-tight text-white">{item.title}</h3>
+          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/40">Global Access</p>
+          <div
+            className="h-[2px] w-12 bg-white/10 transition-all duration-700 group-hover:w-full"
+            style={{ backgroundColor: `${item.color}44` }}
+          />
+        </div>
+
+        <div className="mt-4 flex items-center justify-between">
+          <span className="text-sm font-semibold uppercase tracking-widest text-white/80">Explore</span>
+          <motion.div
+            whileTap={{ scale: 0.9 }}
+            className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition-all duration-300 group-hover:bg-white group-hover:text-black"
+          >
+            <ArrowRight className="h-5 w-5" />
+          </motion.div>
+        </div>
+      </div>
+    </motion.div>
+  )
+})
 
 function Opportunities() {
-  return (
-    <section id="services"
-      className="relative overflow-hidden bg-[#0a0712] px-4 py-20 text-white sm:px-6 lg:px-8"
-    >
-      <div className="mx-auto max-w-[1400px]">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7, ease: 'easeOut' }}
-          className="text-center"
-        >
-          <p className="mb-3 text-[0.72rem] font-semibold tracking-[0.55em] text-white/45">
-            OPPORTUNITIES
-          </p>
-          <h2 className="text-balance text-[clamp(2rem,4vw,4.25rem)] font-black uppercase leading-[0.92] tracking-[-0.04em]">
-            <span className="bg-gradient-to-r from-white via-violet-200 to-violet-400 bg-clip-text text-transparent">
-              Explore the
-            </span>{' '}
-            <span className="bg-gradient-to-r from-violet-300 via-fuchsia-300 to-sky-300 bg-clip-text text-transparent">
-              Right Path
-            </span>
-          </h2>
-          <motion.div
-            initial={{ scaleX: 0, opacity: 0 }}
-            whileInView={{ scaleX: 1, opacity: 1 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.9, ease: 'easeOut' }}
-            className="mx-auto mt-5 h-px w-28 origin-center bg-gradient-to-r from-transparent via-violet-300 to-transparent"
-          />
-        </motion.div>
+  const containerRef = useRef(null)
+  const triggerRef = useRef(null)
+  const bannerRef = useRef(null)
+  const cardsRef = useRef(null)
 
-        <motion.div
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.14 }}
-          variants={{
-            hidden: {},
-            show: { transition: { staggerChildren: 0.08, delayChildren: 0.08 } },
-          }}
-          className="mt-14 grid gap-5 sm:grid-cols-2 xl:grid-cols-5"
-        >
-          {items.map((item) => {
-            const Icon = item.icon
-            return (
-              <motion.article
-                key={item.title}
-                variants={{
-                  hidden: { opacity: 0, y: 34, scale: 0.96 },
-                  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } },
-                }}
-                whileHover={{ y: -10, scale: 1.02, transition: { type: 'spring', stiffness: 260, damping: 18 } }}
-                className="group relative min-h-[250px] overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.02),0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-xl"
-              >
-                <div aria-hidden="true"
-                  className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                  style={{ background: `radial-gradient(circle at top left, ${item.glow}, transparent 40%), radial-gradient(circle at bottom right, rgba(255,255,255,0.08), transparent 45%)` }}
-                />
-                <motion.div aria-hidden="true"
-                  className={`absolute inset-0 bg-gradient-to-br ${item.accent} opacity-0 transition-opacity duration-500 group-hover:opacity-100`}
-                />
-                <motion.div aria-hidden="true"
-                  className="absolute -inset-24 opacity-0 blur-3xl group-hover:opacity-100"
-                  animate={{ rotate: [0, 6, 0] }}
-                  transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-                  style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.10) 0%, transparent 55%)' }}
-                />
-                <div className="relative flex h-full flex-col">
-                  <div className="absolute right-4 top-4 h-3 w-3 rounded-full bg-violet-300 shadow-[0_0_24px_rgba(192,132,252,0.95)]" />
-                  <motion.div
-                    className="mt-4 grid h-16 w-16 place-items-center rounded-2xl border border-white/10 bg-white/8 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
-                    whileHover={{ rotate: [0, -8, 8, 0], scale: 1.06 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <Icon className="h-8 w-8 text-violet-100" />
-                  </motion.div>
-                  <div className="mt-6 flex flex-1 flex-col items-center justify-center text-center">
-                    <h3 className="text-[1.08rem] font-extrabold uppercase tracking-[0.22em] text-white sm:text-[1.15rem]">
-                      {item.title}
-                    </h3>
-                    <p className="mt-4 max-w-[14rem] text-[0.72rem] font-medium uppercase tracking-[0.34em] text-white/35">
-                      Explore what opens next
-                    </p>
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      whileHover={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.35 }}
-                      className="mt-5 max-w-[15rem] text-sm leading-6 text-white/72"
-                    >
-                      {item.detail}
-                    </motion.div>
-                  </div>
-                  <div className="mt-6 h-px w-full bg-gradient-to-r from-transparent via-white/12 to-transparent" />
-                  <div className="mt-4 flex items-center justify-between text-[0.68rem] uppercase tracking-[0.35em] text-white/28">
-                    <span>01</span>
-                    <span>Discover</span>
-                  </div>
-                </div>
-                <motion.div aria-hidden="true"
-                  className="pointer-events-none absolute inset-0"
-                  style={{ background: 'linear-gradient(115deg, transparent 20%, rgba(255,255,255,0.18) 45%, transparent 60%)' }}
-                  initial={{ x: '-140%' }}
-                  animate={{ x: '140%' }}
-                  transition={{ duration: 4.8, repeat: Infinity, repeatDelay: 2.5, ease: 'easeInOut' }}
-                />
-              </motion.article>
-            )
-          })}
-        </motion.div>
-      </div>
-    </section>
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const tween = gsap.fromTo(
+        cardsRef.current,
+        { x: '100vw', opacity: 0 },
+        {
+          x: '0vw',
+          opacity: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: triggerRef.current,
+            start: 'top top',
+            end: '+=2000',
+            scrub: 0.6,
+            pin: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              const progress = Math.min(1, Math.max(0, 1 - self.progress * 2))
+              gsap.to(bannerRef.current, {
+                opacity: progress,
+                x: -self.progress * 100,
+                filter: `blur(${self.progress * 10}px)`,
+                duration: 0.1,
+              })
+            },
+          },
+        }
+      )
+
+      return () => tween.kill()
+    }, containerRef)
+
+    return () => ctx.revert()
+  }, [])
+
+  return (
+    <div ref={triggerRef} className="overflow-hidden bg-[#0f021a]">
+      <section ref={containerRef} className="relative flex h-screen w-full items-center justify-center">
+        <div ref={bannerRef} className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-center">
+          <div className="mb-6 flex gap-4 opacity-50">
+            <GraduationCap className="h-8 w-8 animate-bounce text-white" />
+            <BookOpen className="h-8 w-8 animate-pulse text-white" />
+          </div>
+          <h2 className="text-7xl font-black uppercase italic tracking-tighter text-white md:text-9xl">
+            Opportunities
+          </h2>
+          <p className="mt-4 text-xs font-bold uppercase tracking-[0.5em] text-purple-300">
+            Scroll to Reveal Matrix
+          </p>
+        </div>
+
+        <div ref={cardsRef} className="relative z-10 flex items-center gap-6 px-10">
+          {cardData.map((item, index) => (
+            <GlassCard key={item.title} item={item} index={index} />
+          ))}
+        </div>
+      </section>
+    </div>
   )
 }
 
-/* ─────────────────────────────────────────────────────────────────
-   SECTION 3 — IMPACT NUMBERS
-───────────────────────────────────────────────────────────────── */
+
+const StatCard = memo(function StatCard({ stat, index, start }) {
+  const Icon = stat.icon
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 30, scale: 0.96 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, amount: 0.25 }}
+      transition={{ duration: 0.7, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ y: -12, scale: 1.02, transition: { type: 'spring', stiffness: 240, damping: 18 } }}
+      className="group relative min-h-[260px] overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_20px_50px_rgba(0,0,0,0.35)]"
+      style={{ willChange: 'transform, opacity' }}
+    >
+      <div aria-hidden="true" className={`absolute inset-0 bg-gradient-to-br ${stat.accent} opacity-0 transition-opacity duration-500 group-hover:opacity-100`} />
+      <div aria-hidden="true" className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        style={{ background: 'radial-gradient(circle at top left, rgba(255,255,255,0.12), transparent 35%), radial-gradient(circle at bottom right, rgba(255,255,255,0.08), transparent 40%)' }}
+      />
+
+      <div className="relative flex h-full flex-col">
+        <div className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-violet-300/70 to-transparent" />
+        <div className="mt-5 flex items-center justify-between">
+          <div className="grid h-12 w-12 place-items-center rounded-2xl border border-white/10 bg-white/8 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+            <Icon className="h-6 w-6 text-violet-100" />
+          </div>
+          <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/15 px-3 py-1 text-[0.62rem] font-bold uppercase tracking-[0.32em] text-white/40">
+            <span>Live</span>
+            <span className="h-1.5 w-1.5 rounded-full bg-violet-300 shadow-[0_0_14px_rgba(192,132,252,0.95)]" />
+          </div>
+        </div>
+        <div className="mt-auto pt-8 text-center">
+          <div className="text-[clamp(3rem,5vw,4.9rem)] font-black leading-none tracking-[-0.06em] text-white">
+            {start ? <CountUp start={start} value={stat.value} suffix={stat.suffix} /> : <span>0{stat.suffix}</span>}
+          </div>
+          <h3 className="mt-4 text-[0.92rem] font-extrabold uppercase tracking-[0.28em] text-white/82">{stat.label}</h3>
+          <p className="mx-auto mt-4 max-w-[14rem] text-sm leading-6 text-white/55">{stat.note}</p>
+        </div>
+        <div className="mt-6 h-px w-full bg-gradient-to-r from-transparent via-white/12 to-transparent" />
+        <div className="mt-4 flex items-center justify-between text-[0.65rem] uppercase tracking-[0.34em] text-white/30">
+          <span>Momentum</span>
+          <ArrowUpRight className="h-4 w-4" />
+        </div>
+      </div>
+    </motion.article>
+  )
+})
 
 function ImpactNumbersSection() {
   const sectionRef = useRef(null)
@@ -464,32 +607,36 @@ function ImpactNumbersSection() {
   }, [])
 
   return (
-    <section ref={sectionRef}
-      className="relative overflow-hidden bg-[#080612] px-4 py-20 text-white sm:px-6 lg:px-8"
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden bg-[#1b0a21] px-4 py-6 text-white sm:px-6 lg:px-8 sm:py-10"
     >
+      
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.24),transparent_32%),radial-gradient(circle_at_bottom_right,rgba(59,130,246,0.14),transparent_28%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:72px_72px] opacity-20" />
-        <motion.div className="absolute left-[-8rem] top-[-6rem] h-72 w-72 rounded-full bg-violet-500/20 blur-3xl"
-          animate={{ x: [0, 40, 0], y: [0, 30, 0], scale: [1, 1.08, 1] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div className="absolute bottom-[-7rem] right-[-6rem] h-80 w-80 rounded-full bg-fuchsia-500/15 blur-3xl"
-          animate={{ x: [0, -35, 0], y: [0, -20, 0], scale: [1, 1.1, 1] }}
-          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_left,rgba(168,85,247,0.28),transparent_26%),radial-gradient(circle_at_right,rgba(59,130,246,0.16),transparent_30%),radial-gradient(circle_at_top,rgba(236,72,153,0.12),transparent_28%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:72px_72px] opacity-18" />
+        
+        <div className="absolute left-[-8rem] top-[-6rem] h-72 w-72 rounded-full bg-violet-500/20 blur-3xl" style={{ animation: 'blobA 10s ease-in-out infinite' }} />
+        <div className="absolute bottom-[-7rem] right-[-6rem] h-80 w-80 rounded-full bg-fuchsia-500/15 blur-3xl" style={{ animation: 'blobB 12s ease-in-out infinite' }} />
       </div>
 
-      <div className="relative mx-auto max-w-[1500px]">
+      <style>{`
+        @keyframes blobA { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(40px,30px) scale(1.08)} }
+        @keyframes blobB { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-35px,-20px) scale(1.1)} }
+        @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+      `}</style>
+
+      <div className="relative mx-auto max-w-[1600px]">
         <motion.div
           initial={{ opacity: 0, y: 26 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.25 }}
           transition={{ duration: 0.75, ease: 'easeOut' }}
-          className="relative overflow-hidden rounded-[2.4rem] border border-white/10 bg-white/[0.03] shadow-[0_24px_90px_rgba(0,0,0,0.45)] backdrop-blur-2xl"
+          className="relative overflow-hidden rounded-[2.8rem] border border-white/10 bg-white/[0.03] shadow-[0_24px_90px_rgba(0,0,0,0.45)]"
+          style={{ willChange: 'transform, opacity' }}
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.14),transparent_55%)]" />
-          <div className="relative z-10 px-5 py-14 sm:px-10 lg:px-14">
+          <div className="relative z-10 px-5 py-10 sm:px-10 sm:py-14 lg:px-14 lg:py-16">
             <div className="mx-auto max-w-4xl text-center">
               <motion.p
                 initial={{ opacity: 0, y: 10 }}
@@ -505,7 +652,7 @@ function ImpactNumbersSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.8, ease: 'easeOut' }}
-                className="mt-4 text-balance text-[clamp(2.4rem,6vw,5.2rem)] font-black uppercase leading-[0.9] tracking-[-0.05em]"
+                className="mt-4 text-balance text-[clamp(2.2rem,5.5vw,5rem)] font-black uppercase leading-[0.9] tracking-[-0.05em]"
               >
                 <span className="bg-gradient-to-r from-white via-violet-100 to-white bg-clip-text text-transparent">Built on</span>{' '}
                 <span className="bg-gradient-to-r from-fuchsia-200 via-violet-300 to-sky-200 bg-clip-text text-transparent">Real Momentum</span>
@@ -521,11 +668,11 @@ function ImpactNumbersSection() {
               </motion.p>
             </div>
 
-            <div className="mt-10 overflow-hidden rounded-full border border-white/10 bg-white/[0.04]">
-              <motion.div
-                className="flex w-[200%] items-center gap-8 py-3 text-[0.7rem] font-semibold uppercase tracking-[0.5em] text-white/55 sm:text-xs"
-                animate={{ x: ['0%', '-50%'] }}
-                transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
+            
+            <div className="mt-8 overflow-hidden rounded-full border border-white/10 bg-white/[0.04]">
+              <div
+                className="flex items-center gap-8 py-3 text-[0.7rem] font-semibold uppercase tracking-[0.5em] text-white/55 sm:text-xs"
+                style={{ width: 'max-content', animation: 'ticker 18s linear infinite' }}
               >
                 {[...stats, ...stats].map((item, index) => (
                   <span key={`${item.label}-${index}`} className="flex items-center gap-3 whitespace-nowrap">
@@ -533,64 +680,13 @@ function ImpactNumbersSection() {
                     {item.label}
                   </span>
                 ))}
-              </motion.div>
+              </div>
             </div>
 
-            <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-5">
-              {stats.map((stat, index) => {
-                const Icon = stat.icon
-                return (
-                  <motion.article
-                    key={stat.label}
-                    initial={{ opacity: 0, y: 30, scale: 0.96 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    viewport={{ once: true, amount: 0.25 }}
-                    transition={{ duration: 0.7, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }}
-                    whileHover={{ y: -12, rotateX: 8, rotateY: -8, scale: 1.02, transition: { type: 'spring', stiffness: 240, damping: 18 } }}
-                    className="group relative min-h-[240px] overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_20px_50px_rgba(0,0,0,0.35)] backdrop-blur-xl"
-                    style={{ transformStyle: 'preserve-3d' }}
-                  >
-                    <div aria-hidden="true" className={`absolute inset-0 bg-gradient-to-br ${stat.accent} opacity-0 transition-opacity duration-500 group-hover:opacity-100`} />
-                    <div aria-hidden="true" className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                      style={{ background: 'radial-gradient(circle at top left, rgba(255,255,255,0.12), transparent 35%), radial-gradient(circle at bottom right, rgba(255,255,255,0.08), transparent 40%)' }}
-                    />
-                    <motion.div aria-hidden="true"
-                      className="absolute -inset-16 opacity-0 blur-3xl group-hover:opacity-100"
-                      animate={{ rotate: [0, 8, 0] }}
-                      transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-                      style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.11) 0%, transparent 58%)' }}
-                    />
-                    <div className="relative flex h-full flex-col">
-                      <div className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-violet-300/70 to-transparent" />
-                      <div className="mt-5 flex items-center justify-between">
-                        <motion.div
-                          className="grid h-12 w-12 place-items-center rounded-2xl border border-white/10 bg-white/8 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
-                          whileHover={{ rotate: [0, -8, 8, 0], scale: 1.07 }}
-                          transition={{ duration: 0.45 }}
-                        >
-                          <Icon className="h-6 w-6 text-violet-100" />
-                        </motion.div>
-                        <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/15 px-3 py-1 text-[0.62rem] font-bold uppercase tracking-[0.32em] text-white/40">
-                          <span>Live</span>
-                          <span className="h-1.5 w-1.5 rounded-full bg-violet-300 shadow-[0_0_14px_rgba(192,132,252,0.95)]" />
-                        </div>
-                      </div>
-                      <div className="mt-auto pt-8 text-center">
-                        <div className="text-[clamp(3rem,5vw,4.8rem)] font-black leading-none tracking-[-0.06em] text-white">
-                          {start ? <CountUp start={start} value={stat.value} suffix={stat.suffix} /> : <span>0{stat.suffix}</span>}
-                        </div>
-                        <h3 className="mt-4 text-[0.92rem] font-extrabold uppercase tracking-[0.28em] text-white/82">{stat.label}</h3>
-                        <p className="mx-auto mt-4 max-w-[14rem] text-sm leading-6 text-white/55">{stat.note}</p>
-                      </div>
-                      <div className="mt-6 h-px w-full bg-gradient-to-r from-transparent via-white/12 to-transparent" />
-                      <div className="mt-4 flex items-center justify-between text-[0.65rem] uppercase tracking-[0.34em] text-white/30">
-                        <span>Momentum</span>
-                        <ArrowUpRight className="h-4 w-4" />
-                      </div>
-                    </div>
-                  </motion.article>
-                )
-              })}
+            <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-5">
+              {stats.map((stat, index) => (
+                <StatCard key={stat.label} stat={stat} index={index} start={start} />
+              ))}
             </div>
           </div>
         </motion.div>
@@ -599,9 +695,6 @@ function ImpactNumbersSection() {
   )
 }
 
-/* ─────────────────────────────────────────────────────────────────
-   SECTION 4 — VISION VIDEO (CINEMATIC EXPANSION)
-───────────────────────────────────────────────────────────────── */
 
 function VisionVideoSection() {
   const outerRef   = useRef(null)
@@ -611,24 +704,21 @@ function VisionVideoSection() {
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
+      gsap.set([frameRef.current, contentRef.current, titleRef.current], { force3D: true, willChange: 'transform, opacity' })
       gsap.set(titleRef.current, { opacity: 0, y: 16 })
       gsap.set(frameRef.current, {
         scale: 0.22,
         borderRadius: '34px',
         transformOrigin: 'center center',
-        willChange: 'transform, border-radius',
       })
-      gsap.set(contentRef.current, {
-        opacity: 0, y: 34, scale: 0.98,
-        willChange: 'transform, opacity',
-      })
+      gsap.set(contentRef.current, { opacity: 0, y: 34, scale: 0.98 })
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: outerRef.current,
           start: 'top top',
           end: 'bottom bottom',
-          scrub: 1.2,
+          scrub: 1.0,
           invalidateOnRefresh: true,
         },
       })
@@ -640,72 +730,57 @@ function VisionVideoSection() {
       tl.to(frameRef.current, { scale: 0.90, duration: 0.65, ease: 'power2.inOut' }, 1.75)
       tl.to(frameRef.current, { scale: 1, borderRadius: '0px', duration: 0.7, ease: 'power2.inOut' }, 2.4)
       tl.to(contentRef.current, { opacity: 1, y: 0, scale: 1, duration: 0.65, ease: 'power3.out' }, 2.6)
-
     }, outerRef)
 
-    // ✅ ctx.revert() cleans up all tweens and ScrollTriggers created inside
     return () => ctx.revert()
   }, [])
 
   return (
     <section
       ref={outerRef}
-      className="relative bg-[#080612] text-white"
+      className="relative bg-[#1b0a21] text-white"
       style={{ height: '190vh' }}
     >
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(244,114,182,0.16),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(59,130,246,0.12),transparent_30%)]" />
-        <motion.div className="absolute left-[-6rem] top-[-5rem] h-72 w-72 rounded-full bg-fuchsia-500/20 blur-3xl"
-          animate={{ x: [0, 30, 0], y: [0, 25, 0], scale: [1, 1.08, 1] }}
-          transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div className="absolute bottom-[-7rem] right-[-5rem] h-80 w-80 rounded-full bg-cyan-500/12 blur-3xl"
-          animate={{ x: [0, -24, 0], y: [0, -18, 0], scale: [1, 1.06, 1] }}
-          transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
-        />
+        
+        <div className="absolute left-[-6rem] top-[-5rem] h-72 w-72 rounded-full bg-fuchsia-500/20 blur-3xl" style={{ animation: 'blobA 11s ease-in-out infinite' }} />
+        <div className="absolute bottom-[-7rem] right-[-5rem] h-80 w-80 rounded-full bg-cyan-500/12 blur-3xl"  style={{ animation: 'blobB 13s ease-in-out infinite' }} />
       </div>
 
       <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden px-4">
         <div className="relative z-20 mx-auto mb-10 max-w-4xl text-center">
-          <p ref={titleRef}
-            className="text-[0.72rem] font-bold uppercase tracking-[0.55em] text-white/40"
-          >
-            Vision
-          </p>
+          <p ref={titleRef} className="text-[0.72rem] font-bold uppercase tracking-[0.55em] text-white/40">Vision</p>
           <h2 className="mt-3 text-balance text-[clamp(2.3rem,5vw,4.8rem)] font-black uppercase leading-[0.92] tracking-[-0.05em]">
-            <span className="bg-gradient-to-r from-white via-fuchsia-100 to-white bg-clip-text text-transparent">
-              Study in Bengaluru
-            </span>{' '}
-            <span className="bg-gradient-to-r from-fuchsia-200 via-violet-300 to-cyan-200 bg-clip-text text-transparent">
-              with Impact
-            </span>
+            <span className="bg-gradient-to-r from-white via-fuchsia-100 to-white bg-clip-text text-transparent">Study in Bengaluru</span>{' '}
+            <span className="bg-gradient-to-r from-fuchsia-200 via-violet-300 to-cyan-200 bg-clip-text text-transparent">with Impact</span>
           </h2>
         </div>
 
         <div
           ref={frameRef}
           className="relative overflow-hidden bg-black shadow-[0_24px_90px_rgba(0,0,0,0.55)]"
-          style={{ width: '100%', height: '100vh', transformOrigin: 'center center' }}
+          style={{ width: '100%', height: '100vh', transformOrigin: 'center center', willChange: 'transform, border-radius' }}
         >
-          <video src={graduateVideo} autoPlay muted loop playsInline
-            className="h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.12),rgba(0,0,0,0.18),rgba(0,0,0,0.32))]" />
-          <div className="absolute left-5 top-5 rounded-full border border-white/15 bg-black/25 px-4 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-white/70 backdrop-blur-md">
+          <video src={graduateVideo} autoPlay muted loop playsInline className="h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/12 via-black/18 to-black/32" />
+          <div className="absolute left-5 top-5 rounded-full border border-white/15 bg-black/25 px-4 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-white/70 backdrop-blur-sm">
             Vision reel
           </div>
           <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4">
-            <div className="max-w-[18rem] rounded-2xl border border-white/12 bg-black/20 px-4 py-3 text-[0.62rem] font-semibold uppercase tracking-[0.35em] text-white/60 backdrop-blur-md">
+            <div className="max-w-[18rem] rounded-2xl border border-white/12 bg-black/20 px-4 py-3 text-[0.62rem] font-semibold uppercase tracking-[0.35em] text-white/60 backdrop-blur-sm">
               Scroll to expand
             </div>
             <div className="h-2 w-2 rounded-full bg-yellow-200 shadow-[0_0_22px_rgba(250,204,21,0.95)]" />
           </div>
 
-          <div ref={contentRef}
+          <div
+            ref={contentRef}
             className="absolute bottom-0 left-0 right-0 z-30 mx-auto max-w-[980px] px-4 pb-10"
+            style={{ willChange: 'transform, opacity' }}
           >
-            <div className="rounded-[1.8rem] bg-[#ead8ed] px-6 py-7 text-[#2d1550] shadow-[0_20px_80px_rgba(0,0,0,0.35)] sm:px-8 sm:py-8">
-              <p className="text-[0.95rem] leading-8 text-[#2d1550] sm:text-[1.02rem]">
+            <div className="rounded-[1.8rem] bg-[#f9f9fb] px-6 py-7 text-[#1e0338] shadow-[0_20px_80px_rgba(0,0,0,0.35)] sm:px-8 sm:py-8">
+              <p className="text-[0.95rem] leading-8 text-[#1e0338] sm:text-[1.02rem]">
                 StudyInBengaluru.com is Bengaluru&apos;s largest portal for admissions, with the vision of
                 making the city the educational hub of Asia. The focus is on building trust and credibility,
                 increasing brand awareness, and attracting students from across India and abroad, alongside
@@ -722,130 +797,310 @@ function VisionVideoSection() {
   )
 }
 
-/* ─────────────────────────────────────────────────────────────────
-   SECTION 5 — VISION & MISSION (LAYERED STACKING)
-───────────────────────────────────────────────────────────────── */
 
 function VisionMissionSection() {
   const sectionRef = useRef(null)
+  const visionRef = useRef(null)
   const missionRef = useRef(null)
+  const bgTextRef = useRef(null)
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.set(missionRef.current, { y: '100vh' })
+      gsap.set(missionRef.current, { y: '100%', opacity: 0, scale: 0.9 })
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
           start: 'top top',
-          end: '+=200%',
-          scrub: 1,
+          end: '+=150%',
+          scrub: 0.5,
           pin: true,
           anticipatePin: 1,
-          invalidateOnRefresh: true,
         },
       })
 
-      tl.fromTo(missionRef.current,
-        { y: '100vh' },
-        { y: '0vh', ease: 'none', duration: 1 }
-      )
+      tl.to(visionRef.current, {
+        y: '-120%',
+        rotation: -5,
+        opacity: 0,
+        scale: 0.8,
+        duration: 1,
+        ease: 'power2.inOut',
+      })
+      .to(bgTextRef.current, {
+        xPercent: -20,
+        duration: 1,
+      }, 0)
+      .to(missionRef.current, {
+        y: '0%',
+        opacity: 1,
+        scale: 1,
+        duration: 1,
+        ease: 'expo.out',
+      }, '-=0.6')
+
     }, sectionRef)
 
-    // ✅ ctx.revert() removes the pin spacer and kills the ScrollTrigger
     return () => ctx.revert()
   }, [])
 
   return (
     <section
       ref={sectionRef}
-      className="relative h-screen w-full overflow-hidden bg-[#080612] text-white"
+      className="relative h-screen w-full overflow-hidden bg-[#08040d] text-white"
     >
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-violet-600/10 blur-[120px]" />
-        <div className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-fuchsia-600/10 blur-[120px]" />
+      
+      <div className="absolute inset-0 z-0">
+        <div 
+          ref={bgTextRef}
+          className="absolute top-1/2 left-0 -translate-y-1/2 whitespace-nowrap text-[18rem] font-black uppercase tracking-tighter text-white/[0.02]"
+        >
+          INNOVATION • IMPACT • FUTURE • LEADERSHIP • GLOBAL • EXCELLENCE •
+        </div>
+        
+        
+        <div className="absolute top-[-10%] right-[-10%] h-[500px] w-[500px] rounded-full bg-violet-600/10 blur-[120px] animate-pulse" />
+        <div className="absolute bottom-[-10%] left-[-10%] h-[500px] w-[500px] rounded-full bg-cyan-600/10 blur-[120px]" />
       </div>
 
-      <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-8">
-        <div className="relative w-full max-w-6xl overflow-hidden rounded-[3.5rem] border border-white/10 bg-white/[0.02] p-8 md:p-20 shadow-2xl backdrop-blur-3xl">
-          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-            <div>
-              <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-fuchsia-500 to-violet-600 shadow-lg shadow-fuchsia-500/20">
-                <Target className="h-8 w-8 text-white" />
-              </div>
-              <p className="mb-2 text-[0.7rem] font-bold uppercase tracking-[0.6em] text-fuchsia-400">
-                The Future State
-              </p>
-              <h2 className="text-[clamp(2.5rem,5vw,4.5rem)] font-black uppercase leading-none tracking-tight text-white">
-                Our{' '}
-                <span className="bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent">Vision</span>
-              </h2>
+      
+      <div className="pointer-events-none absolute inset-0 z-[1] opacity-40">
+        <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+          <ambientLight intensity={0.5} />
+          <pointLight position={[10, 10, 10]} color="#a855f7" />
+          <MissionBackdropModel />
+        </Canvas>
+      </div>
+
+      
+      <div className="relative z-10 flex h-full items-center justify-center px-6">
+        
+        
+        <div
+          ref={visionRef}
+          className="absolute w-full max-w-6xl"
+        >
+          <div className="relative overflow-hidden rounded-[3.5rem] border border-white/5 bg-white/[0.03] p-12 backdrop-blur-3xl md:p-24">
+            <div className="absolute top-0 right-0 p-8">
+               <Target className="h-20 w-20 text-fuchsia-500/20" />
             </div>
-            <div>
-              <p className="text-lg font-light leading-relaxed text-white/70 md:text-2xl">
-                To transform Bengaluru into{' '}
-                <span className="font-medium text-white">Asia&apos;s premier educational destination</span>{' '}
-                by revolutionizing admission processes, offering unparalleled career guidance, and fostering
-                collaborative partnerships with top-tier institutions and industry leaders.
-              </p>
-              <div className="mt-8 h-px w-24 bg-fuchsia-500/50" />
+            
+            <div className="flex flex-col gap-8 md:flex-row md:items-end">
+              <div className="flex-1">
+                <div className="mb-6 inline-block rounded-full bg-fuchsia-500/10 px-4 py-1 text-[10px] font-bold uppercase tracking-[0.3em] text-fuchsia-400">
+                  The Visionary Goal
+                </div>
+                <h2 className="text-7xl font-black uppercase leading-[0.9] tracking-tighter md:text-9xl">
+                  Our <br /> 
+                  <span className="bg-gradient-to-r from-fuchsia-400 to-violet-500 bg-clip-text text-transparent">Vision</span>
+                </h2>
+              </div>
+              <div className="flex-1 lg:pl-12">
+                <p className="text-xl font-light leading-relaxed text-white/60 md:text-3xl">
+                  To transform Bengaluru into <span className="font-bold text-white italic underline decoration-fuchsia-500/30">Asia's premier educational destination</span> by revolutionizing admission processes and fostering industry-leading partnerships.
+                </p>
+                <div className="mt-8 flex gap-2">
+                  <div className="h-1 w-12 bg-fuchsia-500" />
+                  <div className="h-1 w-4 bg-fuchsia-500/30" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        
+        <div
+          ref={missionRef}
+          className="absolute w-full max-w-6xl"
+        >
+          <div className="relative overflow-hidden rounded-[3.5rem] border border-cyan-500/20 bg-[#0c1221]/80 p-12 backdrop-blur-3xl md:p-24 shadow-[0_0_100px_rgba(34,211,238,0.1)]">
+            <div className="absolute bottom-0 left-0 p-8">
+               <Rocket className="h-24 w-24 text-cyan-500/10" />
+            </div>
+
+            <div className="flex flex-col gap-8 md:flex-row md:items-end">
+              <div className="flex-1">
+                <div className="mb-6 inline-block rounded-full bg-cyan-500/10 px-4 py-1 text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-400">
+                  Our Commitment
+                </div>
+                <h2 className="text-7xl font-black uppercase leading-[0.9] tracking-tighter md:text-9xl">
+                  Our <br /> 
+                  <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Mission</span>
+                </h2>
+              </div>
+              <div className="flex-1 lg:pl-12">
+                <p className="text-xl font-light leading-relaxed text-white/70 md:text-3xl">
+                  To attract and empower students worldwide by providing <span className="font-bold text-white underline decoration-cyan-400/30">access to world-class education</span> in India, nurturing global talent and future leaders.
+                </p>
+                <div className="mt-10 flex gap-4">
+                  {['Empower', 'Nurture', 'Lead'].map((word) => (
+                    <span key={word} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-cyan-400/60">
+                      <Sparkles className="h-3 w-3" /> {word}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div
-        ref={missionRef}
-        className="absolute inset-0 z-20 flex items-center justify-center p-4 sm:p-8"
-      >
-        <div className="relative w-full max-w-6xl overflow-hidden rounded-[3.5rem] border border-white/10 bg-[#120a1f] p-8 md:p-20 shadow-[0_-20px_80px_rgba(0,0,0,0.5)]">
-          <div className="absolute -top-24 left-1/2 h-48 w-1/2 -translate-x-1/2 bg-sky-500/20 blur-[80px]" />
-          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-            <div>
-              <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 shadow-lg shadow-cyan-500/20">
-                <Rocket className="h-8 w-8 text-white" />
-              </div>
-              <p className="mb-2 text-[0.7rem] font-bold uppercase tracking-[0.6em] text-cyan-400">
-                Our Daily Commitment
-              </p>
-              <h2 className="text-[clamp(2.5rem,5vw,4.5rem)] font-black uppercase leading-none tracking-tight text-white">
-                Our{' '}
-                <span className="bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent">Mission</span>
-              </h2>
-            </div>
-            <div>
-              <p className="text-lg font-light leading-relaxed text-white/70 md:text-2xl">
-                To attract and empower students worldwide by providing{' '}
-                <span className="font-medium text-white">access to world-class education</span> in India,
-                nurturing global talent, and creating a network of future leaders who drive innovation and
-                positive change.
-              </p>
-              <div className="mt-8 h-px w-24 bg-cyan-500/50" />
-            </div>
-          </div>
+      
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30">
+        <div className="flex flex-col items-center gap-2 text-white/20">
+          <div className="h-12 w-[1px] bg-gradient-to-b from-white/40 to-transparent" />
+          <span className="text-[10px] font-bold uppercase tracking-[0.5em]">Scroll Fast</span>
         </div>
       </div>
     </section>
   )
 }
 
-/* ─────────────────────────────────────────────────────────────────
-   ROOT EXPORT
-   ✅ KEY FIX: useEffect here kills ALL remaining ScrollTriggers
-   and forces a scroll reset when this page unmounts (navigating away).
-   This prevents pinned spacer divs and stale triggers from
-   leaking into the About/Services/Contact pages.
-───────────────────────────────────────────────────────────────── */
+
+function FinalCTASection() {
+  const sectionRef = useRef(null)
+  const contentRef = useRef(null)
+  const titleRef = useRef(null)
+  const marqueeRef = useRef(null)
+  const bgShapeRef = useRef(null)
+
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.to(marqueeRef.current, {
+        xPercent: -20,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 0.5,
+        }
+      })
+      gsap.to(".floating-shape", {
+        y: -100,
+        rotation: 360,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          scrub: 1,
+        }
+      })
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: contentRef.current,
+          start: "top 80%",
+        }
+      })
+
+      tl.from(titleRef.current, {
+        y: 100,
+        opacity: 0,
+        skewY: 7,
+        duration: 1.2,
+        ease: "power4.out"
+      })
+      .from(".cta-description", {
+        opacity: 0,
+        y: 20,
+        duration: 0.8
+      }, "-=0.8")
+      .from(".interactive-portal", {
+        scale: 0,
+        opacity: 0,
+        rotate: -20,
+        duration: 1,
+        ease: "back.out(1.7)"
+      }, "-=0.5")
+
+    }, sectionRef)
+    return () => ctx.revert()
+  }, [])
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden bg-[#07020d] py-32 lg:py-48"
+    >
+      
+      <div className="pointer-events-none absolute top-1/2 left-0 z-0 -translate-y-1/2 select-none opacity-10">
+        <div ref={marqueeRef} className="flex whitespace-nowrap text-[15rem] font-black uppercase tracking-tighter text-violet-500">
+          <span className="mx-10">Your Future Awaits</span>
+          <span className="mx-10 text-transparent outline-text">Your Future Awaits</span>
+          <span className="mx-10">Your Future Awaits</span>
+        </div>
+      </div>
+
+      
+      <div ref={bgShapeRef} className="pointer-events-none absolute inset-0 z-0">
+        <div className="floating-shape absolute top-20 left-[10%] h-16 w-16 rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/5 backdrop-blur-sm" />
+        <div className="floating-shape absolute bottom-20 right-[15%] h-24 w-24 rounded-full border border-cyan-500/20 bg-cyan-500/5 backdrop-blur-sm" />
+        <div className="absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[140px]" />
+      </div>
+
+      <div ref={contentRef} className="relative z-10 mx-auto max-w-5xl px-6 text-center">
+        
+        <div className="mb-10 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-6 py-2 backdrop-blur-md">
+          <Sparkles className="h-4 w-4 text-fuchsia-400 animate-pulse" />
+          <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-white/70">The Final Chapter</span>
+        </div>
+
+        
+        <h2 
+          ref={titleRef}
+          className="mb-8 text-[clamp(2.5rem,8vw,6rem)] font-black uppercase leading-[0.85] tracking-tighter text-white"
+        >
+          Ready to <br />
+          <span className="bg-gradient-to-r from-fuchsia-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
+            Evolve?
+          </span>
+        </h2>
+
+        <p className="cta-description mx-auto mb-16 max-w-xl text-lg font-light text-white/50 md:text-2xl">
+          Don’t just dream about it. Step into Bengaluru’s most innovative educational ecosystem today.
+        </p>
+
+        
+        <div className="interactive-portal flex justify-center">
+          <a 
+            href="#contact"
+            className="group relative flex h-48 w-48 items-center justify-center transition-transform duration-500 hover:scale-110 md:h-64 md:w-64"
+          >
+            
+            <div className="absolute inset-0 rounded-full border border-dashed border-white/20 animate-[spin_10s_linear_infinite]" />
+            <div className="absolute inset-4 rounded-full border border-fuchsia-500/30 animate-[spin_6s_linear_infinite_reverse]" />
+            
+            
+            <div className="relative flex h-full w-full flex-col items-center justify-center rounded-full bg-gradient-to-br from-fuchsia-600 to-violet-700 p-2 text-white shadow-[0_0_50px_rgba(192,132,252,0.4)] transition-all group-hover:shadow-[0_0_80px_rgba(192,132,252,0.7)]">
+              <span className="text-[0.65rem] font-bold uppercase tracking-widest opacity-70">Start Now</span>
+              <span className="text-xl font-black uppercase md:text-2xl">Connect</span>
+              <ArrowUpRight className="mt-2 h-6 w-6 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+            </div>
+          </a>
+        </div>
+
+        
+        <div className="mt-24 flex justify-center opacity-20">
+          <div className="flex flex-col items-center gap-4">
+             <div className="h-16 w-px bg-gradient-to-b from-white to-transparent" />
+             <span className="text-[10px] font-bold uppercase tracking-[1em]">Scroll Up to Revisit</span>
+          </div>
+        </div>
+      </div>
+
+      <style jsx>{`
+        .outline-text {
+          -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+        }
+      `}</style>
+    </section>
+  )
+}
 
 function Home() {
   useEffect(() => {
-    // Scroll to top when Home mounts so pins start correctly
     window.scrollTo(0, 0)
-
     return () => {
-      // Kill every ScrollTrigger when leaving Home
       ScrollTrigger.getAll().forEach((t) => t.kill())
-      // Clear any inline styles GSAP may have left on body/html
       gsap.set(document.body, { clearProps: 'all' })
       gsap.set(document.documentElement, { clearProps: 'all' })
     }
@@ -858,8 +1113,10 @@ function Home() {
       <ImpactNumbersSection />
       <VisionVideoSection />
       <VisionMissionSection />
+      <FinalCTASection />
     </>
   )
 }
 
 export default Home
+
