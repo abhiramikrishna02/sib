@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
 const links = [
@@ -10,292 +10,174 @@ const links = [
 ];
 
 const themes = {
-  home: {
-    from: "#7b2cbf",
-    via: "#a855f7",
-    to: "#1e0338",
-    glow: "rgba(123, 44, 191, 0.38)",
-    text: "#ffffff",
-  },
-  about: {
-    from: "#7b2cbf",
-    via: "#a855f7",
-    to: "#1e0338",
-    glow: "rgba(123, 44, 191, 0.38)",
-    text: "#ffffff",
-  },
-  services: {
-    from: "#7b2cbf",
-    via: "#a855f7",
-    to: "#1e0338",
-    glow: "rgba(123, 44, 191, 0.38)",
-    text: "#ffffff",
-  },
-  contact: {
-    from: "#7b2cbf",
-    via: "#a855f7",
-    to: "#1e0338",
-    glow: "rgba(123, 44, 191, 0.38)",
-    text: "#ffffff",
-  },
+  home: { from: "#7b2cbf", via: "#a855f7", to: "#3c096c", glow: "rgba(168, 85, 247, 0.4)" },
+  about: { from: "#3a0ca3", via: "#4361ee", to: "#4cc9f0", glow: "rgba(67, 97, 238, 0.4)" },
+  services: { from: "#2d6a4f", via: "#52b788", to: "#081c15", glow: "rgba(82, 183, 136, 0.4)" },
+  contact: { from: "#e01e37", via: "#ff4d6d", to: "#800f2f", glow: "rgba(255, 77, 109, 0.4)" },
 };
 
-function Navbar({ currentPath = "/", onNavigate }) {
+function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [hoveredTab, setHoveredTab] = useState(null);
 
   const active = currentPath === "/" ? "home" : currentPath.replace("/", "");
   const theme = useMemo(() => themes[active] ?? themes.home, [active]);
 
-  useEffect(() => {
-    setMobileMenuOpen(false);
-  }, [currentPath]);
+  // Spring physics for the "Physical Jump"
+  const springConfig = { type: "spring", stiffness: 400, damping: 30 };
 
   useEffect(() => {
-    if (typeof document === "undefined") return undefined;
-    document.body.style.overflow = mobileMenuOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [mobileMenuOpen]);
-
-  useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 16);
-    };
-
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-    };
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const handleNavigate = (event, to) => {
     event.preventDefault();
     setMobileMenuOpen(false);
-    if (onNavigate) {
-      onNavigate(to);
-      return;
-    }
-
-    window.location.href = to;
+    if (onNavigate) onNavigate(to);
+    else window.location.href = to;
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-2 pt-2 sm:px-3 sm:pt-3 md:px-4 md:pt-4">
-      <motion.div
-        className="mx-auto w-[min(1220px,calc(100%-0.5rem))] rounded-[1.45rem] p-[1px] sm:w-[min(1220px,calc(100%-0.75rem))] sm:rounded-[1.8rem]"
-        style={{
-          background:
-            "linear-gradient(90deg, rgba(255,255,255,0.08), rgba(255,255,255,0.22), rgba(34,211,238,0.22), rgba(255,255,255,0.12), rgba(255,255,255,0.08))",
-          backgroundSize: "240% 240%",
-        }}
-        animate={{ backgroundPositionX: ["0%", "100%", "0%"] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+    <header className="fixed inset-x-0 top-0 z-[100] px-4 pt-4">
+      <motion.div 
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="mx-auto max-w-6xl"
       >
-        <div
-          className={[
-            "relative overflow-hidden rounded-[1.75rem] border backdrop-blur-2xl",
-            "transition-all duration-300 ease-out",
-            scrolled
-              ? "border-white/12 bg-[#1b0a21]/82 shadow-[0_22px_70px_rgba(0,0,0,0.5)]"
-              : "border-white/10 bg-[#1b0a21]/68 shadow-[0_16px_48px_rgba(0,0,0,0.35)]",
-          ].join(" ")}
-        >
+        <div className={`relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-[#08040d]/60 backdrop-blur-2xl transition-all duration-500 ${scrolled ? "shadow-[0_20px_50px_rgba(0,0,0,0.5)]" : ""}`}>
+          
+          {/* --- PASSING AURA LIGHTS --- */}
           <motion.div
-            aria-hidden="true"
-            className="absolute inset-0 opacity-60"
-            style={{
-              background:
-                "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 18%, rgba(255,255,255,0.14) 50%, rgba(255,255,255,0.05) 82%, transparent 100%)",
-              backgroundSize: "220% 100%",
+            className="absolute inset-0 z-0 opacity-30"
+            animate={{
+              background: [
+                `radial-gradient(600px circle at 0% 50%, ${theme.via}22, transparent 40%)`,
+                `radial-gradient(600px circle at 100% 50%, ${theme.via}22, transparent 40%)`,
+                `radial-gradient(600px circle at 0% 50%, ${theme.via}22, transparent 40%)`,
+              ]
             }}
-            animate={{ backgroundPositionX: ["0%", "100%"] }}
-            transition={{ duration: 7, repeat: Infinity, ease: "linear" }}
+            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
           />
 
-          <motion.div
-            aria-hidden="true"
-            className="absolute inset-x-0 top-0 h-px opacity-80"
-            style={{
-              background:
-                "linear-gradient(90deg, transparent, rgba(255,255,255,0.55), rgba(103,232,249,0.7), rgba(255,255,255,0.55), transparent)",
-              backgroundSize: "200% 100%",
-            }}
-            animate={{ backgroundPositionX: ["0%", "100%", "0%"] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+          {/* Top Edge Glow Line */}
+          <motion.div 
+            className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-fuchsia-500/50 to-transparent"
+            animate={{ x: ['-100%', '100%'] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
           />
 
-          <div className="relative flex min-h-[4.5rem] flex-wrap items-center justify-between gap-3 px-3 py-2.5 sm:min-h-[5rem] sm:gap-4 sm:px-4 sm:py-3 md:px-5">
-            <a
-              className="group inline-flex select-none items-center gap-2 sm:gap-3"
-              href="/"
-              aria-label="SIB home"
-              onClick={(event) => handleNavigate(event, "/")}
-            >
-              <motion.span
-                className="grid h-9 w-9 place-items-center rounded-[0.85rem] font-black text-white shadow-[0_10px_30px_rgba(0,0,0,0.35)] sm:h-11 sm:w-11 sm:rounded-[1rem]"
-                style={{
-                  background:
-                    "linear-gradient(135deg, rgba(123,44,191,1) 0%, rgba(168,85,247,1) 50%, rgba(30,3,56,1) 100%)",
-                }}
-                whileHover={{ scale: 1.06, rotate: -3 }}
-                whileTap={{ scale: 0.96 }}
-                transition={{ type: "spring", stiffness: 500, damping: 22 }}
+          <div className="relative z-10 flex h-20 items-center justify-between px-6">
+            
+            {/* --- LOGO NUCLEUS --- */}
+            <a href="/" onClick={(e) => handleNavigate(e, "/")} className="group flex items-center gap-3">
+              <motion.div
+                className="relative flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-white/10 to-white/5 shadow-xl"
+                whileHover={{ rotate: 180 }}
               >
-                S
-              </motion.span>
-
-              <span className="grid leading-tight">
-                <strong className="text-[0.92rem] font-semibold tracking-[0.08em] text-white sm:text-[1.02rem]">
-                  SIB
-                </strong>
-                <small className="hidden text-[0.78rem] text-white/58 sm:block">
-                  Simple React website
-                </small>
-              </span>
+                <div className="absolute inset-0 rounded-xl bg-fuchsia-600 blur-md opacity-20 group-hover:opacity-60 transition-opacity" />
+                <span className="relative text-xl font-black text-white">S</span>
+              </motion.div>
+              <div className="hidden flex-col sm:flex">
+                <span className="text-sm font-black tracking-widest text-white">SIB.</span>
+                <span className="text-[10px] uppercase text-fuchsia-400/80">Premium Portal</span>
+              </div>
             </a>
 
-            <nav className="hidden md:block" aria-label="Primary">
-              <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-                {links.map((link) => {
-                  const isActive = currentPath === link.href;
+            {/* --- DESKTOP NAV --- */}
+            <nav className="hidden items-center gap-1 rounded-full border border-white/5 bg-black/20 p-1.5 md:flex">
+              {links.map((link) => {
+                const isActive = currentPath === link.href;
+                return (
+                  <motion.a
+                    key={link.href}
+                    href={link.href}
+                    onMouseEnter={() => setHoveredTab(link.href)}
+                    onMouseLeave={() => setHoveredTab(null)}
+                    onClick={(e) => handleNavigate(e, link.href)}
+                    className={`relative px-6 py-2.5 text-sm font-bold transition-colors duration-300 ${isActive ? "text-white" : "text-white/50 hover:text-white"}`}
+                  >
+                    {/* PHYSICAL JUMPING PILL */}
+                    {isActive && (
+                      <motion.div
+                        layoutId="activePill"
+                        className="absolute inset-0 z-0 rounded-full shadow-[0_0_20px_rgba(168,85,247,0.4)]"
+                        style={{
+                          background: `linear-gradient(135deg, ${theme.from}, ${theme.via})`,
+                        }}
+                        transition={springConfig}
+                      >
+                        {/* Aura spill inside the pill */}
+                        <motion.div 
+                          className="absolute inset-0 rounded-full bg-white/20 blur-sm"
+                          animate={{ opacity: [0.5, 0.8, 0.5] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                        />
+                      </motion.div>
+                    )}
+                    
+                    {/* Hover Indicator */}
+                    {hoveredTab === link.href && !isActive && (
+                      <motion.div
+                        layoutId="hoverPill"
+                        className="absolute inset-0 z-0 rounded-full bg-white/5"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
+                    )}
 
-                  return (
-                    <motion.a
-                      key={link.href}
-                      href={link.href}
-                      onClick={(event) => handleNavigate(event, link.href)}
-                      className="relative isolate flex min-w-[7rem] items-center justify-center overflow-hidden rounded-full px-5 py-3 font-semibold tracking-[0.04em] transition-colors duration-200"
-                      whileHover={{ y: -1 }}
-                      whileTap={{ scale: 0.96 }}
-                      style={{
-                        color: isActive ? theme.text : "rgba(255,255,255,0.62)",
-                        textShadow: isActive
-                          ? "0 0 18px rgba(255,255,255,0.14)"
-                          : "none",
-                      }}
-                    >
-                      <AnimatePresence mode="wait" initial={false}>
-                        {isActive && (
-                          <motion.span
-                            key={active}
-                            className="absolute inset-0 rounded-full"
-                            style={{
-                              background: `linear-gradient(135deg, ${theme.from}, ${theme.via} 55%, ${theme.to})`,
-                              boxShadow: `0 10px 30px ${theme.glow}`,
-                            }}
-                            initial={{ opacity: 0, scale: 0.72, y: 10, rotate: -7 }}
-                            animate={{
-                              opacity: 1,
-                              scale: [0.72, 1.16, 0.95, 1],
-                              y: [10, -3, 1, 0],
-                              rotate: [-7, 3, -1, 0],
-                            }}
-                            exit={{ opacity: 0, scale: 0.92 }}
-                            transition={{
-                              duration: 0.72,
-                              ease: "easeOut",
-                              times: [0, 0.35, 0.68, 1],
-                            }}
-                          />
-                        )}
-                      </AnimatePresence>
-
-                      <span className="relative z-10">{link.label}</span>
-                    </motion.a>
-                  );
-                })}
-              </div>
+                    <span className="relative z-10">{link.label}</span>
+                  </motion.a>
+                );
+              })}
             </nav>
 
-            <div className="md:hidden">
-              <motion.button
-                type="button"
-                onClick={() => setMobileMenuOpen((open) => !open)}
-                aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-                aria-expanded={mobileMenuOpen}
-                className="grid h-11 w-11 place-items-center rounded-[1rem] border border-white/10 bg-white/5 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
-                whileTap={{ scale: 0.94 }}
-              >
-                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </motion.button>
-            </div>
+            {/* --- ACTION BUTTON --- */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="hidden rounded-full bg-white px-6 py-2.5 text-xs font-black uppercase tracking-tighter text-black md:block"
+              onClick={() => {
+                if (onApplyClick) onApplyClick()
+                else window.location.href = "/apply"
+              }}
+            >
+              Apply Now
+            </motion.button>
+
+            {/* Mobile Toggle */}
+            <button className="md:hidden text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+              {mobileMenuOpen ? <X /> : <Menu />}
+            </button>
           </div>
-
-          <AnimatePresence>
-            {mobileMenuOpen && (
-              <motion.div
-                className="fixed inset-0 z-40 md:hidden"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-              >
-                <button
-                  type="button"
-                  aria-label="Close menu overlay"
-                  className="absolute inset-0 bg-black/55 backdrop-blur-sm"
-                  onClick={() => setMobileMenuOpen(false)}
-                />
-
-                <motion.div
-                  className="absolute left-3 right-3 top-[5.4rem] overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#1b0a21]/96 shadow-[0_24px_70px_rgba(0,0,0,0.45)] backdrop-blur-2xl"
-                  initial={{ y: -16, opacity: 0, scale: 0.98 }}
-                  animate={{ y: 0, opacity: 1, scale: 1 }}
-                  exit={{ y: -10, opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.24, ease: "easeOut" }}
-                >
-                  <div className="border-b border-white/10 px-4 py-4">
-                    <p className="text-[0.68rem] font-bold uppercase tracking-[0.45em] text-white/40">
-                      Menu
-                    </p>
-                  </div>
-                  <div className="grid gap-2 p-3">
-                    {links.map((link) => {
-                      const isActive = currentPath === link.href;
-
-                      return (
-                        <motion.a
-                          key={link.href}
-                          href={link.href}
-                          onClick={(event) => handleNavigate(event, link.href)}
-                          className="relative isolate flex items-center justify-center overflow-hidden rounded-[1rem] px-4 py-4 text-sm font-semibold tracking-[0.04em]"
-                          whileTap={{ scale: 0.98 }}
-                          style={{
-                            color: isActive ? theme.text : "rgba(255,255,255,0.78)",
-                          }}
-                        >
-                          <AnimatePresence mode="wait" initial={false}>
-                            {isActive && (
-                              <motion.span
-                                key={active}
-                                className="absolute inset-0 rounded-[1rem]"
-                                style={{
-                                  background: `linear-gradient(135deg, ${theme.from}, ${theme.via} 55%, ${theme.to})`,
-                                  boxShadow: `0 10px 28px ${theme.glow}`,
-                                }}
-                                initial={{ opacity: 0, scale: 0.88 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.94 }}
-                                transition={{ duration: 0.28, ease: "easeOut" }}
-                              />
-                            )}
-                          </AnimatePresence>
-
-                          <span className="relative z-10">{link.label}</span>
-                        </motion.a>
-                      );
-                    })}
-                  </div>
-                </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
       </motion.div>
+
+      {/* --- MOBILE OVERLAY --- */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            animate={{ opacity: 1, backdropFilter: "blur(12px)" }}
+            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            className="fixed inset-0 z-[-1] flex flex-col items-center justify-center bg-black/60"
+          >
+            {links.map((link, i) => (
+              <motion.a
+                key={link.href}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                onClick={(e) => handleNavigate(e, link.href)}
+                className="py-4 text-4xl font-black text-white"
+              >
+                {link.label}
+              </motion.a>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

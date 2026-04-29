@@ -464,60 +464,89 @@ function HeroSection() {
   )
 }
 
+// --- START OF NEW REPLACEMENT BLOCK ---
 const cardData = [
-  { title: 'Universities', subtitle: 'GLOBAL ACCESS', icon: GraduationCap, color: 'from-blue-500 to-cyan-400' },
-  { title: 'Colleges', subtitle: 'GLOBAL ACCESS', icon: School, color: 'from-purple-500 to-fuchsia-400' },
-  { title: 'Institutes', subtitle: 'GLOBAL ACCESS', icon: Library, color: 'from-orange-500 to-amber-400' },
-  { title: 'Courses', subtitle: 'GLOBAL ACCESS', icon: BookOpen, color: 'from-emerald-500 to-teal-400' },
-  { title: 'Online Courses', subtitle: 'GLOBAL ACCESS', icon: Globe, color: 'from-rose-500 to-pink-400' },
-  { title: 'Short-term Programs', subtitle: 'GLOBAL ACCESS', icon: Clock, color: 'from-blue-600 to-indigo-400' },
-  { title: 'Part-time Jobs', subtitle: 'GLOBAL ACCESS', icon: Briefcase, color: 'from-violet-500 to-purple-400' },
-  { title: 'Accommodation', subtitle: 'NEAR ME', icon: HomeIcon, color: 'from-amber-500 to-orange-400' },
-  { title: 'Events', subtitle: 'GLOBAL ACCESS', icon: Calendar, color: 'from-teal-500 to-green-400' },
-  { title: '1-on-1 Counselling', subtitle: 'FREE SESSION', icon: MessageCircle, color: 'from-cyan-500 to-blue-400' },
-  { title: 'Internships', subtitle: 'GLOBAL ACCESS', icon: UserCheck, color: 'from-fuchsia-500 to-pink-400' },
-  { title: 'Scholarships', subtitle: 'GLOBAL ACCESS', icon: Sparkles, color: 'from-yellow-500 to-orange-400' },
-]
+  { title: 'Universities', subtitle: 'GLOBAL ACCESS', icon: GraduationCap, color: 'from-blue-600 via-cyan-400 to-blue-500', glow: 'rgba(59, 130, 246, 0.5)' },
+  { title: 'Colleges', subtitle: 'GLOBAL ACCESS', icon: School, color: 'from-purple-600 via-fuchsia-400 to-purple-500', glow: 'rgba(168, 85, 247, 0.5)' },
+  { title: 'Institutes', subtitle: 'GLOBAL ACCESS', icon: Library, color: 'from-orange-600 via-amber-400 to-orange-500', glow: 'rgba(249, 115, 22, 0.5)' },
+  { title: 'Courses', subtitle: 'GLOBAL ACCESS', icon: BookOpen, color: 'from-emerald-600 via-teal-400 to-emerald-500', glow: 'rgba(16, 185, 129, 0.5)' },
+  { title: 'Online Courses', subtitle: 'GLOBAL ACCESS', icon: Globe, color: 'from-rose-600 via-pink-400 to-rose-500', glow: 'rgba(244, 63, 94, 0.5)' },
+  { title: 'Short-term Programs', subtitle: 'GLOBAL ACCESS', icon: Clock, color: 'from-blue-700 via-indigo-400 to-blue-600', glow: 'rgba(37, 99, 235, 0.5)' },
+  { title: 'Part-time Jobs', subtitle: 'GLOBAL ACCESS', icon: Briefcase, color: 'from-violet-600 via-purple-400 to-violet-500', glow: 'rgba(139, 92, 246, 0.5)' },
+  { title: 'Accommodation', subtitle: 'NEAR ME', icon: HomeIcon, color: 'from-amber-600 via-orange-400 to-amber-500', glow: 'rgba(245, 158, 11, 0.5)' },
+  { title: 'Events', subtitle: 'GLOBAL ACCESS', icon: Calendar, color: 'from-teal-600 via-green-400 to-teal-500', glow: 'rgba(20, 184, 166, 0.5)' },
+  { title: '1-on-1 Counselling', subtitle: 'FREE SESSION', icon: MessageCircle, color: 'from-cyan-600 via-blue-400 to-cyan-500', glow: 'rgba(6, 182, 212, 0.5)' },
+  { title: 'Internships', subtitle: 'GLOBAL ACCESS', icon: UserCheck, color: 'from-fuchsia-600 via-pink-400 to-fuchsia-500', glow: 'rgba(217, 70, 239, 0.5)' },
+  { title: 'Scholarships', subtitle: 'GLOBAL ACCESS', icon: Sparkles, color: 'from-yellow-600 via-orange-400 to-yellow-500', glow: 'rgba(234, 179, 8, 0.5)' },
+];
 
 function GlassCard({ item }) {
-  const Icon = item.icon
+  const Icon = item.icon;
   return (
-    <div className="group relative h-[400px] min-w-[280px] rounded-[2.5rem] border border-white/10 bg-white/5 p-8 backdrop-blur-xl transition-all duration-500 hover:bg-white/10 md:min-w-[320px]">
-      <div className={`mb-8 inline-flex rounded-2xl bg-gradient-to-br ${item.color} p-4 shadow-lg`}>
-        <Icon className="text-white" size={28} />
+    <div className="group relative h-[450px] min-w-[300px] cursor-pointer overflow-hidden rounded-[2.5rem] border border-white/10 bg-[#160b21]/40 p-8 backdrop-blur-2xl transition-all duration-700 hover:scale-[1.02] hover:border-white/30 md:min-w-[350px]">
+      <div className="absolute inset-0 z-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100">
+        <div 
+          className="absolute -inset-[100%] animate-[spin_8s_linear_infinite] opacity-20"
+          style={{ background: `conic-gradient(from 0deg, transparent 0%, ${item.glow} 50%, transparent 100%)` }}
+        />
       </div>
 
-      <div className="space-y-2">
-        <h3 className="text-2xl font-bold tracking-tight text-white md:text-3xl">
+      <div className="relative z-10 mb-10">
+        <div className="relative flex h-20 w-20 items-center justify-center">
+          <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${item.color} blur-2xl opacity-40 group-hover:opacity-80 transition-opacity duration-500`} />
+          <div className="relative flex h-full w-full items-center justify-center rounded-3xl border border-white/20 bg-black/40 backdrop-blur-md transition-transform duration-500 group-hover:-translate-y-2 group-hover:rotate-6">
+            <Icon className="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]" size={32} strokeWidth={1.5} />
+          </div>
+          <div className="absolute -right-2 -top-2 h-4 w-4 border-r-2 border-t-2 border-white/30" />
+          <div className="absolute -bottom-2 -left-2 h-4 w-4 border-b-2 border-l-2 border-white/30" />
+        </div>
+      </div>
+
+      <div className="relative z-10 space-y-4">
+        <div className="flex items-center gap-2">
+          <div className="h-1 w-8 rounded-full bg-gradient-to-r from-white/40 to-transparent" />
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">
+            {item.subtitle}
+          </p>
+        </div>
+        <h3 className="text-3xl font-black italic tracking-tighter text-white transition-colors duration-500 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/50 md:text-4xl">
           {item.title}
         </h3>
-        <p className="text-xs font-black uppercase tracking-[0.3em] text-white/30">
-          {item.subtitle}
-        </p>
       </div>
 
-      <div className="absolute bottom-10 left-8 right-8">
-        <div className="mb-6 h-px w-full bg-gradient-to-r from-white/20 to-transparent" />
-        <button className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-white transition-all hover:gap-5">
-          Explore Now <ArrowRight size={16} className="text-white/50" />
+      <div className="absolute bottom-10 left-8 right-8 z-10">
+        <div className="relative mb-8 h-[1px] w-full bg-white/10 overflow-hidden">
+          <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/40 to-transparent transition-all duration-1000 group-hover:translate-x-[200%]" />
+        </div>
+        <button className="group/btn relative flex items-center gap-4 overflow-hidden rounded-full border border-white/5 bg-white/5 px-6 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-all hover:bg-white hover:text-black">
+          <span className="relative z-10 flex items-center gap-2">
+            Initiate Access <ArrowRight size={14} />
+          </span>
         </button>
       </div>
+
+      <div className="absolute bottom-0 right-0 h-32 w-32 translate-x-10 translate-y-10 opacity-5 transition-opacity group-hover:opacity-20">
+        <div className="grid h-full w-full grid-cols-4 grid-rows-4 gap-1">
+          {[...Array(16)].map((_, i) => (
+            <div key={i} className="bg-white" />
+          ))}
+        </div>
+      </div>
     </div>
-  )
+  );
 }
 
 function Opportunities() {
-  const containerRef = useRef(null)
-  const triggerRef = useRef(null)
-  const bannerRef = useRef(null)
-  const cardsRef = useRef(null)
+  const triggerRef = useRef(null);
+  const bannerRef = useRef(null);
+  const cardsRef = useRef(null);
 
   useEffect(() => {
-    if (isMobileViewport()) return undefined
+    if (isMobileViewport()) return;
 
     const ctx = gsap.context(() => {
-      const totalWidth = cardsRef.current.scrollWidth
-      const scrollDistance = totalWidth - window.innerWidth + (window.innerWidth * 0.1)
+      const totalWidth = cardsRef.current.scrollWidth;
+      const scrollDistance = totalWidth - window.innerWidth + (window.innerWidth * 0.1);
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -528,30 +557,30 @@ function Opportunities() {
           pin: true,
           anticipatePin: 1,
           onUpdate: (self) => {
-            const progress = Math.min(1, Math.max(0, 1 - self.progress * 4))
+            const progress = Math.min(1, Math.max(0, 1 - self.progress * 4));
             gsap.to(bannerRef.current, {
               opacity: progress,
               scale: 1 + self.progress * 0.2,
               filter: `blur(${self.progress * 20}px)`,
               duration: 0.1,
-            })
+            });
           },
         },
-      })
+      });
 
       tl.fromTo(
         cardsRef.current,
         { x: '80vw', opacity: 0 },
         { x: `-${scrollDistance}px`, opacity: 1, ease: 'none' }
-      )
-    }, triggerRef)
+      );
+    }, triggerRef);
 
-    return () => ctx.revert()
-  }, [])
+    return () => ctx.revert();
+  }, []);
 
   return (
     <div ref={triggerRef} className="overflow-hidden bg-[#0a0212]">
-      <section ref={containerRef} className="relative flex h-screen w-full items-center overflow-hidden">
+      <section className="relative flex h-screen w-full items-center overflow-hidden">
         <div ref={bannerRef} className="absolute inset-0 z-0 flex flex-col items-center justify-center pointer-events-none">
           <div className="mb-6 flex gap-6 opacity-20">
             <GraduationCap className="h-10 w-10 animate-pulse text-white" />
@@ -560,16 +589,13 @@ function Opportunities() {
           <h2 className="text-[clamp(4rem,15vw,12rem)] font-black uppercase italic tracking-tighter text-white/10 md:text-[14rem]">
             OPPORTUNITIES
           </h2>
-          <p className="mt-4 text-sm font-bold uppercase tracking-[1em] text-purple-400/40">
+          <p className="mt-4 text-sm font-bold uppercase tracking-[1em] text-purple-400/40 text-center">
             Unlocking Potential
           </p>
         </div>
 
         <div className="relative z-10 flex w-full items-center">
-          <div
-            ref={cardsRef}
-            className="flex gap-6 px-[10vw] md:gap-10"
-          >
+          <div ref={cardsRef} className="flex gap-6 px-[10vw] md:gap-10">
             {cardData.map((item, index) => (
               <GlassCard key={`${item.title}-${index}`} item={item} />
             ))}
@@ -577,15 +603,15 @@ function Opportunities() {
         </div>
 
         <div className="absolute bottom-10 left-1/2 z-20 -translate-x-1/2">
-          <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-white/20">
+          <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-white/20 animate-pulse">
             Slide to Navigate
           </p>
         </div>
       </section>
     </div>
-  )
+  );
 }
-
+// --- END OF NEW REPLACEMENT BLOCK ---
 
 const StatCard = memo(function StatCard({ stat, index, start }) {
   const Icon = stat.icon

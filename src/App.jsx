@@ -5,6 +5,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import Navbar from './Components/Navbar.jsx'
 import Footer from './Components/Footer.jsx'
+import ApplyModal from './Components/ApplyModal.jsx'
+// import Apply from './Pages/Apply.jsx'
 import About from './Pages/About.jsx'
 import Contact from './Pages/Contact.jsx'
 import Home from './Pages/Home.jsx'
@@ -14,6 +16,7 @@ gsap.registerPlugin(ScrollTrigger)
 
 const routeMap = {
   '/': Home,
+  // '/apply': Apply,
   '/about': About,
   '/services': Services,
   '/contact': Contact,
@@ -25,6 +28,7 @@ function getPathname() {
 
 function App() {
   const [pathname, setPathname] = useState(getPathname)
+  const [applyOpen, setApplyOpen] = useState(false)
   const lenisRef = useRef(null)
 
   useEffect(() => {
@@ -88,6 +92,7 @@ function App() {
   const navigate = (to) => {
     const nextPath = to.replace(/\/+$/, '') || '/'
     if (nextPath === pathname) return
+    setApplyOpen(false)
     ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
     window.history.pushState({}, '', nextPath)
     setPathname(nextPath)
@@ -95,10 +100,15 @@ function App() {
 
   return (
     <div className="site-shell">
-      <Navbar currentPath={pathname} onNavigate={navigate} />
+      <Navbar
+        currentPath={pathname}
+        onNavigate={navigate}
+        onApplyClick={() => setApplyOpen(true)}
+      />
       <main className="site-main">
         <Page onNavigate={navigate} />
       </main>
+      <ApplyModal open={applyOpen} onClose={() => setApplyOpen(false)} />
       <Footer />
     </div>
   )
