@@ -7,13 +7,21 @@ import {
   GraduationCap,
   Landmark,
   BookOpen,
+  School,
+  Library,
+  Globe,
+  Clock,
+  Briefcase,
   Laptop,
   TimerReset,
   BriefcaseBusiness,
   Home as HomeIcon,
   CalendarDays,
+  Calendar,
   Users,
   BadgeCheck,
+  MessageCircle,
+  UserCheck,
   Sparkles,
   ShieldCheck,
   ArrowUpRight,
@@ -22,9 +30,7 @@ import {
   Target,
   Rocket,
   MoveRight,
-  School,
   BookMarked,
-  Globe,
 } from 'lucide-react'
 
 import bangaloreVideo from '../assets/Bangalore.mp4'
@@ -459,59 +465,46 @@ function HeroSection() {
 }
 
 const cardData = [
-  { title: 'Colleges', icon: School, color: '#3b82f6', shadow: 'shadow-blue-500/20' },
-  { title: 'Institutes', icon: BookMarked, color: '#a855f7', shadow: 'shadow-purple-500/20' },
-  { title: 'Internships', icon: BriefcaseBusiness, color: '#f59e0b', shadow: 'shadow-orange-500/20' },
-  { title: 'Courses', icon: Globe, color: '#10b981', shadow: 'shadow-emerald-500/20' },
-  { title: 'Scholarships', icon: Sparkles, color: '#ec4899', shadow: 'shadow-pink-500/20' },
+  { title: 'Universities', subtitle: 'GLOBAL ACCESS', icon: GraduationCap, color: 'from-blue-500 to-cyan-400' },
+  { title: 'Colleges', subtitle: 'GLOBAL ACCESS', icon: School, color: 'from-purple-500 to-fuchsia-400' },
+  { title: 'Institutes', subtitle: 'GLOBAL ACCESS', icon: Library, color: 'from-orange-500 to-amber-400' },
+  { title: 'Courses', subtitle: 'GLOBAL ACCESS', icon: BookOpen, color: 'from-emerald-500 to-teal-400' },
+  { title: 'Online Courses', subtitle: 'GLOBAL ACCESS', icon: Globe, color: 'from-rose-500 to-pink-400' },
+  { title: 'Short-term Programs', subtitle: 'GLOBAL ACCESS', icon: Clock, color: 'from-blue-600 to-indigo-400' },
+  { title: 'Part-time Jobs', subtitle: 'GLOBAL ACCESS', icon: Briefcase, color: 'from-violet-500 to-purple-400' },
+  { title: 'Accommodation', subtitle: 'NEAR ME', icon: HomeIcon, color: 'from-amber-500 to-orange-400' },
+  { title: 'Events', subtitle: 'GLOBAL ACCESS', icon: Calendar, color: 'from-teal-500 to-green-400' },
+  { title: '1-on-1 Counselling', subtitle: 'FREE SESSION', icon: MessageCircle, color: 'from-cyan-500 to-blue-400' },
+  { title: 'Internships', subtitle: 'GLOBAL ACCESS', icon: UserCheck, color: 'from-fuchsia-500 to-pink-400' },
+  { title: 'Scholarships', subtitle: 'GLOBAL ACCESS', icon: Sparkles, color: 'from-yellow-500 to-orange-400' },
 ]
 
-const GlassCard = memo(function GlassCard({ item, index }) {
+function GlassCard({ item }) {
+  const Icon = item.icon
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      whileHover={{ y: -10, scale: 1.02 }}
-      className="group relative min-w-[280px] h-[400px] rounded-[2.5rem] overflow-hidden p-[1px]"
-    >
-      <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-transparent opacity-100 transition-all duration-500 group-hover:from-white/50" />
-
-      <div className="relative flex h-full w-full flex-col justify-between rounded-[2.5rem] border border-white/5 bg-[#1a0b2e]/60 p-8 shadow-2xl backdrop-blur-2xl">
-        <div
-          className="absolute -top-20 -left-20 h-40 w-40 rounded-full opacity-0 blur-[50px] transition-opacity duration-500 group-hover:opacity-20"
-          style={{ backgroundColor: item.color }}
-        />
-
-        <div
-          className={`flex h-16 w-16 items-center justify-center rounded-2xl shadow-lg transition-transform duration-500 group-hover:rotate-[10deg] group-hover:scale-110 ${item.shadow}`}
-          style={{ background: `linear-gradient(135deg, ${item.color} 0%, #000 150%)` }}
-        >
-          <item.icon className="h-8 w-8 text-white" />
-        </div>
-
-        <div className="space-y-2">
-          <h3 className="text-3xl font-bold tracking-tight text-white">{item.title}</h3>
-          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/40">Global Access</p>
-          <div
-            className="h-[2px] w-12 bg-white/10 transition-all duration-700 group-hover:w-full"
-            style={{ backgroundColor: `${item.color}44` }}
-          />
-        </div>
-
-        <div className="mt-4 flex items-center justify-between">
-          <span className="text-sm font-semibold uppercase tracking-widest text-white/80">Explore</span>
-          <motion.div
-            whileTap={{ scale: 0.9 }}
-            className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition-all duration-300 group-hover:bg-white group-hover:text-black"
-          >
-            <ArrowRight className="h-5 w-5" />
-          </motion.div>
-        </div>
+    <div className="group relative h-[400px] min-w-[280px] rounded-[2.5rem] border border-white/10 bg-white/5 p-8 backdrop-blur-xl transition-all duration-500 hover:bg-white/10 md:min-w-[320px]">
+      <div className={`mb-8 inline-flex rounded-2xl bg-gradient-to-br ${item.color} p-4 shadow-lg`}>
+        <Icon className="text-white" size={28} />
       </div>
-    </motion.div>
+
+      <div className="space-y-2">
+        <h3 className="text-2xl font-bold tracking-tight text-white md:text-3xl">
+          {item.title}
+        </h3>
+        <p className="text-xs font-black uppercase tracking-[0.3em] text-white/30">
+          {item.subtitle}
+        </p>
+      </div>
+
+      <div className="absolute bottom-10 left-8 right-8">
+        <div className="mb-6 h-px w-full bg-gradient-to-r from-white/20 to-transparent" />
+        <button className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-white transition-all hover:gap-5">
+          Explore Now <ArrowRight size={16} className="text-white/50" />
+        </button>
+      </div>
+    </div>
   )
-})
+}
 
 function Opportunities() {
   const containerRef = useRef(null)
@@ -520,81 +513,73 @@ function Opportunities() {
   const cardsRef = useRef(null)
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const tween = gsap.fromTo(
-        cardsRef.current,
-        { x: '100vw', opacity: 0 },
-        {
-          x: '0vw',
-          opacity: 1,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: triggerRef.current,
-            start: 'top top',
-            end: '+=2000',
-            scrub: 0.6,
-            pin: true,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-            onUpdate: (self) => {
-              const progress = Math.min(1, Math.max(0, 1 - self.progress * 2))
-              gsap.to(bannerRef.current, {
-                opacity: progress,
-                x: -self.progress * 100,
-                filter: `blur(${self.progress * 10}px)`,
-                duration: 0.1,
-              })
-            },
-          },
-        }
-      )
+    if (isMobileViewport()) return undefined
 
-      return () => tween.kill()
-    }, containerRef)
+    const ctx = gsap.context(() => {
+      const totalWidth = cardsRef.current.scrollWidth
+      const scrollDistance = totalWidth - window.innerWidth + (window.innerWidth * 0.1)
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: triggerRef.current,
+          start: 'top top',
+          end: `+=${totalWidth}`,
+          scrub: 1,
+          pin: true,
+          anticipatePin: 1,
+          onUpdate: (self) => {
+            const progress = Math.min(1, Math.max(0, 1 - self.progress * 4))
+            gsap.to(bannerRef.current, {
+              opacity: progress,
+              scale: 1 + self.progress * 0.2,
+              filter: `blur(${self.progress * 20}px)`,
+              duration: 0.1,
+            })
+          },
+        },
+      })
+
+      tl.fromTo(
+        cardsRef.current,
+        { x: '80vw', opacity: 0 },
+        { x: `-${scrollDistance}px`, opacity: 1, ease: 'none' }
+      )
+    }, triggerRef)
 
     return () => ctx.revert()
   }, [])
 
   return (
-    <div ref={triggerRef} className="overflow-hidden bg-[#0f021a]">
-      <section ref={containerRef} className="relative flex min-h-[100svh] w-full items-center justify-center py-14 md:h-screen md:py-0">
-        <div className="hidden">
-          <div className="mb-6 flex items-center justify-center gap-4 opacity-50">
-            <GraduationCap className="h-7 w-7 animate-bounce text-white" />
-            <BookOpen className="h-7 w-7 animate-pulse text-white" />
+    <div ref={triggerRef} className="overflow-hidden bg-[#0a0212]">
+      <section ref={containerRef} className="relative flex h-screen w-full items-center overflow-hidden">
+        <div ref={bannerRef} className="absolute inset-0 z-0 flex flex-col items-center justify-center pointer-events-none">
+          <div className="mb-6 flex gap-6 opacity-20">
+            <GraduationCap className="h-10 w-10 animate-pulse text-white" />
+            <Sparkles className="h-10 w-10 animate-bounce text-white" />
           </div>
-          <h2 className="text-center text-[clamp(2.4rem,12vw,4.6rem)] font-black uppercase italic tracking-tighter text-white">
-            Opportunities
+          <h2 className="text-[clamp(4rem,15vw,12rem)] font-black uppercase italic tracking-tighter text-white/10 md:text-[14rem]">
+            OPPORTUNITIES
           </h2>
-          <p className="mt-3 text-center text-[0.72rem] font-bold uppercase tracking-[0.45em] text-purple-300">
-            Explore student paths
+          <p className="mt-4 text-sm font-bold uppercase tracking-[1em] text-purple-400/40">
+            Unlocking Potential
           </p>
-          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        </div>
+
+        <div className="relative z-10 flex w-full items-center">
+          <div
+            ref={cardsRef}
+            className="flex gap-6 px-[10vw] md:gap-10"
+          >
             {cardData.map((item, index) => (
-              <GlassCard key={`${item.title}-mobile`} item={item} index={index} />
+              <GlassCard key={`${item.title}-${index}`} item={item} />
             ))}
           </div>
         </div>
 
-        <div className="relative flex h-full w-full items-center justify-center">
-        <div ref={bannerRef} className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-center">
-          <div className="mb-6 flex gap-4 opacity-50">
-            <GraduationCap className="h-8 w-8 animate-bounce text-white" />
-            <BookOpen className="h-8 w-8 animate-pulse text-white" />
-          </div>
-          <h2 className="text-[clamp(3rem,13vw,7rem)] font-black uppercase italic tracking-tighter text-white md:text-9xl">
-            Opportunities
-          </h2>
-          <p className="mt-4 text-xs font-bold uppercase tracking-[0.5em] text-purple-300">
-            Scroll to Reveal Matrix
+        <div className="absolute bottom-10 left-1/2 z-20 -translate-x-1/2">
+          <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-white/20">
+            Slide to Navigate
           </p>
-        </div>
-
-        <div ref={cardsRef} className="relative z-10 flex w-full flex-col items-center gap-4 px-4 md:w-auto md:flex-row md:gap-6 md:px-10">
-          {cardData.map((item, index) => (
-            <GlassCard key={item.title} item={item} index={index} />
-          ))}
-        </div>
         </div>
       </section>
     </div>
@@ -755,8 +740,10 @@ function ImpactNumbersSection() {
 function VisionVideoSection() {
   const outerRef = useRef(null)
   const videoFrameRef = useRef(null)
+  const videoRef = useRef(null)
   const textContentRef = useRef(null)
   const headerRef = useRef(null)
+  const overlayRef = useRef(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -764,7 +751,7 @@ function VisionVideoSection() {
         scrollTrigger: {
           trigger: outerRef.current,
           start: 'top top',
-          end: '+=200%',
+          end: '+=300%',
           scrub: 1,
           pin: true,
           anticipatePin: 1,
@@ -772,23 +759,61 @@ function VisionVideoSection() {
         },
       })
 
-      tl.to(headerRef.current, { opacity: 0, y: -50, duration: 0.5 }, 0)
+      tl.to(headerRef.current, {
+        opacity: 0,
+        scale: 0.8,
+        filter: 'blur(20px)',
+        y: -100,
+        duration: 1,
+      }, 0)
         .to(
           videoFrameRef.current,
           {
             scale: 1,
             width: '100vw',
             height: '100vh',
+            maxWidth: '100%',
+            maxHeight: '100%',
             borderRadius: '0px',
             ease: 'power2.inOut',
+            duration: 2,
           },
-          0
+          0.2
+        )
+        .to(
+          videoRef.current,
+          {
+            scale: 1.4,
+            duration: 3,
+            ease: 'none',
+          },
+          0.2
+        )
+        .to(
+          overlayRef.current,
+          {
+            backgroundColor: 'rgba(0,0,0,0.6)',
+            duration: 1,
+          },
+          1
         )
         .fromTo(
           textContentRef.current,
-          { y: 100, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.8, ease: 'expo.out' },
-          0.6
+          {
+            y: 100,
+            opacity: 0,
+            scale: 0.9,
+            filter: 'blur(15px)',
+          },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            filter: 'blur(0px)',
+            duration: 1.5,
+            ease: 'expo.out',
+          },
+          1.5
         )
     }, outerRef)
 
@@ -796,46 +821,58 @@ function VisionVideoSection() {
   }, [])
 
   return (
-    <section ref={outerRef} className="relative min-h-[100svh] w-full overflow-hidden bg-[#08040d]">
+    <section ref={outerRef} className="relative h-screen w-full overflow-hidden bg-[#05010a]">
       <div
         ref={headerRef}
         className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-center"
       >
-        <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.5em] text-fuchsia-500">
-          The Prelude
-        </p>
-        
+        <div className="mb-4 flex items-center gap-2 text-fuchsia-500">
+          <Sparkles size={16} className="animate-pulse" />
+          <span className="text-[10px] font-black uppercase tracking-[0.8em]">The Vision</span>
+        </div>
+        <h2 className="text-5xl font-black italic tracking-tighter text-white md:text-8xl">
+          BEYOND <br /> HORIZONS
+        </h2>
       </div>
 
-      <div className="flex h-full w-full items-center justify-center">
+      <div className="flex h-full w-full items-center justify-center px-4">
         <div
           ref={videoFrameRef}
-          className="relative h-[46svh] w-[85vw] max-w-[300px] overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_0_100px_rgba(0,0,0,0.8)] md:h-[350px] md:w-[600px]"
+          className="relative h-[50vh] w-[85vw] max-w-[400px] overflow-hidden rounded-[3rem] border border-white/10 shadow-[0_0_100px_rgba(168,85,247,0.2)] md:h-[300px] md:w-[500px]"
         >
           <video
+            ref={videoRef}
             src={graduateVideo}
             autoPlay
             muted
             loop
             playsInline
-            className="h-full w-full scale-110 object-cover"
+            className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#08040d] via-transparent to-transparent" />
+          <div ref={overlayRef} className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80" />
+          <div
+            ref={textContentRef}
+            className="absolute inset-0 z-30 flex items-center justify-center p-6 md:p-12"
+          >
+            <div className="max-w-4xl text-center">
+              <p className="mb-6 inline-block rounded-full border border-fuchsia-500/30 bg-fuchsia-500/10 px-6 py-1 text-[10px] font-bold uppercase tracking-[0.4em] text-fuchsia-300 backdrop-blur-md">
+                StudyInBengaluru Vision
+              </p>
+              <h3 className="text-3xl font-light leading-tight text-white md:text-6xl">
+                &quot;Education is the <span className="font-serif italic text-fuchsia-400">passport</span> to the future, and{' '}
+                <span className="font-black text-white underline decoration-fuchsia-500 underline-offset-8">
+                  StudyinBengaluru
+                </span> is your first-class ticket.&quot;
+              </h3>
+              <div className="mt-10 flex justify-center opacity-40">
+                <div className="h-px w-20 bg-gradient-to-r from-transparent via-white to-transparent" />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div
-        ref={textContentRef}
-        className="absolute bottom-8 left-0 right-0 z-30 flex justify-center px-4 md:bottom-20 md:px-6"
-      >
-        <div className="max-w-3xl rounded-[2.5rem] border border-white/10 bg-white/5 p-5 text-center backdrop-blur-xl md:p-8">
-          <p className="text-base font-light leading-relaxed text-white/90 md:text-2xl">
-            &quot;Education is the passport to the future, and{' '}
-            <span className="font-bold text-fuchsia-400">StudyinBengaluru</span> is your first-class
-            ticket.&quot;
-          </p>
-        </div>
-      </div>
+      
+      <div className="absolute -bottom-20 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-fuchsia-600/10 blur-[120px]" />
     </section>
   )
 }
