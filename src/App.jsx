@@ -11,15 +11,19 @@ import About from './Pages/About.jsx'
 import Contact from './Pages/Contact.jsx'
 import Home from './Pages/Home.jsx'
 import Services from './Pages/Services.jsx'
+import Login from './Components/Login.jsx'; // Add this line
+import Add from './Pages/Add.jsx';
 
 gsap.registerPlugin(ScrollTrigger)
 
 const routeMap = {
   '/': Home,
-  // '/apply': Apply,
   '/about': About,
   '/services': Services,
   '/contact': Contact,
+  '/login': Login,   // Add this
+  '/admin': Login,    // Add this
+  '/add': Add
 }
 
 function getPathname() {
@@ -100,16 +104,23 @@ function App() {
 
   return (
     <div className="site-shell">
-      <Navbar
-        currentPath={pathname}
-        onNavigate={navigate}
-        onApplyClick={() => setApplyOpen(true)}
-      />
+      {/* Only show Navbar if not on login/admin pages */}
+      {pathname !== '/login' && pathname !== '/admin' && pathname !== '/add' && (
+        <Navbar
+          currentPath={pathname}
+          onNavigate={navigate}
+          onApplyClick={() => setApplyOpen(true)}
+        />
+      )}
+      
       <main className="site-main">
         <Page onNavigate={navigate} />
       </main>
+      
       <ApplyModal open={applyOpen} onClose={() => setApplyOpen(false)} />
-      <Footer />
+      
+      {/* Only show Footer if not on login/admin pages */}
+      {pathname !== '/login' && pathname !== '/admin' && <Footer />}
     </div>
   )
 }
