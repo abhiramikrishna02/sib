@@ -52,6 +52,14 @@ function Navbar({ currentPath = "/", onNavigate }) {
   }, [currentPath]);
 
   useEffect(() => {
+    if (typeof document === "undefined") return undefined;
+    document.body.style.overflow = mobileMenuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 16);
     };
@@ -220,14 +228,32 @@ function Navbar({ currentPath = "/", onNavigate }) {
           <AnimatePresence>
             {mobileMenuOpen && (
               <motion.div
-                className="md:hidden"
-                initial={{ opacity: 0, y: -12, height: 0 }}
-                animate={{ opacity: 1, y: 0, height: "auto" }}
-                exit={{ opacity: 0, y: -12, height: 0 }}
-                transition={{ duration: 0.28, ease: "easeOut" }}
+                className="fixed inset-0 z-40 md:hidden"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
               >
-                <div className="border-t border-white/10 bg-[#1b0a21]/96 px-3 pb-3 pt-2 backdrop-blur-2xl">
-                  <div className="grid gap-2">
+                <button
+                  type="button"
+                  aria-label="Close menu overlay"
+                  className="absolute inset-0 bg-black/55 backdrop-blur-sm"
+                  onClick={() => setMobileMenuOpen(false)}
+                />
+
+                <motion.div
+                  className="absolute left-3 right-3 top-[5.4rem] overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#1b0a21]/96 shadow-[0_24px_70px_rgba(0,0,0,0.45)] backdrop-blur-2xl"
+                  initial={{ y: -16, opacity: 0, scale: 0.98 }}
+                  animate={{ y: 0, opacity: 1, scale: 1 }}
+                  exit={{ y: -10, opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.24, ease: "easeOut" }}
+                >
+                  <div className="border-b border-white/10 px-4 py-4">
+                    <p className="text-[0.68rem] font-bold uppercase tracking-[0.45em] text-white/40">
+                      Menu
+                    </p>
+                  </div>
+                  <div className="grid gap-2 p-3">
                     {links.map((link) => {
                       const isActive = currentPath === link.href;
 
@@ -236,10 +262,10 @@ function Navbar({ currentPath = "/", onNavigate }) {
                           key={link.href}
                           href={link.href}
                           onClick={(event) => handleNavigate(event, link.href)}
-                          className="relative isolate flex items-center justify-center overflow-hidden rounded-[1rem] px-4 py-3 text-sm font-semibold tracking-[0.04em]"
+                          className="relative isolate flex items-center justify-center overflow-hidden rounded-[1rem] px-4 py-4 text-sm font-semibold tracking-[0.04em]"
                           whileTap={{ scale: 0.98 }}
                           style={{
-                            color: isActive ? theme.text : "rgba(255,255,255,0.72)",
+                            color: isActive ? theme.text : "rgba(255,255,255,0.78)",
                           }}
                         >
                           <AnimatePresence mode="wait" initial={false}>
@@ -254,7 +280,7 @@ function Navbar({ currentPath = "/", onNavigate }) {
                                 initial={{ opacity: 0, scale: 0.88 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.94 }}
-                                transition={{ duration: 0.35, ease: "easeOut" }}
+                                transition={{ duration: 0.28, ease: "easeOut" }}
                               />
                             )}
                           </AnimatePresence>
@@ -264,7 +290,7 @@ function Navbar({ currentPath = "/", onNavigate }) {
                       );
                     })}
                   </div>
-                </div>
+                </motion.div>
               </motion.div>
             )}
           </AnimatePresence>
