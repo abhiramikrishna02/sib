@@ -9,13 +9,19 @@ export default function Contact() {
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
 
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%\"'#&_(),.;:?!\\|{}<>[]^~";
     const fontSize = 14;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
+    let drops = [];
+
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const columns = Math.floor(canvas.width / fontSize);
+      drops = Array(columns).fill(1);
+    };
+
+    resizeCanvas();
 
     const draw = () => {
       ctx.fillStyle = "rgba(8, 4, 20, 0.1)"; // Match your deep purple theme
@@ -32,56 +38,60 @@ export default function Contact() {
     };
 
     const interval = setInterval(draw, 33);
-    return () => clearInterval(interval);
+    window.addEventListener('resize', resizeCanvas);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('resize', resizeCanvas);
+    };
   }, []);
 
   return (
-    <div className="relative min-h-screen w-full bg-[#080414] overflow-hidden py-24 px-6">
+    <div className="relative min-h-screen w-full overflow-hidden bg-[#080414] px-4 py-20 sm:px-6 md:px-6 md:py-24">
       {/* Background Matrix Canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 z-0 opacity-20 pointer-events-none" />
 
-      <div className="relative z-10 max-w-7xl mx-auto">
+      <div className="relative z-10 mx-auto max-w-7xl">
         {/* HEADER SECTION */}
-        <div className="text-center mb-20">
-          <h2 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter mb-4">
+        <div className="mb-14 text-center md:mb-20">
+          <h2 className="mb-4 text-[clamp(2.5rem,10vw,4.8rem)] font-black uppercase tracking-tighter text-white md:text-7xl">
             Get in <span className="text-fuchsia-500">Touch</span>
           </h2>
-          <p className="text-white/40 max-w-2xl mx-auto text-lg">
+          <p className="mx-auto max-w-2xl text-base text-white/40 sm:text-lg">
             Ready to start your journey in India's Silicon Valley? Our experts are standing by to guide you through every step.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
           
           {/* LEFT: INTERACTIVE FORM */}
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-8 md:p-12 shadow-2xl">
-            <form className="space-y-6">
+          <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl sm:rounded-[2.5rem] sm:p-8 md:p-12">
+            <form className="space-y-5 md:space-y-6">
               <div className="group relative">
-                <input type="text" placeholder="Your Name" className="w-full bg-white/5 border-b-2 border-white/10 py-4 px-2 text-white outline-none focus:border-fuchsia-500 transition-colors placeholder:text-white/20" />
+                <input type="text" placeholder="Your Name" className="w-full border-b-2 border-white/10 bg-white/5 px-2 py-3.5 text-white outline-none transition-colors placeholder:text-white/20 focus:border-fuchsia-500 md:py-4" />
               </div>
               <div className="group relative">
-                <input type="email" placeholder="Email Address" className="w-full bg-white/5 border-b-2 border-white/10 py-4 px-2 text-white outline-none focus:border-fuchsia-500 transition-colors placeholder:text-white/20" />
+                <input type="email" placeholder="Email Address" className="w-full border-b-2 border-white/10 bg-white/5 px-2 py-3.5 text-white outline-none transition-colors placeholder:text-white/20 focus:border-fuchsia-500 md:py-4" />
               </div>
               <div className="group relative">
-                <textarea rows="4" placeholder="Tell us about your goals..." className="w-full bg-white/5 border-b-2 border-white/10 py-4 px-2 text-white outline-none focus:border-fuchsia-500 transition-colors placeholder:text-white/20 resize-none" />
+                <textarea rows="4" placeholder="Tell us about your goals..." className="w-full resize-none border-b-2 border-white/10 bg-white/5 px-2 py-3.5 text-white outline-none transition-colors placeholder:text-white/20 focus:border-fuchsia-500 md:py-4" />
               </div>
-              <button className="group w-full py-5 bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-bold rounded-2xl flex items-center justify-center gap-3 transition-all transform hover:scale-[1.02]">
+              <button className="group flex w-full items-center justify-center gap-3 rounded-2xl bg-fuchsia-600 py-4 font-bold text-white transition-all hover:bg-fuchsia-500 hover:scale-[1.02] md:py-5">
                 SEND MESSAGE <Send size={20} className="group-hover:translate-x-2 transition-transform" />
               </button>
             </form>
           </div>
 
           {/* RIGHT: CONTACT DETAILS & MAP */}
-          <div className="space-y-8">
+          <div className="space-y-6 md:space-y-8">
             {/* ADDRESS CARD */}
-            <div className="bg-gradient-to-br from-fuchsia-600/20 to-transparent backdrop-blur-lg border border-white/10 rounded-[2.5rem] p-8">
-              <div className="flex items-start gap-6">
-                <div className="p-4 bg-fuchsia-500 rounded-2xl shadow-[0_0_20px_rgba(162,28,175,0.4)]">
+            <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-fuchsia-600/20 to-transparent p-6 backdrop-blur-lg sm:rounded-[2.5rem] sm:p-8">
+              <div className="flex items-start gap-4 sm:gap-6">
+                <div className="rounded-2xl bg-fuchsia-500 p-3.5 shadow-[0_0_20px_rgba(162,28,175,0.4)] sm:p-4">
                   <MapPin className="text-white" size={28} />
                 </div>
                 <div>
-                  <h4 className="text-white font-bold text-xl mb-2">Our Campus Hub</h4>
-                  <p className="text-white/60 leading-relaxed">
+                  <h4 className="mb-2 text-lg font-bold text-white sm:text-xl">Our Campus Hub</h4>
+                  <p className="leading-relaxed text-white/60">
                     3rd Floor, Startup Park, <br />
                     Opp. Police Station, Madiwala 1st Stage, <br />
                     Bengaluru, Karnataka - 560068
@@ -91,15 +101,15 @@ export default function Contact() {
             </div>
 
             {/* QUICK CONTACTS GRID */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <a href="https://wa.me/919946953953" className="flex items-center gap-4 p-6 bg-white/5 border border-white/10 rounded-3xl hover:bg-white/10 transition-all">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <a href="https://wa.me/919946953953" className="flex items-center gap-4 rounded-3xl border border-white/10 bg-white/5 p-5 transition-all hover:bg-white/10 sm:p-6">
                 <MessageSquare className="text-green-400" size={24} />
                 <div>
                   <p className="text-white/40 text-xs uppercase tracking-widest font-bold">WhatsApp</p>
                   <p className="text-white font-medium">+91 99469 53953</p>
                 </div>
               </a>
-              <a href="tel:+919946953953" className="flex items-center gap-4 p-6 bg-white/5 border border-white/10 rounded-3xl hover:bg-white/10 transition-all">
+              <a href="tel:+919946953953" className="flex items-center gap-4 rounded-3xl border border-white/10 bg-white/5 p-5 transition-all hover:bg-white/10 sm:p-6">
                 <Phone className="text-blue-400" size={24} />
                 <div>
                   <p className="text-white/40 text-xs uppercase tracking-widest font-bold">Call Us</p>
@@ -109,7 +119,7 @@ export default function Contact() {
             </div>
 
             {/* MAP PREVIEW */}
-            <div className="relative group overflow-hidden rounded-[2.5rem] border border-white/10 h-64 shadow-2xl">
+            <div className="relative group h-56 overflow-hidden rounded-[2rem] border border-white/10 shadow-2xl sm:h-64 sm:rounded-[2.5rem]">
               <iframe 
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.8!2d77.62!3d12.92!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU1JzEyLjAiTiA3N8KwMzcnMTIuMCJF!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin" 
                 className="w-full h-full grayscale invert opacity-70 group-hover:grayscale-0 group-hover:invert-0 group-hover:opacity-100 transition-all duration-700"
@@ -127,7 +137,7 @@ export default function Contact() {
       {/* FLOATING WHATSAPP BUTTON */}
       <a 
         href="https://wa.me/919946953953" 
-        className="fixed bottom-8 right-8 z-[100] p-5 bg-green-500 rounded-full text-white shadow-[0_0_30px_rgba(34,197,94,0.4)] hover:scale-110 active:scale-95 transition-all animate-bounce"
+        className="fixed bottom-4 right-4 z-[100] rounded-full bg-green-500 p-4 text-white shadow-[0_0_30px_rgba(34,197,94,0.4)] transition-all hover:scale-110 active:scale-95 animate-bounce sm:bottom-8 sm:right-8 sm:p-5"
       >
         <MessageSquare size={32} />
       </a>

@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, Suspense, Component, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Environment, ContactShadows, useGLTF, OrbitControls, PerspectiveCamera, Float as DreiFloat } from '@react-three/drei';
-import { Landmark, BookOpen, Building2, MousePointer2, Zap, GraduationCap, Headset } from 'lucide-react';
+import { Landmark, BookOpen, Building2, MousePointer2, Zap, GraduationCap, Headset, MapPin, BadgeCheck } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import * as THREE from 'three';
@@ -14,6 +14,12 @@ import img5 from '../assets/img5.jpg';
 import img6 from '../assets/img6.jpg';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const MOBILE_QUERY = '(max-width: 767px)';
+
+function isMobileViewport() {
+  return typeof window !== 'undefined' && window.matchMedia(MOBILE_QUERY).matches;
+}
 
 /* ── ERROR BOUNDARY ─────────────────────────────────────────────── */
 class CanvasErrorBoundary extends Component {
@@ -123,28 +129,28 @@ function AboutCardsSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative flex h-screen w-full items-center justify-center overflow-hidden"
+      className="relative -mt-6 flex min-h-[88svh] w-full items-center justify-center overflow-hidden py-6 md:-mt-10 md:min-h-[100svh] md:py-0"
       style={{ perspective: '2000px' }}
     >
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute left-1/2 top-1/2 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[150px]" />
       </div>
-      <div className="relative z-10 grid w-full max-w-6xl grid-cols-1 gap-6 px-6 md:grid-cols-3 md:gap-2">
+      <div className="relative z-10 grid w-full max-w-6xl grid-cols-1 gap-4 px-4 sm:px-6 md:grid-cols-3 md:gap-2">
         {aboutCards.map((card, i) => (
           <div
             key={card.title}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            className={`about-card group relative flex flex-col items-center rounded-[3.5rem] border border-white/10 bg-[#160a26]/80 p-8 text-center backdrop-blur-2xl shadow-2xl will-change-transform md:p-12 ${
+            className={`about-card group relative flex flex-col items-center rounded-[2rem] border border-white/10 bg-[#160a26]/80 p-6 text-center shadow-2xl backdrop-blur-2xl will-change-transform sm:p-8 md:rounded-[3.5rem] md:p-12 ${
               i === 1 ? 'z-20' : 'z-10'
             }`}
           >
             <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/5 blur-[40px] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-            <div className={`mb-8 flex h-24 w-24 items-center justify-center rounded-[2rem] bg-gradient-to-br ${card.color} shadow-2xl ${card.shadow} transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6`}>
-              <card.icon className="h-12 w-12 text-white" />
+            <div className={`mb-6 flex h-20 w-20 items-center justify-center rounded-[1.5rem] bg-gradient-to-br ${card.color} shadow-2xl ${card.shadow} transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6 sm:mb-8 sm:h-24 sm:w-24 sm:rounded-[2rem]`}>
+              <card.icon className="h-10 w-10 text-white sm:h-12 sm:w-12" />
             </div>
-            <h3 className="mb-6 text-2xl font-black uppercase tracking-tight text-white md:text-3xl">{card.title}</h3>
-            <p className="text-lg font-light leading-relaxed text-white/60">{card.desc}</p>
+            <h3 className="mb-4 text-xl font-black uppercase tracking-tight text-white sm:mb-6 sm:text-2xl md:text-3xl">{card.title}</h3>
+            <p className="text-base font-light leading-relaxed text-white/60 sm:text-lg">{card.desc}</p>
           </div>
         ))}
       </div>
@@ -155,155 +161,194 @@ function AboutCardsSection() {
 /* ── BACKGROUND PARTICLES ────────────────────── */
 const features = [
   {
-    title: 'Direct Access',
-    desc: 'Connect with top educational institutions directly.',
+    title: 'Top Institutions',
+    desc: 'Access to premier universities and colleges across Bengaluru with diverse program offerings.',
     icon: GraduationCap,
-    final: { top: '-140px', left: '0' },
     color: 'from-blue-500 to-cyan-400',
   },
   {
-    title: 'Simple Process',
-    desc: 'Effortless and efficient application management.',
-    icon: MousePointer2,
-    final: { top: '0', right: '-220px' },
-    color: 'from-fuchsia-500 to-purple-600',
+    title: 'Diverse Programs',
+    desc: 'Explore a wide range of undergraduate, postgraduate, and doctoral disciplines.',
+    icon: BookOpen,
+    color: 'from-purple-500 to-pink-400',
+  },
+  {
+    title: 'City Advantages',
+    desc: "Benefit from Bengaluru's tech ecosystem, cultural diversity, and career opportunities.",
+    icon: MapPin,
+    color: 'from-emerald-500 to-teal-400',
   },
   {
     title: 'Expert Guidance',
-    desc: 'Get personalized consultations from industry pros.',
-    icon: Zap,
-    final: { bottom: '0', left: '-220px' },
-    color: 'from-amber-400 to-orange-500',
-  },
-  {
-    title: 'End-to-End Support',
-    desc: 'Guidance from initial inquiry to final admission.',
-    icon: Headset,
-    final: { bottom: '-140px', right: '0' },
-    color: 'from-emerald-400 to-teal-500',
+    desc: 'Get personalized consultations and end-to-end support from industry pros.',
+    icon: BadgeCheck,
+    color: 'from-orange-500 to-yellow-400',
   },
 ]
 
 function WhyChooseSection() {
   const containerRef = useRef(null)
   const coreRef = useRef(null)
+  const orbitalRef = useRef(null)
+  const portalFlashRef = useRef(null)
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      const cards = Array.from(containerRef.current?.querySelectorAll('.why-card') || [])
-      if (!cards.length) return
+      const cards = gsap.utils.toArray('.why-card')
+      const cardContents = gsap.utils.toArray('.why-card-content')
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top top',
-          end: '+=150%',
+          end: '+=400%',
           scrub: 1,
           pin: true,
+          anticipatePin: 1,
         },
       })
 
       tl.fromTo(
         coreRef.current,
-        { x: -800, opacity: 0, scale: 1.5, filter: 'blur(15px)' },
-        { x: 0, opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.5, ease: 'power4.out' }
+        { scale: 0, opacity: 0, rotateY: -90 },
+        { scale: 1, opacity: 1, rotateY: 0, duration: 1.5, ease: 'power4.out' }
       )
 
-      cards.forEach((card, i) => {
-        const { top, right, bottom, left } = features[i].final
-        tl.to(
-          card,
-          {
-            top: top || 'auto',
-            right: right || 'auto',
-            bottom: bottom || 'auto',
-            left: left || 'auto',
-            opacity: 1,
-            scale: 1,
-            duration: 1.2,
-            ease: 'back.out(1.7)',
-          },
-          '-=0.8'
-        )
+      tl.to(
+        orbitalRef.current,
+        {
+          rotate: 360,
+          duration: 3,
+          ease: 'none',
+        },
+        'spin'
+      )
+
+      cardContents.forEach((cardContent) => {
+        tl.to(cardContent, { rotate: -360, duration: 3, ease: 'none' }, 'spin')
       })
 
-      tl.to('.orbital-container', {
-        rotate: 360,
-        duration: 3,
-        ease: 'power1.inOut',
-      })
+      tl.to(coreRef.current, {
+        rotateY: 180,
+        scale: 1.1,
+        duration: 1.2,
+        ease: 'back.inOut(1.7)',
+      }, '+=0.2')
+
+      tl.to(coreRef.current, {
+        scale: 40,
+        duration: 2,
+        ease: 'expo.in',
+      }, 'zoom')
+
+      tl.to(cards, { opacity: 0, scale: 0, duration: 1 }, 'zoom')
+      tl.to('.bg-glow', { opacity: 0, scale: 0, duration: 1 }, 'zoom')
+
+      tl.to(portalFlashRef.current, {
+        opacity: 1,
+        duration: 0.5,
+        backgroundColor: '#0a0516',
+      }, 'zoom+=1.5')
     }, containerRef)
 
     return () => ctx.revert()
   }, [])
 
   return (
-    <section ref={containerRef} className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-[#080414]">
-      <div className="absolute inset-0 z-0">
-        <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-600/10 blur-[150px]" />
-      </div>
-      <div className="orbital-container relative z-10 flex h-[500px] w-full max-w-4xl items-center justify-center">
-        <div ref={coreRef} className="relative z-20 group">
-          <div className="absolute inset-0 rounded-full bg-white/10 blur-3xl scale-125" />
-          <div className="relative flex h-56 w-56 flex-col items-center justify-center rounded-full border border-white/20 bg-gradient-to-br from-white/10 to-white/5 p-6 text-center backdrop-blur-3xl shadow-2xl md:h-72 md:w-72">
-            <h2 className="text-xl font-black uppercase tracking-tighter text-white md:text-2xl">
-              Why Choose <br />
-              <span className="text-fuchsia-400">StudyIn</span><br />
-              Bengaluru?
-            </h2>
-            <div className="mt-4 h-1 w-10 overflow-hidden rounded-full bg-white/20">
-              <div className="h-full animate-[loading_2s_infinite] bg-fuchsia-500" />
+    <section
+      ref={containerRef}
+      className="relative flex min-h-[100svh] w-full items-center justify-center overflow-hidden bg-[#080414] perspective-1000 py-16 md:h-screen md:py-0"
+      style={{ perspective: '2000px' }}
+    >
+      <div ref={portalFlashRef} className="absolute inset-0 z-[100] opacity-0 pointer-events-none" />
+
+      <div className="bg-glow absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-fuchsia-600/10 blur-[180px]" />
+
+      <div className="relative flex h-full w-full items-center justify-center">
+        <div ref={orbitalRef} className="relative flex h-[620px] w-[620px] scale-[0.65] items-center justify-center preserve-3d sm:scale-[0.82] md:scale-100">
+          <div ref={coreRef} className="relative z-50 preserve-3d h-64 w-64 md:h-80 md:w-80">
+            <div className="backface-hidden absolute inset-0 flex flex-col items-center justify-center rounded-full border border-white/20 bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-3xl shadow-[0_0_50px_rgba(168,85,247,0.3)]">
+              <h2 className="text-center text-xl font-black uppercase tracking-tighter text-white md:text-3xl">
+                Why Choose <br />
+                <span className="text-fuchsia-400 underline decoration-fuchsia-500/50 underline-offset-8">StudyIn</span><br />
+                Bengaluru?
+              </h2>
+            </div>
+
+            <div className="backface-hidden absolute inset-0 flex items-center justify-center rounded-full border-2 border-fuchsia-500 bg-[#0a0516] shadow-[0_0_80px_rgba(168,85,247,0.6)]" style={{ transform: 'rotateY(180deg)' }}>
+              <span className="animate-pulse text-2xl font-bold italic tracking-widest text-white">Why Bengaluru?</span>
             </div>
           </div>
-        </div>
-        {features.map((f, i) => (
-          <div
-            key={f.title}
-            className="why-card absolute scale-50 rounded-3xl bg-gradient-to-br p-[1px] opacity-0 transition-all duration-300 hover:z-50"
-            style={{
-              width: '240px',
-              top: i === 0 ? '-120%' : i === 1 ? '-120%' : i === 2 ? '120%' : '120%',
-              left: i === 0 || i === 2 ? '-120%' : 'auto',
-              right: i === 1 || i === 3 ? '-120%' : 'auto',
-            }}
-          >
-            <div className={`rounded-3xl bg-gradient-to-br ${f.color} p-[1.5px]`}>
-              <div className="h-full rounded-[calc(1.5rem-1px)] bg-[#0d041a] p-5 backdrop-blur-xl">
-                <div className={`mb-3 inline-flex rounded-xl bg-gradient-to-br ${f.color} p-2.5`}>
-                  <f.icon className="text-white" size={20} />
+
+          {features.map((f, i) => {
+              const positions = [
+                { top: '50%', left: '50%', transform: 'translate(-50%, -215%)' },
+                { top: '50%', left: '50%', transform: 'translate(112%, -50%)' },
+                { top: '50%', left: '50%', transform: 'translate(-50%, 115%)' },
+                { top: '50%', left: '50%', transform: 'translate(-212%, -50%)' },
+              ]
+            const Icon = f.icon
+            return (
+                <div
+                  key={f.title}
+                  className="why-card absolute z-40"
+                  style={{
+                    width: '300px',
+                    ...positions[i],
+                  }}
+                >
+                <div className="why-card-content preserve-3d">
+                  <div className={`rounded-3xl bg-gradient-to-br ${f.color} p-[1.5px] shadow-2xl`}>
+                    <div className="rounded-[calc(1.5rem-1px)] bg-[#0d041a]/95 p-6 backdrop-blur-2xl">
+                      <div className={`mb-3 inline-flex rounded-xl bg-gradient-to-br ${f.color} p-2.5`}>
+                        <Icon className="text-white" size={22} />
+                      </div>
+                      <h3 className="mb-2 text-lg font-bold uppercase text-white">{f.title}</h3>
+                      <p className="text-sm leading-relaxed text-white/50">{f.desc}</p>
+                    </div>
+                  </div>
                 </div>
-                <h3 className="mb-1 text-lg font-bold uppercase tracking-tight text-white">{f.title}</h3>
-                <p className="text-xs leading-relaxed text-white/40">{f.desc}</p>
               </div>
-            </div>
-          </div>
-        ))}
+            )
+          })}
+        </div>
       </div>
     </section>
   )
 }
 
 function WhyBengaluruSection() {
-  const sectionRef = useRef(null)
   const triggerRef = useRef(null)
+  const contentRef = useRef(null)
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        sectionRef.current,
-        { x: 0 },
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: triggerRef.current,
+          start: 'top top',
+          end: '+=500%',
+          scrub: 1,
+          pin: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      })
+
+      tl.fromTo(
+        contentRef.current,
+        { scale: 0.8, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 1.2, ease: 'power3.out' }
+      )
+
+      tl.to(
+        contentRef.current,
         {
           x: '-500vw',
           ease: 'none',
-          scrollTrigger: {
-            trigger: triggerRef.current,
-            start: 'top top',
-            end: () => `+=${window.innerWidth * 5}`,
-            scrub: 0.6,
-            pin: true,
-            anticipatePin: 1,
-          },
-        }
+          duration: 4,
+        },
+        '<'
       )
     }, triggerRef)
 
@@ -311,43 +356,33 @@ function WhyBengaluruSection() {
   }, [])
 
   return (
-    <section ref={triggerRef} className="relative overflow-hidden bg-[#0a0516]">
-      <div className="absolute top-12 left-6 z-50 md:left-12">
-        <h2 className="text-3xl font-black uppercase tracking-tighter text-white/20 md:text-6xl">
-          Why Bengaluru?
-        </h2>
-      </div>
-
-      <div ref={sectionRef} className="relative flex h-screen w-[600vw] flex-row">
+    <section ref={triggerRef} className="relative -mt-10 overflow-hidden bg-[#0a0516] py-10 md:-mt-16 md:py-0">
+      <div ref={contentRef} className="horizontal-wrapper flex min-h-[100svh] w-full flex-col md:h-screen md:w-[600vw] md:flex-row">
         {bengaluruData.map((item, index) => (
-          <div key={item.title} className="relative flex h-screen w-screen items-center justify-center px-6 md:px-16 lg:px-32">
+          <div key={item.title} className="relative flex min-h-[100svh] w-full items-center justify-center px-6 py-20 md:h-screen md:w-screen md:px-16 md:py-0 lg:px-32">
             <div className={`absolute inset-0 bg-gradient-to-r ${item.color} to-transparent opacity-30`} />
 
-            <div className="relative z-10 flex w-full max-w-7xl flex-col items-center gap-10 md:flex-row md:gap-12">
-              <div className="w-full space-y-5 md:w-1/2">
-                <span className="font-mono text-lg text-fuchsia-500 md:text-xl">0{index + 1} / 06</span>
-                <h3 className="text-4xl font-bold leading-none text-white md:text-7xl">
-                  {item.title.split(' ').map((word, wordIndex) => (
-                    <span key={`${word}-${wordIndex}`} className="block">
-                      {word}
-                    </span>
-                  ))}
+            <div className="relative z-10 grid w-full max-w-7xl grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-12">
+              <div className="space-y-5">
+                <h2 className="absolute top-10 left-4 text-5xl font-black uppercase tracking-tighter text-white/10 md:top-20 md:left-20 md:text-8xl">
+                  Bengaluru
+                </h2>
+                <span className="font-mono text-lg text-fuchsia-500 md:text-2xl">0{index + 1}</span>
+                <h3 className="text-4xl font-black uppercase italic leading-none text-white md:text-7xl">
+                  {item.title}
                 </h3>
-                <p className="max-w-md border-l-2 border-fuchsia-500 pl-5 text-base leading-relaxed text-white/60 md:text-xl">
+                <p className="max-w-lg border-l-4 border-fuchsia-500 pl-6 text-base leading-relaxed text-white/60 md:text-xl">
                   {item.desc}
                 </p>
               </div>
 
-              <div className="group relative w-full md:w-1/2">
-                <div className="absolute -inset-4 rounded-full bg-fuchsia-500/20 opacity-0 blur-2xl transition-opacity duration-700 group-hover:opacity-100" />
-                <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-white/10 shadow-2xl">
-                  <img
-                    src={item.img}
-                    alt={item.title}
-                    className="h-full w-full scale-110 object-cover transition-transform duration-1000 group-hover:scale-100"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a0516] via-transparent to-transparent opacity-60" />
-                </div>
+              <div className="group relative">
+                <div className="absolute -inset-4 rounded-[3rem] bg-fuchsia-500/20 opacity-0 blur-3xl transition-opacity duration-1000 group-hover:opacity-100" />
+                <img
+                  src={item.img}
+                  alt={item.title}
+                  className="relative z-10 aspect-[4/5] w-full rounded-[3rem] border border-white/10 object-cover shadow-2xl"
+                />
               </div>
             </div>
 
@@ -462,6 +497,7 @@ function Scene3D() {
 /* ── ABOUT PAGE ─────────────────────────────────────────────────── */
 const About = () => {
   const containerRef = useRef(null);
+  const textStripRef = useRef(null);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -490,10 +526,11 @@ const About = () => {
       // Background Text Parallax (Horizontal Scroll)
       gsap.to('.parallax-text', {
         scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "+=150%",
+          trigger: textStripRef.current,
+          start: 'top bottom',
+          end: 'bottom top',
           scrub: 1,
+          invalidateOnRefresh: true,
         },
         xPercent: -30,
       });
@@ -504,14 +541,9 @@ const About = () => {
   }, []);
 
   return (
-    <main ref={containerRef} className="relative bg-[#0d041a] overflow-hidden min-h-screen">
+    <main ref={containerRef} className="relative min-h-screen overflow-hidden bg-[#0d041a] px-4 sm:px-6">
       
       {/* ── PARALLAX BACKGROUND TEXT ── */}
-      <div className="absolute top-[15%] left-0 z-0 pointer-events-none opacity-5 w-[200vw]">
-        <h2 className="parallax-text text-[18rem] font-black uppercase whitespace-nowrap text-white tracking-tighter">
-          Innovate • Empower • Transform • Discover •
-        </h2>
-      </div>
 
       {/* Global Background Ambience */}
       <div className="fixed inset-0 pointer-events-none z-0">
@@ -521,19 +553,19 @@ const About = () => {
       </div>
 
       {/* ── 3D HERO CANVAS ── */}
-      <div className="parallax-canvas absolute inset-0 z-10 pointer-events-none h-screen">
+      <div className="parallax-canvas absolute inset-0 z-10 hidden h-screen pointer-events-none lg:block">
         <div className="absolute inset-0 pointer-events-auto">
           <Scene3D />
         </div>
       </div>
 
       {/* ── HERO SECTION ── */}
-      <section className="relative h-screen flex items-center px-8 lg:px-24 z-20 pointer-events-none">
-        <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="max-w-2xl text-center lg:text-left pointer-events-auto relative">
+      <section className="relative z-20 flex min-h-[100svh] items-center px-0 py-20 pointer-events-auto lg:min-h-screen lg:px-24 lg:py-0 lg:pointer-events-none">
+        <div className="container mx-auto grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-12">
+          <div className="relative max-w-2xl text-center pointer-events-auto lg:text-left">
             
             {/* Adorable Floating Glass Badge */}
-            <div className="reveal absolute -top-12 -left-8 hidden md:flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md shadow-[0_10px_30px_rgba(217,70,239,0.15)] animate-[bounce_4s_infinite]">
+            <div className="reveal absolute -top-12 -left-8 hidden items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 shadow-[0_10px_30px_rgba(217,70,239,0.15)] backdrop-blur-md animate-[bounce_4s_infinite] md:flex">
               <span className="h-2 w-2 rounded-full bg-fuchsia-400 shadow-[0_0_10px_#d946ef]"></span>
               <span className="text-xs font-bold text-white/80 uppercase tracking-widest">Est. 2024</span>
             </div>
@@ -542,7 +574,7 @@ const About = () => {
               Our Identity
             </div>
             
-            <h1 className="reveal text-[clamp(4rem,9vw,8rem)] font-black leading-[0.85] tracking-tighter mb-8 text-white drop-shadow-2xl">
+            <h1 className="reveal mb-6 text-[clamp(3rem,13vw,7rem)] font-black leading-[0.9] tracking-tighter text-white drop-shadow-2xl lg:mb-8 lg:text-[clamp(4rem,9vw,8rem)]">
               About <br />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-400 via-white to-cyan-400">
                 Study in
@@ -550,20 +582,29 @@ const About = () => {
               Bengaluru
             </h1>
             
-            <p className="reveal max-w-lg text-xl text-white/60 font-light leading-relaxed mb-10 mx-auto lg:mx-0">
+            <p className="reveal mx-auto mb-8 max-w-lg text-base font-light leading-relaxed text-white/60 sm:text-lg lg:mx-0 lg:mb-10 lg:text-xl">
               Welcome to the premier admission ecosystem. We don't just process applications; we engineer <span className="text-white font-medium italic">transformative educational journeys</span>.
             </p>
 
             {/* Creative Scroll Indicator */}
-            <div className="reveal flex items-center gap-4 justify-center lg:justify-start opacity-60">
-               <div className="w-12 h-px bg-gradient-to-r from-transparent to-white"></div>
+            <div className="reveal flex items-center justify-center gap-4 opacity-60 lg:justify-start">
+               <div className="h-px w-12 bg-gradient-to-r from-transparent to-white"></div>
                <span className="text-[9px] uppercase tracking-[0.5em] font-bold">Scroll to Explore</span>
             </div>
           </div>
           
           {/* Empty div to ensure layout holds space for the 3D canvas on the right */}
-          <div className="hidden lg:block h-[500px]" />
+          <div className="hidden h-[500px] lg:block" />
         </div>
+      </section>
+
+      <section
+        ref={textStripRef}
+        className="relative z-10 -mt-6 overflow-hidden py-2 sm:-mt-8 sm:py-3 lg:-mt-10 lg:py-4"
+      >
+        <h2 className="parallax-text whitespace-nowrap text-[clamp(4.5rem,17vw,18rem)] font-black uppercase tracking-tighter text-white/6">
+          Innovate • Empower • Transform • Discover •
+        </h2>
       </section>
 
       <AboutCardsSection />

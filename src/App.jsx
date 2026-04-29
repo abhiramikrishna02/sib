@@ -4,6 +4,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import Navbar from './Components/Navbar.jsx'
+import Footer from './Components/Footer.jsx'
 import About from './Pages/About.jsx'
 import Contact from './Pages/Contact.jsx'
 import Home from './Pages/Home.jsx'
@@ -98,6 +99,7 @@ function App() {
       <main className="site-main">
         <Page onNavigate={navigate} />
       </main>
+      <Footer />
     </div>
   )
 }

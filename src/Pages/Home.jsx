@@ -21,6 +21,7 @@ import {
   ArrowRight,
   Target,
   Rocket,
+  MoveRight,
   School,
   BookMarked,
   Globe,
@@ -34,6 +35,12 @@ ScrollTrigger.config({
   ignoreMobileResize: true,
   autoRefreshEvents: 'visibilitychange,DOMContentLoaded,load',
 })
+
+const MOBILE_QUERY = '(max-width: 767px)'
+
+function isMobileViewport() {
+  return typeof window !== 'undefined' && window.matchMedia(MOBILE_QUERY).matches
+}
 
 
 function MissionBackdropModel() {
@@ -312,7 +319,37 @@ function HeroSection() {
   }, [])
 
   return (
-    <section ref={containerRef} className="relative h-screen w-full overflow-hidden bg-[#0a0510]">
+    <section ref={containerRef} className="relative min-h-[100svh] w-full overflow-hidden bg-[#0a0510] px-4 py-6 md:h-screen md:px-0 md:py-0">
+      <div className="hidden">
+        <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 shadow-2xl backdrop-blur-xl">
+          <p className="text-[0.7rem] font-bold uppercase tracking-[0.45em] text-white/45">
+            Study in Bengaluru
+          </p>
+          <h2 className="mt-3 text-[clamp(2.4rem,12vw,4rem)] font-black uppercase leading-[0.9] tracking-tight text-white">
+            India&apos;s Silicon Valley
+          </h2>
+          <p className="mt-4 text-sm leading-6 text-white/62">
+            A mobile-first intro to Bengaluru admissions, guidance, and student support.
+          </p>
+        </div>
+
+        <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
+          <video
+            src={bangaloreVideo}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="h-full w-full object-cover brightness-[0.65]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/20 to-black/45" />
+          <div className="absolute bottom-4 left-4 right-4 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-white/70 backdrop-blur-sm">
+            Scroll for the full experience
+          </div>
+        </div>
+      </div>
+
+      <div className="relative block h-full w-full overflow-hidden">
       <video
         ref={videoRef}
         src={bangaloreVideo}
@@ -323,12 +360,10 @@ function HeroSection() {
         className="absolute inset-0 z-0 h-full w-full object-cover brightness-[0.5] transition-all"
       />
 
-      <div ref={contentRevealRef} className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-        <div className="revealed-content px-6 text-center">
-          <p className="mb-6 font-mono text-sm uppercase tracking-[0.5em] text-white/70 drop-shadow-md">
-            Welcome To
-          </p>
-          <h2 className="text-[clamp(3rem,8vw,7rem)] font-black uppercase leading-[0.85] tracking-tight text-white">
+      <div ref={contentRevealRef} className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none px-4 sm:px-6">
+        <div className="revealed-content text-center">
+          
+          <h2 className="text-[clamp(2.4rem,12vw,7rem)] font-black uppercase leading-[0.85] tracking-tight text-white sm:text-[clamp(3rem,8vw,7rem)]">
             Study India's <br />
             <span className="bg-gradient-to-r from-violet-300 via-fuchsia-200 to-cyan-200 bg-clip-text font-serif font-light italic text-transparent drop-shadow-[0_10px_30px_rgba(123,44,191,0.5)]">
               Silicon Valley
@@ -411,12 +446,13 @@ function HeroSection() {
           </g>
         </svg>
 
-        <div className="absolute bottom-10 left-1/2 flex -translate-x-1/2 flex-col items-center gap-3">
+        <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 md:bottom-10">
           <span className="text-[0.6rem] font-bold uppercase tracking-[0.7em] text-white/50">
             Initiate Breakthrough
           </span>
           <ArrowDown className="h-4 w-4 animate-bounce text-fuchsia-400" />
         </div>
+      </div>
       </div>
     </section>
   )
@@ -521,13 +557,32 @@ function Opportunities() {
 
   return (
     <div ref={triggerRef} className="overflow-hidden bg-[#0f021a]">
-      <section ref={containerRef} className="relative flex h-screen w-full items-center justify-center">
+      <section ref={containerRef} className="relative flex min-h-[100svh] w-full items-center justify-center py-14 md:h-screen md:py-0">
+        <div className="hidden">
+          <div className="mb-6 flex items-center justify-center gap-4 opacity-50">
+            <GraduationCap className="h-7 w-7 animate-bounce text-white" />
+            <BookOpen className="h-7 w-7 animate-pulse text-white" />
+          </div>
+          <h2 className="text-center text-[clamp(2.4rem,12vw,4.6rem)] font-black uppercase italic tracking-tighter text-white">
+            Opportunities
+          </h2>
+          <p className="mt-3 text-center text-[0.72rem] font-bold uppercase tracking-[0.45em] text-purple-300">
+            Explore student paths
+          </p>
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {cardData.map((item, index) => (
+              <GlassCard key={`${item.title}-mobile`} item={item} index={index} />
+            ))}
+          </div>
+        </div>
+
+        <div className="relative flex h-full w-full items-center justify-center">
         <div ref={bannerRef} className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-center">
           <div className="mb-6 flex gap-4 opacity-50">
             <GraduationCap className="h-8 w-8 animate-bounce text-white" />
             <BookOpen className="h-8 w-8 animate-pulse text-white" />
           </div>
-          <h2 className="text-7xl font-black uppercase italic tracking-tighter text-white md:text-9xl">
+          <h2 className="text-[clamp(3rem,13vw,7rem)] font-black uppercase italic tracking-tighter text-white md:text-9xl">
             Opportunities
           </h2>
           <p className="mt-4 text-xs font-bold uppercase tracking-[0.5em] text-purple-300">
@@ -535,10 +590,11 @@ function Opportunities() {
           </p>
         </div>
 
-        <div ref={cardsRef} className="relative z-10 flex items-center gap-6 px-10">
+        <div ref={cardsRef} className="relative z-10 flex w-full flex-col items-center gap-4 px-4 md:w-auto md:flex-row md:gap-6 md:px-10">
           {cardData.map((item, index) => (
             <GlassCard key={item.title} item={item} index={index} />
           ))}
+        </div>
         </div>
       </section>
     </div>
@@ -555,7 +611,7 @@ const StatCard = memo(function StatCard({ stat, index, start }) {
       viewport={{ once: true, amount: 0.25 }}
       transition={{ duration: 0.7, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }}
       whileHover={{ y: -12, scale: 1.02, transition: { type: 'spring', stiffness: 240, damping: 18 } }}
-      className="group relative min-h-[260px] overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_20px_50px_rgba(0,0,0,0.35)]"
+      className="group relative min-h-[260px] w-full max-w-[340px] overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_20px_50px_rgba(0,0,0,0.35)] md:min-w-[280px]"
       style={{ willChange: 'transform, opacity' }}
     >
       <div aria-hidden="true" className={`absolute inset-0 bg-gradient-to-br ${stat.accent} opacity-0 transition-opacity duration-500 group-hover:opacity-100`} />
@@ -697,100 +753,87 @@ function ImpactNumbersSection() {
 
 
 function VisionVideoSection() {
-  const outerRef   = useRef(null)
-  const frameRef   = useRef(null)
-  const contentRef = useRef(null)
-  const titleRef   = useRef(null)
+  const outerRef = useRef(null)
+  const videoFrameRef = useRef(null)
+  const textContentRef = useRef(null)
+  const headerRef = useRef(null)
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.set([frameRef.current, contentRef.current, titleRef.current], { force3D: true, willChange: 'transform, opacity' })
-      gsap.set(titleRef.current, { opacity: 0, y: 16 })
-      gsap.set(frameRef.current, {
-        scale: 0.22,
-        borderRadius: '34px',
-        transformOrigin: 'center center',
-      })
-      gsap.set(contentRef.current, { opacity: 0, y: 34, scale: 0.98 })
-
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: outerRef.current,
           start: 'top top',
-          end: 'bottom bottom',
-          scrub: 1.0,
+          end: '+=200%',
+          scrub: 1,
+          pin: true,
+          anticipatePin: 1,
           invalidateOnRefresh: true,
         },
       })
 
-      tl.to(titleRef.current, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }, 0)
-      tl.to(frameRef.current, { scale: 0.34, duration: 0.45, ease: 'power2.inOut' }, 0.1)
-      tl.to(frameRef.current, { scale: 0.52, duration: 0.55, ease: 'power2.inOut' }, 0.55)
-      tl.to(frameRef.current, { scale: 0.72, duration: 0.65, ease: 'power2.inOut' }, 1.1)
-      tl.to(frameRef.current, { scale: 0.90, duration: 0.65, ease: 'power2.inOut' }, 1.75)
-      tl.to(frameRef.current, { scale: 1, borderRadius: '0px', duration: 0.7, ease: 'power2.inOut' }, 2.4)
-      tl.to(contentRef.current, { opacity: 1, y: 0, scale: 1, duration: 0.65, ease: 'power3.out' }, 2.6)
+      tl.to(headerRef.current, { opacity: 0, y: -50, duration: 0.5 }, 0)
+        .to(
+          videoFrameRef.current,
+          {
+            scale: 1,
+            width: '100vw',
+            height: '100vh',
+            borderRadius: '0px',
+            ease: 'power2.inOut',
+          },
+          0
+        )
+        .fromTo(
+          textContentRef.current,
+          { y: 100, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: 'expo.out' },
+          0.6
+        )
     }, outerRef)
 
     return () => ctx.revert()
   }, [])
 
   return (
-    <section
-      ref={outerRef}
-      className="relative bg-[#1b0a21] text-white"
-      style={{ height: '190vh' }}
-    >
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(244,114,182,0.16),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(59,130,246,0.12),transparent_30%)]" />
+    <section ref={outerRef} className="relative min-h-[100svh] w-full overflow-hidden bg-[#08040d]">
+      <div
+        ref={headerRef}
+        className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-center"
+      >
+        <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.5em] text-fuchsia-500">
+          The Prelude
+        </p>
         
-        <div className="absolute left-[-6rem] top-[-5rem] h-72 w-72 rounded-full bg-fuchsia-500/20 blur-3xl" style={{ animation: 'blobA 11s ease-in-out infinite' }} />
-        <div className="absolute bottom-[-7rem] right-[-5rem] h-80 w-80 rounded-full bg-cyan-500/12 blur-3xl"  style={{ animation: 'blobB 13s ease-in-out infinite' }} />
       </div>
 
-      <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden px-4">
-        <div className="relative z-20 mx-auto mb-10 max-w-4xl text-center">
-          <p ref={titleRef} className="text-[0.72rem] font-bold uppercase tracking-[0.55em] text-white/40">Vision</p>
-          <h2 className="mt-3 text-balance text-[clamp(2.3rem,5vw,4.8rem)] font-black uppercase leading-[0.92] tracking-[-0.05em]">
-            <span className="bg-gradient-to-r from-white via-fuchsia-100 to-white bg-clip-text text-transparent">Study in Bengaluru</span>{' '}
-            <span className="bg-gradient-to-r from-fuchsia-200 via-violet-300 to-cyan-200 bg-clip-text text-transparent">with Impact</span>
-          </h2>
-        </div>
-
+      <div className="flex h-full w-full items-center justify-center">
         <div
-          ref={frameRef}
-          className="relative overflow-hidden bg-black shadow-[0_24px_90px_rgba(0,0,0,0.55)]"
-          style={{ width: '100%', height: '100vh', transformOrigin: 'center center', willChange: 'transform, border-radius' }}
+          ref={videoFrameRef}
+          className="relative h-[46svh] w-[85vw] max-w-[300px] overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_0_100px_rgba(0,0,0,0.8)] md:h-[350px] md:w-[600px]"
         >
-          <video src={graduateVideo} autoPlay muted loop playsInline className="h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/12 via-black/18 to-black/32" />
-          <div className="absolute left-5 top-5 rounded-full border border-white/15 bg-black/25 px-4 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-white/70 backdrop-blur-sm">
-            Vision reel
-          </div>
-          <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4">
-            <div className="max-w-[18rem] rounded-2xl border border-white/12 bg-black/20 px-4 py-3 text-[0.62rem] font-semibold uppercase tracking-[0.35em] text-white/60 backdrop-blur-sm">
-              Scroll to expand
-            </div>
-            <div className="h-2 w-2 rounded-full bg-yellow-200 shadow-[0_0_22px_rgba(250,204,21,0.95)]" />
-          </div>
+          <video
+            src={graduateVideo}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="h-full w-full scale-110 object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#08040d] via-transparent to-transparent" />
+        </div>
+      </div>
 
-          <div
-            ref={contentRef}
-            className="absolute bottom-0 left-0 right-0 z-30 mx-auto max-w-[980px] px-4 pb-10"
-            style={{ willChange: 'transform, opacity' }}
-          >
-            <div className="rounded-[1.8rem] bg-[#f9f9fb] px-6 py-7 text-[#1e0338] shadow-[0_20px_80px_rgba(0,0,0,0.35)] sm:px-8 sm:py-8">
-              <p className="text-[0.95rem] leading-8 text-[#1e0338] sm:text-[1.02rem]">
-                StudyInBengaluru.com is Bengaluru&apos;s largest portal for admissions, with the vision of
-                making the city the educational hub of Asia. The focus is on building trust and credibility,
-                increasing brand awareness, and attracting students from across India and abroad, alongside
-                strategic college tie-ups, franchise sales, and user engagement.
-              </p>
-              <p className="mt-6 text-[0.92rem] leading-8 italic text-[#9b0f3d] sm:text-[1rem]">
-                &quot;Education is the passport to the future, and StudyinBengaluru is your first-class ticket.&quot;
-              </p>
-            </div>
-          </div>
+      <div
+        ref={textContentRef}
+        className="absolute bottom-8 left-0 right-0 z-30 flex justify-center px-4 md:bottom-20 md:px-6"
+      >
+        <div className="max-w-3xl rounded-[2.5rem] border border-white/10 bg-white/5 p-5 text-center backdrop-blur-xl md:p-8">
+          <p className="text-base font-light leading-relaxed text-white/90 md:text-2xl">
+            &quot;Education is the passport to the future, and{' '}
+            <span className="font-bold text-fuchsia-400">StudyinBengaluru</span> is your first-class
+            ticket.&quot;
+          </p>
         </div>
       </div>
     </section>
@@ -799,157 +842,118 @@ function VisionVideoSection() {
 
 
 function VisionMissionSection() {
-  const sectionRef = useRef(null)
-  const visionRef = useRef(null)
-  const missionRef = useRef(null)
-  const bgTextRef = useRef(null)
+  const containerRef = useRef(null)
+  const visionCardRef = useRef(null)
+  const missionCardRef = useRef(null)
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.set(missionRef.current, { y: '100%', opacity: 0, scale: 0.9 })
-
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: sectionRef.current,
+          trigger: containerRef.current,
           start: 'top top',
           end: '+=150%',
-          scrub: 0.5,
+          scrub: 1,
           pin: true,
-          anticipatePin: 1,
+          invalidateOnRefresh: true,
         },
       })
 
-      tl.to(visionRef.current, {
-        y: '-120%',
-        rotation: -5,
-        opacity: 0,
-        scale: 0.8,
-        duration: 1,
-        ease: 'power2.inOut',
-      })
-      .to(bgTextRef.current, {
-        xPercent: -20,
-        duration: 1,
-      }, 0)
-      .to(missionRef.current, {
-        y: '0%',
-        opacity: 1,
-        scale: 1,
-        duration: 1,
-        ease: 'expo.out',
-      }, '-=0.6')
-
-    }, sectionRef)
+      tl.fromTo(
+        visionCardRef.current,
+        { x: '-100%', opacity: 0 },
+        { x: '0%', opacity: 1, ease: 'power3.out' },
+        0
+      ).fromTo(
+        missionCardRef.current,
+        { x: '100%', opacity: 0 },
+        { x: '0%', opacity: 1, ease: 'power3.out' },
+        0
+      )
+    }, containerRef)
 
     return () => ctx.revert()
   }, [])
 
   return (
     <section
-      ref={sectionRef}
-      className="relative h-screen w-full overflow-hidden bg-[#08040d] text-white"
+      ref={containerRef}
+      className="relative flex min-h-[100svh] w-full items-center justify-center overflow-hidden bg-[#08040d] py-16 md:h-screen md:py-0"
     >
-      
-      <div className="absolute inset-0 z-0">
-        <div 
-          ref={bgTextRef}
-          className="absolute top-1/2 left-0 -translate-y-1/2 whitespace-nowrap text-[18rem] font-black uppercase tracking-tighter text-white/[0.02]"
-        >
-          INNOVATION • IMPACT • FUTURE • LEADERSHIP • GLOBAL • EXCELLENCE •
-        </div>
-        
-        
-        <div className="absolute top-[-10%] right-[-10%] h-[500px] w-[500px] rounded-full bg-violet-600/10 blur-[120px] animate-pulse" />
-        <div className="absolute bottom-[-10%] left-[-10%] h-[500px] w-[500px] rounded-full bg-cyan-600/10 blur-[120px]" />
-      </div>
+      <div
+        className="absolute left-1/2 top-1/2 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-purple-600/5 blur-[150px] pointer-events-none"
+      />
+      <div
+        className="absolute inset-0 opacity-10"
+        style={{
+          backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
+        }}
+      />
 
-      
-      <div className="pointer-events-none absolute inset-0 z-[1] opacity-40">
-        <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-          <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} color="#a855f7" />
-          <MissionBackdropModel />
-        </Canvas>
-      </div>
-
-      
-      <div className="relative z-10 flex h-full items-center justify-center px-6">
-        
-        
-        <div
-          ref={visionRef}
-          className="absolute w-full max-w-6xl"
-        >
-          <div className="relative overflow-hidden rounded-[3.5rem] border border-white/5 bg-white/[0.03] p-12 backdrop-blur-3xl md:p-24">
-            <div className="absolute top-0 right-0 p-8">
-               <Target className="h-20 w-20 text-fuchsia-500/20" />
+      <div className="container relative z-10 mx-auto grid grid-cols-1 gap-6 px-4 md:grid-cols-2 md:gap-8 md:px-6">
+        <div ref={visionCardRef} className="group relative">
+          <div className="absolute -inset-1 rounded-[3rem] bg-gradient-to-r from-fuchsia-600 to-purple-600 opacity-20 blur transition duration-1000 group-hover:opacity-40" />
+          <div className="relative flex min-h-[420px] flex-col justify-between overflow-hidden rounded-[3rem] border border-white/5 bg-[#120a1d] p-6 sm:p-8 md:h-[500px] md:p-10">
+            <div className="flex items-start justify-between">
+              <div className="rounded-2xl bg-fuchsia-500/10 p-4">
+                <Target className="h-8 w-8 text-fuchsia-500" />
+              </div>
+              <span className="text-5xl font-black italic text-white/20 sm:text-6xl">01</span>
             </div>
-            
-            <div className="flex flex-col gap-8 md:flex-row md:items-end">
-              <div className="flex-1">
-                <div className="mb-6 inline-block rounded-full bg-fuchsia-500/10 px-4 py-1 text-[10px] font-bold uppercase tracking-[0.3em] text-fuchsia-400">
-                  The Visionary Goal
-                </div>
-                <h2 className="text-7xl font-black uppercase leading-[0.9] tracking-tighter md:text-9xl">
-                  Our <br /> 
-                  <span className="bg-gradient-to-r from-fuchsia-400 to-violet-500 bg-clip-text text-transparent">Vision</span>
-                </h2>
-              </div>
-              <div className="flex-1 lg:pl-12">
-                <p className="text-xl font-light leading-relaxed text-white/60 md:text-3xl">
-                  To transform Bengaluru into <span className="font-bold text-white italic underline decoration-fuchsia-500/30">Asia's premier educational destination</span> by revolutionizing admission processes and fostering industry-leading partnerships.
-                </p>
-                <div className="mt-8 flex gap-2">
-                  <div className="h-1 w-12 bg-fuchsia-500" />
-                  <div className="h-1 w-4 bg-fuchsia-500/30" />
-                </div>
-              </div>
+            <div>
+              <h2 className="mb-5 text-4xl font-black uppercase tracking-tighter text-white sm:mb-6 sm:text-5xl">
+                Our <br />
+                <span className="text-fuchsia-500">Vision</span>
+              </h2>
+              <p className="text-base leading-relaxed text-white/60 sm:text-lg">
+                To transform Bengaluru into{' '}
+                <span className="font-semibold text-white underline decoration-fuchsia-500">
+                  Asia&apos;s premier educational destination
+                </span>{' '}
+                by revolutionizing admission processes.
+              </p>
+            </div>
+            <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-widest text-fuchsia-500">
+              <span>View Roadmap</span>
+              <MoveRight size={16} />
             </div>
           </div>
         </div>
 
-        
-        <div
-          ref={missionRef}
-          className="absolute w-full max-w-6xl"
-        >
-          <div className="relative overflow-hidden rounded-[3.5rem] border border-cyan-500/20 bg-[#0c1221]/80 p-12 backdrop-blur-3xl md:p-24 shadow-[0_0_100px_rgba(34,211,238,0.1)]">
-            <div className="absolute bottom-0 left-0 p-8">
-               <Rocket className="h-24 w-24 text-cyan-500/10" />
+        <div ref={missionCardRef} className="group relative mt-4 md:mt-24">
+          <div className="absolute -inset-1 rounded-[3rem] bg-gradient-to-r from-cyan-600 to-blue-600 opacity-20 blur transition duration-1000 group-hover:opacity-40" />
+          <div className="relative flex min-h-[420px] flex-col justify-between overflow-hidden rounded-[3rem] border border-white/5 bg-[#120a1d] p-6 sm:p-8 md:h-[500px] md:p-10">
+            <div className="flex items-start justify-between">
+              <div className="rounded-2xl bg-cyan-500/10 p-4">
+                <Rocket className="h-8 w-8 text-cyan-500" />
+              </div>
+              <span className="text-5xl font-black italic text-white/20 sm:text-6xl">02</span>
             </div>
-
-            <div className="flex flex-col gap-8 md:flex-row md:items-end">
-              <div className="flex-1">
-                <div className="mb-6 inline-block rounded-full bg-cyan-500/10 px-4 py-1 text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-400">
-                  Our Commitment
-                </div>
-                <h2 className="text-7xl font-black uppercase leading-[0.9] tracking-tighter md:text-9xl">
-                  Our <br /> 
-                  <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Mission</span>
-                </h2>
-              </div>
-              <div className="flex-1 lg:pl-12">
-                <p className="text-xl font-light leading-relaxed text-white/70 md:text-3xl">
-                  To attract and empower students worldwide by providing <span className="font-bold text-white underline decoration-cyan-400/30">access to world-class education</span> in India, nurturing global talent and future leaders.
-                </p>
-                <div className="mt-10 flex gap-4">
-                  {['Empower', 'Nurture', 'Lead'].map((word) => (
-                    <span key={word} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-cyan-400/60">
-                      <Sparkles className="h-3 w-3" /> {word}
-                    </span>
-                  ))}
-                </div>
-              </div>
+            <div>
+              <h2 className="mb-5 text-4xl font-black uppercase tracking-tighter text-white sm:mb-6 sm:text-5xl">
+                Our <br />
+                <span className="text-cyan-500">Mission</span>
+              </h2>
+              <p className="text-base leading-relaxed text-white/60 sm:text-lg">
+                To empower students worldwide by providing{' '}
+                <span className="font-semibold text-white underline decoration-cyan-500">
+                  access to world-class education
+                </span>
+                , nurturing global talent.
+              </p>
+            </div>
+            <div className="flex items-center gap-6">
+              {['Empower', 'Nurture', 'Lead'].map((tag) => (
+                <span
+                  key={tag}
+                  className="flex items-center gap-2 text-[10px] font-black uppercase tracking-tighter text-cyan-500/60"
+                >
+                  <Sparkles size={10} /> {tag}
+                </span>
+              ))}
             </div>
           </div>
-        </div>
-      </div>
-
-      
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30">
-        <div className="flex flex-col items-center gap-2 text-white/20">
-          <div className="h-12 w-[1px] bg-gradient-to-b from-white/40 to-transparent" />
-          <span className="text-[10px] font-bold uppercase tracking-[0.5em]">Scroll Fast</span>
         </div>
       </div>
     </section>
@@ -1023,7 +1027,7 @@ function FinalCTASection() {
     >
       
       <div className="pointer-events-none absolute top-1/2 left-0 z-0 -translate-y-1/2 select-none opacity-10">
-        <div ref={marqueeRef} className="flex whitespace-nowrap text-[15rem] font-black uppercase tracking-tighter text-violet-500">
+        <div ref={marqueeRef} className="flex whitespace-nowrap text-[5rem] font-black uppercase tracking-tighter text-violet-500 sm:text-[8rem] lg:text-[15rem]">
           <span className="mx-10">Your Future Awaits</span>
           <span className="mx-10 text-transparent outline-text">Your Future Awaits</span>
           <span className="mx-10">Your Future Awaits</span>
