@@ -93,70 +93,70 @@ const items = [
   {
     title: 'Universities',
     icon: GraduationCap,
-    accent: 'from-violet-500/35 via-fuchsia-500/20 to-transparent',
+    accent: 'from-violet-500/35 via-violet-500/20 to-transparent',
     glow: 'rgba(196, 181, 253, 0.28)',
     detail: 'Explore top-ranked universities with modern campus life, global exposure, and future-focused programs.',
   },
   {
     title: 'Colleges',
     icon: Landmark,
-    accent: 'from-indigo-500/35 via-sky-500/20 to-transparent',
+    accent: 'from-violet-500/35 via-violet-500/20 to-transparent',
     glow: 'rgba(125, 211, 252, 0.26)',
     detail: 'Find the right college path with strong academics, career support, and student-friendly guidance.',
   },
   {
     title: 'Courses',
     icon: BookOpen,
-    accent: 'from-cyan-500/35 via-teal-500/20 to-transparent',
+    accent: 'from-violet-500/35 via-violet-500/20 to-transparent',
     glow: 'rgba(103, 232, 249, 0.24)',
     detail: 'Browse courses that match your goals, from skill-building programs to career-oriented study tracks.',
   },
   {
     title: 'Online Courses',
     icon: Laptop,
-    accent: 'from-sky-500/35 via-blue-500/20 to-transparent',
+    accent: 'from-violet-500/35 via-violet-500/20 to-transparent',
     glow: 'rgba(96, 165, 250, 0.24)',
     detail: 'Learn from anywhere with flexible online programs built for modern learners and busy families.',
   },
   {
     title: 'Short-Term Programs',
     icon: TimerReset,
-    accent: 'from-amber-500/35 via-orange-500/20 to-transparent',
+    accent: 'from-violet-500/35 via-orange-500/20 to-transparent',
     glow: 'rgba(251, 191, 36, 0.24)',
     detail: 'Quick, practical programs for immediate growth, upskilling, and focused career upgrades.',
   },
   {
     title: 'Part-Time Jobs',
     icon: BriefcaseBusiness,
-    accent: 'from-emerald-500/35 via-green-500/20 to-transparent',
+    accent: 'from-violet-500/35 via-green-500/20 to-transparent',
     glow: 'rgba(74, 222, 128, 0.24)',
     detail: 'Discover student-friendly work options that help with experience, confidence, and finances.',
   },
   {
     title: 'Accommodation',
     icon: HomeIcon,
-    accent: 'from-rose-500/35 via-pink-500/20 to-transparent',
+    accent: 'from-violet-500/35 via-violet-500/20 to-transparent',
     glow: 'rgba(244, 114, 182, 0.22)',
     detail: 'Find safe and comfortable places to stay with easy access, convenience, and peace of mind.',
   },
   {
     title: 'Events',
     icon: CalendarDays,
-    accent: 'from-purple-500/35 via-violet-500/20 to-transparent',
+    accent: 'from-violet-500/35 via-violet-500/20 to-transparent',
     glow: 'rgba(168, 85, 247, 0.24)',
     detail: 'Attend events, webinars, and campus activities that make the journey more engaging and useful.',
   },
   {
     title: '1-on-1 Counselling',
     icon: Users,
-    accent: 'from-fuchsia-500/35 via-pink-500/20 to-transparent',
+    accent: 'from-violet-500/35 via-violet-500/20 to-transparent',
     glow: 'rgba(236, 72, 153, 0.24)',
     detail: 'Get personal guidance for choosing the right path without the confusion and random internet chaos.',
   },
   {
     title: 'Internships',
     icon: BadgeCheck,
-    accent: 'from-lime-500/35 via-emerald-500/20 to-transparent',
+    accent: 'from-violet-500/35 via-violet-500/20 to-transparent',
     glow: 'rgba(163, 230, 53, 0.22)',
     detail: 'Explore internship opportunities that build real experience and help careers start stronger.',
   },
@@ -166,27 +166,27 @@ const stats = [
   {
     value: 100, suffix: '+', label: 'Partner Colleges',
     note: 'A wide academic network with strong institutional reach.',
-    icon: GraduationCap, accent: 'from-violet-500/35 via-fuchsia-500/15 to-transparent',
+    icon: GraduationCap, accent: 'from-violet-500/35 via-violet-500/15 to-transparent',
   },
   {
     value: 1000, suffix: '+', label: 'Students Enrolled',
     note: 'A growing student base with real admissions momentum.',
-    icon: Users, accent: 'from-indigo-500/35 via-sky-500/15 to-transparent',
+    icon: Users, accent: 'from-violet-500/35 via-violet-500/15 to-transparent',
   },
   {
     value: 95, suffix: '%', label: 'Admission Success',
     note: 'Guidance that improves clarity, confidence, and outcomes.',
-    icon: BadgeCheck, accent: 'from-cyan-500/35 via-teal-500/15 to-transparent',
+    icon: BadgeCheck, accent: 'from-violet-500/35 via-violet-500/15 to-transparent',
   },
   {
     value: 50, suffix: '+', label: 'Franchises',
     note: 'A strong expansion footprint across key locations.',
-    icon: Sparkles, accent: 'from-purple-500/35 via-violet-500/15 to-transparent',
+    icon: Sparkles, accent: 'from-violet-500/35 via-violet-500/15 to-transparent',
   },
   {
     value: 24, suffix: '/7', label: 'Student Support',
     note: 'Always-on support for parents and students at every step.',
-    icon: ShieldCheck, accent: 'from-rose-500/35 via-pink-500/15 to-transparent',
+    icon: ShieldCheck, accent: 'from-violet-500/35 via-violet-500/15 to-transparent',
   },
 ]
 
@@ -325,7 +325,14 @@ function HeroSection() {
   }, [])
 
   return (
-    <section ref={containerRef} className="relative min-h-[100svh] w-full overflow-hidden bg-[#0a0510] px-4 py-6 md:h-screen md:px-0 md:py-0">
+    <section
+      ref={containerRef}
+      className="relative min-h-[100svh] w-full overflow-hidden border-b border-white/6 bg-[#220A36] px-4 py-6 md:h-screen md:px-0 md:py-0"
+      style={{
+        background:
+          'radial-gradient(circle at top left, rgba(168, 85, 247, 0.18), transparent 34%), radial-gradient(circle at bottom right, rgba(213, 161, 255, 0.12), transparent 28%), linear-gradient(180deg, #220A36 0%, #1B0A21 100%)',
+      }}
+    >
       <div className="hidden">
         <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 shadow-2xl backdrop-blur-xl">
           <p className="text-[0.7rem] font-bold uppercase tracking-[0.45em] text-white/45">
@@ -371,7 +378,7 @@ function HeroSection() {
           
           <h2 className="text-[clamp(2.4rem,12vw,7rem)] font-black uppercase leading-[0.85] tracking-tight text-white sm:text-[clamp(3rem,8vw,7rem)]">
             Study India's <br />
-            <span className="bg-gradient-to-r from-violet-300 via-fuchsia-200 to-cyan-200 bg-clip-text font-serif font-light italic text-transparent drop-shadow-[0_10px_30px_rgba(123,44,191,0.5)]">
+            <span className="bg-gradient-to-r from-violet-300 via-violet-200 to-violet-200 bg-clip-text font-serif font-light italic text-transparent drop-shadow-[0_10px_30px_rgba(123,44,191,0.5)]">
               Silicon Valley
             </span>
           </h2>
@@ -414,7 +421,7 @@ function HeroSection() {
           </defs>
 
           <g mask="url(#breakthroughMask)">
-            <rect width="100%" height="100%" fill="#1b0a21" />
+            <rect width="100%" height="100%" fill="#1B0A21" />
             <circle cx="10%" cy="10%" r="30%" fill="#5d3a80" filter="blur(120px)" opacity="0.6" />
             <circle cx="90%" cy="90%" r="30%" fill="#9d4edd" filter="blur(120px)" opacity="0.4" />
             <rect width="100%" height="100%" fill="url(#cyberGridPattern)" />
@@ -456,7 +463,7 @@ function HeroSection() {
           <span className="text-[0.6rem] font-bold uppercase tracking-[0.7em] text-white/50">
             Initiate Breakthrough
           </span>
-          <ArrowDown className="h-4 w-4 animate-bounce text-fuchsia-400" />
+          <ArrowDown className="h-4 w-4 animate-bounce text-violet-400" />
         </div>
       </div>
       </div>
@@ -466,69 +473,126 @@ function HeroSection() {
 
 // --- START OF NEW REPLACEMENT BLOCK ---
 const cardData = [
-  { title: 'Universities', subtitle: 'GLOBAL ACCESS', icon: GraduationCap, color: 'from-blue-600 via-cyan-400 to-blue-500', glow: 'rgba(59, 130, 246, 0.5)' },
-  { title: 'Colleges', subtitle: 'GLOBAL ACCESS', icon: School, color: 'from-purple-600 via-fuchsia-400 to-purple-500', glow: 'rgba(168, 85, 247, 0.5)' },
-  { title: 'Institutes', subtitle: 'GLOBAL ACCESS', icon: Library, color: 'from-orange-600 via-amber-400 to-orange-500', glow: 'rgba(249, 115, 22, 0.5)' },
-  { title: 'Courses', subtitle: 'GLOBAL ACCESS', icon: BookOpen, color: 'from-emerald-600 via-teal-400 to-emerald-500', glow: 'rgba(16, 185, 129, 0.5)' },
-  { title: 'Online Courses', subtitle: 'GLOBAL ACCESS', icon: Globe, color: 'from-rose-600 via-pink-400 to-rose-500', glow: 'rgba(244, 63, 94, 0.5)' },
-  { title: 'Short-term Programs', subtitle: 'GLOBAL ACCESS', icon: Clock, color: 'from-blue-700 via-indigo-400 to-blue-600', glow: 'rgba(37, 99, 235, 0.5)' },
-  { title: 'Part-time Jobs', subtitle: 'GLOBAL ACCESS', icon: Briefcase, color: 'from-violet-600 via-purple-400 to-violet-500', glow: 'rgba(139, 92, 246, 0.5)' },
-  { title: 'Accommodation', subtitle: 'NEAR ME', icon: HomeIcon, color: 'from-amber-600 via-orange-400 to-amber-500', glow: 'rgba(245, 158, 11, 0.5)' },
-  { title: 'Events', subtitle: 'GLOBAL ACCESS', icon: Calendar, color: 'from-teal-600 via-green-400 to-teal-500', glow: 'rgba(20, 184, 166, 0.5)' },
-  { title: '1-on-1 Counselling', subtitle: 'FREE SESSION', icon: MessageCircle, color: 'from-cyan-600 via-blue-400 to-cyan-500', glow: 'rgba(6, 182, 212, 0.5)' },
-  { title: 'Internships', subtitle: 'GLOBAL ACCESS', icon: UserCheck, color: 'from-fuchsia-600 via-pink-400 to-fuchsia-500', glow: 'rgba(217, 70, 239, 0.5)' },
-  { title: 'Scholarships', subtitle: 'GLOBAL ACCESS', icon: Sparkles, color: 'from-yellow-600 via-orange-400 to-yellow-500', glow: 'rgba(234, 179, 8, 0.5)' },
+  { title: 'Universities', subtitle: 'GLOBAL ACCESS', icon: GraduationCap, color: 'from-violet-600 via-violet-400 to-violet-500', glow: 'rgba(59, 130, 246, 0.5)', path: '/services#universities' },
+  { title: 'Colleges', subtitle: 'GLOBAL ACCESS', icon: School, color: 'from-violet-600 via-violet-400 to-violet-500', glow: 'rgba(168, 85, 247, 0.5)', path: '/services#colleges' },
+  { title: 'Institutes', subtitle: 'GLOBAL ACCESS', icon: Library, color: 'from-orange-600 via-violet-400 to-orange-500', glow: 'rgba(249, 115, 22, 0.5)' },
+  { title: 'Courses', subtitle: 'GLOBAL ACCESS', icon: BookOpen, color: 'from-violet-600 via-violet-400 to-violet-500', glow: 'rgba(16, 185, 129, 0.5)', path: '/services#courses' },
+  { title: 'Online Courses', subtitle: 'GLOBAL ACCESS', icon: Globe, color: 'from-violet-600 via-violet-400 to-violet-500', glow: 'rgba(244, 63, 94, 0.5)' },
+  { title: 'Short-term Programs', subtitle: 'GLOBAL ACCESS', icon: Clock, color: 'from-violet-700 via-violet-400 to-violet-600', glow: 'rgba(37, 99, 235, 0.5)' },
+  { title: 'Part-time Jobs', subtitle: 'GLOBAL ACCESS', icon: Briefcase, color: 'from-violet-600 via-violet-400 to-violet-500', glow: 'rgba(139, 92, 246, 0.5)' },
+  { title: 'Accommodation', subtitle: 'NEAR ME', icon: HomeIcon, color: 'from-violet-600 via-orange-400 to-violet-500', glow: 'rgba(245, 158, 11, 0.5)' },
+  { title: 'Events', subtitle: 'GLOBAL ACCESS', icon: Calendar, color: 'from-violet-600 via-green-400 to-violet-500', glow: 'rgba(20, 184, 166, 0.5)' },
+  { title: '1-on-1 Counselling', subtitle: 'FREE SESSION', icon: MessageCircle, color: 'from-violet-600 via-violet-400 to-violet-500', glow: 'rgba(6, 182, 212, 0.5)' },
+  { title: 'Internships', subtitle: 'GLOBAL ACCESS', icon: UserCheck, color: 'from-violet-600 via-violet-400 to-violet-500', glow: 'rgba(217, 70, 239, 0.5)' },
+  { title: 'Scholarships', subtitle: 'GLOBAL ACCESS', icon: Sparkles, color: 'from-violet-600 via-orange-400 to-violet-500', glow: 'rgba(234, 179, 8, 0.5)' },
 ];
 
-function GlassCard({ item }) {
+function GlassCard({ item, onNavigate }) {
   const Icon = item.icon;
+  const handleNavigate = () => {
+    if (item.path) {
+      onNavigate?.(item.path);
+    }
+  };
+
   return (
-    <div className="group relative h-[450px] min-w-[300px] cursor-pointer overflow-hidden rounded-[2.5rem] border border-white/10 bg-[#160b21]/40 p-8 backdrop-blur-2xl transition-all duration-700 hover:scale-[1.02] hover:border-white/30 md:min-w-[350px]">
+    <div
+      onClick={handleNavigate}
+      className={`group relative flex h-[420px] min-w-[320px] flex-col overflow-hidden rounded-[2.5rem] border border-white/16 bg-[#2f1047]/92 p-8 shadow-[0_30px_70px_rgba(0,0,0,0.48)] backdrop-blur-3xl transition-all duration-700 hover:-translate-y-3 hover:border-white/45 hover:shadow-[0_35px_90px_rgba(0,0,0,0.6)] md:min-w-[350px] ${item.path ? 'cursor-pointer' : ''}`}
+      role={item.path ? 'button' : undefined}
+      tabIndex={item.path ? 0 : undefined}
+      onKeyDown={(e) => {
+        if (!item.path) return;
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleNavigate();
+        }
+      }}
+    >
+      {/* Animated Background Gradient on Hover */}
       <div className="absolute inset-0 z-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100">
-        <div 
-          className="absolute -inset-[100%] animate-[spin_8s_linear_infinite] opacity-20"
-          style={{ background: `conic-gradient(from 0deg, transparent 0%, ${item.glow} 50%, transparent 100%)` }}
+        <div
+          className="absolute -inset-[100%] animate-[spin_8s_linear_infinite] opacity-55"
+          style={{ background: `conic-gradient(from 0deg, transparent 0%, ${item.glow || 'rgba(255,255,255,0.5)'} 50%, transparent 100%)` }}
         />
+        {/* Dark inner mask to maintain text readability while creating a glowing border effect */}
+        <div className="absolute inset-[1.5px] rounded-[2.5rem] bg-[#251034]/92 backdrop-blur-3xl transition-colors duration-500" />
       </div>
 
-      <div className="relative z-10 mb-10">
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 z-0 opacity-90"
+        style={{
+          background:
+            'radial-gradient(circle at top left, rgba(213, 161, 255, 0.22), transparent 34%), radial-gradient(circle at top right, rgba(168, 85, 247, 0.18), transparent 28%), linear-gradient(180deg, rgba(95, 69, 114, 0.16) 0%, rgba(23, 15, 31, 0.16) 100%)',
+        }}
+      />
+
+      {/* Top Section: Icon & Accents */}
+      <div className="relative z-10 flex items-start justify-between">
         <div className="relative flex h-20 w-20 items-center justify-center">
-          <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${item.color} blur-2xl opacity-40 group-hover:opacity-80 transition-opacity duration-500`} />
-          <div className="relative flex h-full w-full items-center justify-center rounded-3xl border border-white/20 bg-black/40 backdrop-blur-md transition-transform duration-500 group-hover:-translate-y-2 group-hover:rotate-6">
-            <Icon className="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]" size={32} strokeWidth={1.5} />
+          {/* Dynamic Glow Behind Icon */}
+          <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${item.color} blur-2xl opacity-45 transition-opacity duration-500 group-hover:opacity-95`} />
+          
+          {/* Glass Icon Container */}
+          <div className="relative flex h-full w-full items-center justify-center rounded-3xl border border-white/26 bg-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_0_24px_rgba(168,85,247,0.18)] backdrop-blur-md transition-all duration-500 group-hover:scale-110 group-hover:border-white/55 group-hover:bg-white/15">
+            <Icon className="text-white drop-shadow-[0_0_18px_rgba(255,255,255,0.55)] transition-transform duration-500 group-hover:rotate-12" size={32} strokeWidth={1.6} />
           </div>
-          <div className="absolute -right-2 -top-2 h-4 w-4 border-r-2 border-t-2 border-white/30" />
-          <div className="absolute -bottom-2 -left-2 h-4 w-4 border-b-2 border-l-2 border-white/30" />
+          
+          {/* Corner accents expanding on hover */}
+          <div className="absolute -right-2 -top-2 h-4 w-4 border-r-2 border-t-2 border-white/40 transition-all duration-500 group-hover:-right-3 group-hover:-top-3 group-hover:border-white/90" />
+          <div className="absolute -bottom-2 -left-2 h-4 w-4 border-b-2 border-l-2 border-white/40 transition-all duration-500 group-hover:-bottom-3 group-hover:-left-3 group-hover:border-white/90" />
+        </div>
+        
+        {/* Top Right Minimalist Decoration */}
+        <div className="flex flex-col items-end gap-1.5 opacity-45 transition-opacity duration-500 group-hover:opacity-100">
+          <div className="h-1 w-1 rounded-full bg-white" />
+          <div className="h-1 w-1 rounded-full bg-white" />
+          <div className="h-1 w-1 rounded-full bg-white" />
         </div>
       </div>
 
-      <div className="relative z-10 space-y-4">
-        <div className="flex items-center gap-2">
-          <div className="h-1 w-8 rounded-full bg-gradient-to-r from-white/40 to-transparent" />
-          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">
+      {/* Middle Section: Text Content */}
+      <div className="relative z-10 mt-10 flex flex-col gap-3">
+        <div className="flex items-center gap-3">
+          <div className="h-[2px] w-6 rounded-full bg-gradient-to-r from-white/85 to-transparent shadow-[0_0_12px_rgba(255,255,255,0.35)] transition-all duration-500 group-hover:w-12" />
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/72 transition-colors duration-500 group-hover:text-white">
             {item.subtitle}
           </p>
         </div>
-        <h3 className="text-3xl font-black italic tracking-tighter text-white transition-colors duration-500 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/50 md:text-4xl">
+        <h3 className="text-3xl font-black italic tracking-tighter text-white drop-shadow-[0_0_18px_rgba(213,161,255,0.35)] transition-all duration-500 group-hover:translate-x-2 group-hover:text-violet-100 md:text-4xl">
           {item.title}
         </h3>
       </div>
 
-      <div className="absolute bottom-10 left-8 right-8 z-10">
-        <div className="relative mb-8 h-[1px] w-full bg-white/10 overflow-hidden">
-          <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/40 to-transparent transition-all duration-1000 group-hover:translate-x-[200%]" />
+      {/* Bottom Section: Button fixed to bottom using mt-auto */}
+      <div className="relative z-10 mt-auto w-full pt-6">
+        <div className="relative mb-6 h-[1px] w-full overflow-hidden bg-white/14">
+          <div className="absolute inset-y-0 left-0 w-1/2 -translate-x-[150%] bg-gradient-to-r from-transparent via-white/90 to-transparent transition-all duration-1000 ease-in-out group-hover:translate-x-[200%]" />
         </div>
-        <button className="group/btn relative flex items-center gap-4 overflow-hidden rounded-full border border-white/5 bg-white/5 px-6 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-all hover:bg-white hover:text-black">
-          <span className="relative z-10 flex items-center gap-2">
-            Initiate Access <ArrowRight size={14} />
+        
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleNavigate();
+          }}
+          className="group/btn relative flex w-full items-center justify-between overflow-hidden rounded-2xl border border-white/18 bg-white/08 px-6 py-4 transition-all duration-500 hover:border-white/55 hover:bg-white hover:shadow-[0_0_34px_rgba(213,161,255,0.28)]"
+        >
+          <span className="relative z-10 text-[10px] font-black uppercase tracking-[0.2em] text-white/78 transition-colors group-hover/btn:text-black">
+            Initiate Access
           </span>
+          <div className="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/14 transition-colors group-hover/btn:bg-black/10">
+            <ArrowRight size={14} className="text-white transition-transform duration-300 group-hover/btn:translate-x-1 group-hover/btn:text-black" />
+          </div>
         </button>
       </div>
 
-      <div className="absolute bottom-0 right-0 h-32 w-32 translate-x-10 translate-y-10 opacity-5 transition-opacity group-hover:opacity-20">
-        <div className="grid h-full w-full grid-cols-4 grid-rows-4 gap-1">
-          {[...Array(16)].map((_, i) => (
-            <div key={i} className="bg-white" />
+      {/* Decorative Animated Grid Pattern */}
+      <div className="absolute -bottom-12 -right-12 z-0 h-40 w-40 opacity-20 transition-all duration-700 group-hover:-translate-x-4 group-hover:-translate-y-4 group-hover:scale-110 group-hover:opacity-45 md:opacity-12">
+        <div className="grid h-full w-full grid-cols-5 grid-rows-5 gap-2">
+          {[...Array(25)].map((_, i) => (
+            <div key={i} className="rounded-full bg-white/95" />
           ))}
         </div>
       </div>
@@ -536,7 +600,7 @@ function GlassCard({ item }) {
   );
 }
 
-function Opportunities() {
+function Opportunities({ onNavigate }) {
   const triggerRef = useRef(null);
   const bannerRef = useRef(null);
   const cardsRef = useRef(null);
@@ -579,17 +643,30 @@ function Opportunities() {
   }, []);
 
   return (
-    <div ref={triggerRef} className="overflow-hidden bg-[#0a0212]">
-      <section className="relative flex h-screen w-full items-center overflow-hidden">
+    <div
+      ref={triggerRef}
+      className="overflow-hidden border-y border-white/6 bg-[#170F1F]"
+      style={{
+        background:
+          'radial-gradient(circle at 50% 18%, rgba(213, 161, 255, 0.16), transparent 34%), linear-gradient(180deg, #170F1F 0%, #220A36 100%)',
+      }}
+    >
+      <section
+        className="relative flex h-screen w-full items-center overflow-hidden border-b border-white/6"
+        style={{
+          background:
+            'radial-gradient(circle at 50% 22%, rgba(168, 85, 247, 0.22) 0%, rgba(34, 10, 54, 0.92) 45%, rgba(23, 15, 31, 1) 100%)',
+        }}
+      >
         <div ref={bannerRef} className="absolute inset-0 z-0 flex flex-col items-center justify-center pointer-events-none">
           <div className="mb-6 flex gap-6 opacity-20">
             <GraduationCap className="h-10 w-10 animate-pulse text-white" />
             <Sparkles className="h-10 w-10 animate-bounce text-white" />
           </div>
-          <h2 className="text-[clamp(4rem,15vw,12rem)] font-black uppercase italic tracking-tighter text-white/10 md:text-[14rem]">
+          <h2 className="opportunities-shimmer text-[clamp(4rem,15vw,12rem)] font-black uppercase italic tracking-tighter md:text-[14rem]">
             OPPORTUNITIES
           </h2>
-          <p className="mt-4 text-sm font-bold uppercase tracking-[1em] text-purple-400/40 text-center">
+          <p className="mt-4 text-center text-sm font-bold uppercase tracking-[1em] text-violet-200/50">
             Unlocking Potential
           </p>
         </div>
@@ -597,7 +674,7 @@ function Opportunities() {
         <div className="relative z-10 flex w-full items-center">
           <div ref={cardsRef} className="flex gap-6 px-[10vw] md:gap-10">
             {cardData.map((item, index) => (
-              <GlassCard key={`${item.title}-${index}`} item={item} />
+              <GlassCard key={`${item.title}-${index}`} item={item} onNavigate={onNavigate} />
             ))}
           </div>
         </div>
@@ -676,7 +753,11 @@ function ImpactNumbersSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-[#1b0a21] px-4 py-6 text-white sm:px-6 lg:px-8 sm:py-10"
+      className="relative overflow-hidden border-y border-white/6 px-4 py-6 text-white sm:px-6 lg:px-8 sm:py-10"
+      style={{
+        background:
+          'radial-gradient(circle at top right, rgba(213, 161, 255, 0.14), transparent 32%), linear-gradient(180deg, #1B0A21 0%, #220A36 100%)',
+      }}
     >
       
       <div className="pointer-events-none absolute inset-0">
@@ -684,7 +765,7 @@ function ImpactNumbersSection() {
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:72px_72px] opacity-18" />
         
         <div className="absolute left-[-8rem] top-[-6rem] h-72 w-72 rounded-full bg-violet-500/20 blur-3xl" style={{ animation: 'blobA 10s ease-in-out infinite' }} />
-        <div className="absolute bottom-[-7rem] right-[-6rem] h-80 w-80 rounded-full bg-fuchsia-500/15 blur-3xl" style={{ animation: 'blobB 12s ease-in-out infinite' }} />
+        <div className="absolute bottom-[-7rem] right-[-6rem] h-80 w-80 rounded-full bg-violet-500/15 blur-3xl" style={{ animation: 'blobB 12s ease-in-out infinite' }} />
       </div>
 
       <style>{`
@@ -722,7 +803,7 @@ function ImpactNumbersSection() {
                 className="mt-4 text-balance text-[clamp(2.2rem,5.5vw,5rem)] font-black uppercase leading-[0.9] tracking-[-0.05em]"
               >
                 <span className="bg-gradient-to-r from-white via-violet-100 to-white bg-clip-text text-transparent">Built on</span>{' '}
-                <span className="bg-gradient-to-r from-fuchsia-200 via-violet-300 to-sky-200 bg-clip-text text-transparent">Real Momentum</span>
+                <span className="bg-gradient-to-r from-violet-200 via-violet-300 to-violet-200 bg-clip-text text-transparent">Real Momentum</span>
               </motion.h2>
               <motion.p
                 initial={{ opacity: 0, y: 12 }}
@@ -743,7 +824,7 @@ function ImpactNumbersSection() {
               >
                 {[...stats, ...stats].map((item, index) => (
                   <span key={`${item.label}-${index}`} className="flex items-center gap-3 whitespace-nowrap">
-                    <span className="h-1.5 w-1.5 rounded-full bg-violet-300 shadow-[0_0_18px_rgba(192,132,252,0.9)]" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-violet-300 shadow-[0_0_18px_rgba(168,85,247,0.9)]" />
                     {item.label}
                   </span>
                 ))}
@@ -847,12 +928,19 @@ function VisionVideoSection() {
   }, [])
 
   return (
-    <section ref={outerRef} className="relative h-screen w-full overflow-hidden bg-[#05010a]">
+    <section
+      ref={outerRef}
+      className="relative h-screen w-full overflow-hidden border-y border-white/6"
+      style={{
+        background:
+          'radial-gradient(circle at center, rgba(123, 44, 191, 0.16), transparent 44%), linear-gradient(180deg, #220A36 0%, #1B0A21 100%)',
+      }}
+    >
       <div
         ref={headerRef}
         className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-center"
       >
-        <div className="mb-4 flex items-center gap-2 text-fuchsia-500">
+        <div className="mb-4 flex items-center gap-2 text-violet-500">
           <Sparkles size={16} className="animate-pulse" />
           <span className="text-[10px] font-black uppercase tracking-[0.8em]">The Vision</span>
         </div>
@@ -881,12 +969,12 @@ function VisionVideoSection() {
             className="absolute inset-0 z-30 flex items-center justify-center p-6 md:p-12"
           >
             <div className="max-w-4xl text-center">
-              <p className="mb-6 inline-block rounded-full border border-fuchsia-500/30 bg-fuchsia-500/10 px-6 py-1 text-[10px] font-bold uppercase tracking-[0.4em] text-fuchsia-300 backdrop-blur-md">
+              <p className="mb-6 inline-block rounded-full border border-violet-500/30 bg-violet-500/10 px-6 py-1 text-[10px] font-bold uppercase tracking-[0.4em] text-violet-300 backdrop-blur-md">
                 StudyInBengaluru Vision
               </p>
               <h3 className="text-3xl font-light leading-tight text-white md:text-6xl">
-                &quot;Education is the <span className="font-serif italic text-fuchsia-400">passport</span> to the future, and{' '}
-                <span className="font-black text-white underline decoration-fuchsia-500 underline-offset-8">
+                &quot;Education is the <span className="font-serif italic text-violet-400">passport</span> to the future, and{' '}
+                <span className="font-black text-white underline decoration-violet-500 underline-offset-8">
                   StudyinBengaluru
                 </span> is your first-class ticket.&quot;
               </h3>
@@ -898,7 +986,7 @@ function VisionVideoSection() {
         </div>
       </div>
       
-      <div className="absolute -bottom-20 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-fuchsia-600/10 blur-[120px]" />
+      <div className="absolute -bottom-20 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-violet-600/10 blur-[120px]" />
     </section>
   )
 }
@@ -941,10 +1029,14 @@ function VisionMissionSection() {
   return (
     <section
       ref={containerRef}
-      className="relative flex min-h-[100svh] w-full items-center justify-center overflow-hidden bg-[#08040d] py-16 md:h-screen md:py-0"
+      className="relative flex min-h-[100svh] w-full items-center justify-center overflow-hidden border-y border-white/6 py-16 md:h-screen md:py-0"
+      style={{
+        background:
+          'radial-gradient(circle at 20% 20%, rgba(213, 161, 255, 0.12), transparent 30%), radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.12), transparent 28%), linear-gradient(180deg, #1B0A21 0%, #220A36 100%)',
+      }}
     >
       <div
-        className="absolute left-1/2 top-1/2 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-purple-600/5 blur-[150px] pointer-events-none"
+        className="absolute left-1/2 top-1/2 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/5 blur-[150px] pointer-events-none"
       />
       <div
         className="absolute inset-0 opacity-10"
@@ -956,28 +1048,28 @@ function VisionMissionSection() {
 
       <div className="container relative z-10 mx-auto grid grid-cols-1 gap-6 px-4 md:grid-cols-2 md:gap-8 md:px-6">
         <div ref={visionCardRef} className="group relative">
-          <div className="absolute -inset-1 rounded-[3rem] bg-gradient-to-r from-fuchsia-600 to-purple-600 opacity-20 blur transition duration-1000 group-hover:opacity-40" />
-          <div className="relative flex min-h-[420px] flex-col justify-between overflow-hidden rounded-[3rem] border border-white/5 bg-[#120a1d] p-6 sm:p-8 md:h-[500px] md:p-10">
+          <div className="absolute -inset-1 rounded-[3rem] bg-gradient-to-r from-violet-600 to-violet-600 opacity-20 blur transition duration-1000 group-hover:opacity-40" />
+          <div className="relative flex min-h-[420px] flex-col justify-between overflow-hidden rounded-[3rem] border border-white/8 bg-[#2a133d] p-6 sm:p-8 md:h-[500px] md:p-10">
             <div className="flex items-start justify-between">
-              <div className="rounded-2xl bg-fuchsia-500/10 p-4">
-                <Target className="h-8 w-8 text-fuchsia-500" />
+              <div className="rounded-2xl bg-violet-500/10 p-4">
+                <Target className="h-8 w-8 text-violet-500" />
               </div>
               <span className="text-5xl font-black italic text-white/20 sm:text-6xl">01</span>
             </div>
             <div>
               <h2 className="mb-5 text-4xl font-black uppercase tracking-tighter text-white sm:mb-6 sm:text-5xl">
                 Our <br />
-                <span className="text-fuchsia-500">Vision</span>
+                <span className="text-violet-500">Vision</span>
               </h2>
               <p className="text-base leading-relaxed text-white/60 sm:text-lg">
                 To transform Bengaluru into{' '}
-                <span className="font-semibold text-white underline decoration-fuchsia-500">
+                <span className="font-semibold text-white underline decoration-violet-500">
                   Asia&apos;s premier educational destination
                 </span>{' '}
                 by revolutionizing admission processes.
               </p>
             </div>
-            <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-widest text-fuchsia-500">
+            <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-widest text-violet-500">
               <span>View Roadmap</span>
               <MoveRight size={16} />
             </div>
@@ -985,22 +1077,22 @@ function VisionMissionSection() {
         </div>
 
         <div ref={missionCardRef} className="group relative mt-4 md:mt-24">
-          <div className="absolute -inset-1 rounded-[3rem] bg-gradient-to-r from-cyan-600 to-blue-600 opacity-20 blur transition duration-1000 group-hover:opacity-40" />
-          <div className="relative flex min-h-[420px] flex-col justify-between overflow-hidden rounded-[3rem] border border-white/5 bg-[#120a1d] p-6 sm:p-8 md:h-[500px] md:p-10">
+          <div className="absolute -inset-1 rounded-[3rem] bg-gradient-to-r from-violet-600 to-violet-600 opacity-20 blur transition duration-1000 group-hover:opacity-40" />
+          <div className="relative flex min-h-[420px] flex-col justify-between overflow-hidden rounded-[3rem] border border-white/8 bg-[#1f0c2d] p-6 sm:p-8 md:h-[500px] md:p-10">
             <div className="flex items-start justify-between">
-              <div className="rounded-2xl bg-cyan-500/10 p-4">
-                <Rocket className="h-8 w-8 text-cyan-500" />
+              <div className="rounded-2xl bg-violet-500/10 p-4">
+                <Rocket className="h-8 w-8 text-violet-500" />
               </div>
               <span className="text-5xl font-black italic text-white/20 sm:text-6xl">02</span>
             </div>
             <div>
               <h2 className="mb-5 text-4xl font-black uppercase tracking-tighter text-white sm:mb-6 sm:text-5xl">
                 Our <br />
-                <span className="text-cyan-500">Mission</span>
+                <span className="text-violet-500">Mission</span>
               </h2>
               <p className="text-base leading-relaxed text-white/60 sm:text-lg">
                 To empower students worldwide by providing{' '}
-                <span className="font-semibold text-white underline decoration-cyan-500">
+                <span className="font-semibold text-white underline decoration-violet-500">
                   access to world-class education
                 </span>
                 , nurturing global talent.
@@ -1010,7 +1102,7 @@ function VisionMissionSection() {
               {['Empower', 'Nurture', 'Lead'].map((tag) => (
                 <span
                   key={tag}
-                  className="flex items-center gap-2 text-[10px] font-black uppercase tracking-tighter text-cyan-500/60"
+                  className="flex items-center gap-2 text-[10px] font-black uppercase tracking-tighter text-violet-500/60"
                 >
                   <Sparkles size={10} /> {tag}
                 </span>
@@ -1086,7 +1178,11 @@ function FinalCTASection() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-[#07020d] py-32 lg:py-48"
+      className="relative overflow-hidden border-t border-white/6 py-32 lg:py-48"
+      style={{
+        background:
+          'radial-gradient(circle at 50% 0%, rgba(213, 161, 255, 0.1), transparent 30%), linear-gradient(180deg, #170F1F 0%, #220A36 100%)',
+      }}
     >
       
       <div className="pointer-events-none absolute top-1/2 left-0 z-0 -translate-y-1/2 select-none opacity-10">
@@ -1099,15 +1195,15 @@ function FinalCTASection() {
 
       
       <div ref={bgShapeRef} className="pointer-events-none absolute inset-0 z-0">
-        <div className="floating-shape absolute top-20 left-[10%] h-16 w-16 rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/5 backdrop-blur-sm" />
-        <div className="floating-shape absolute bottom-20 right-[15%] h-24 w-24 rounded-full border border-cyan-500/20 bg-cyan-500/5 backdrop-blur-sm" />
+        <div className="floating-shape absolute top-20 left-[10%] h-16 w-16 rounded-xl border border-violet-500/30 bg-violet-500/5 backdrop-blur-sm" />
+        <div className="floating-shape absolute bottom-20 right-[15%] h-24 w-24 rounded-full border border-violet-500/20 bg-violet-500/5 backdrop-blur-sm" />
         <div className="absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[140px]" />
       </div>
 
       <div ref={contentRef} className="relative z-10 mx-auto max-w-5xl px-6 text-center">
         
         <div className="mb-10 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-6 py-2 backdrop-blur-md">
-          <Sparkles className="h-4 w-4 text-fuchsia-400 animate-pulse" />
+          <Sparkles className="h-4 w-4 text-violet-400 animate-pulse" />
           <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-white/70">The Final Chapter</span>
         </div>
 
@@ -1117,7 +1213,7 @@ function FinalCTASection() {
           className="mb-8 text-[clamp(2.5rem,8vw,6rem)] font-black uppercase leading-[0.85] tracking-tighter text-white"
         >
           Ready to <br />
-          <span className="bg-gradient-to-r from-fuchsia-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-violet-400 via-violet-400 to-violet-400 bg-clip-text text-transparent">
             Evolve?
           </span>
         </h2>
@@ -1134,10 +1230,10 @@ function FinalCTASection() {
           >
             
             <div className="absolute inset-0 rounded-full border border-dashed border-white/20 animate-[spin_10s_linear_infinite]" />
-            <div className="absolute inset-4 rounded-full border border-fuchsia-500/30 animate-[spin_6s_linear_infinite_reverse]" />
+            <div className="absolute inset-4 rounded-full border border-violet-500/30 animate-[spin_6s_linear_infinite_reverse]" />
             
             
-            <div className="relative flex h-full w-full flex-col items-center justify-center rounded-full bg-gradient-to-br from-fuchsia-600 to-violet-700 p-2 text-white shadow-[0_0_50px_rgba(192,132,252,0.4)] transition-all group-hover:shadow-[0_0_80px_rgba(192,132,252,0.7)]">
+            <div className="relative flex h-full w-full flex-col items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-violet-700 p-2 text-white shadow-[0_0_50px_rgba(168,85,247,0.4)] transition-all group-hover:shadow-[0_0_80px_rgba(168,85,247,0.7)]">
               <span className="text-[0.65rem] font-bold uppercase tracking-widest opacity-70">Start Now</span>
               <span className="text-xl font-black uppercase md:text-2xl">Connect</span>
               <ArrowUpRight className="mt-2 h-6 w-6 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
@@ -1163,7 +1259,7 @@ function FinalCTASection() {
   )
 }
 
-function Home() {
+function Home({ onNavigate }) {
   useEffect(() => {
     window.scrollTo(0, 0)
     return () => {
@@ -1176,7 +1272,7 @@ function Home() {
   return (
     <>
       <HeroSection />
-      <Opportunities />
+      <Opportunities onNavigate={onNavigate} />
       <ImpactNumbersSection />
       <VisionVideoSection />
       <VisionMissionSection />
@@ -1186,4 +1282,7 @@ function Home() {
 }
 
 export default Home
+
+
+
 

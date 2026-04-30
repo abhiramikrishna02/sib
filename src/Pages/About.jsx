@@ -36,32 +36,32 @@ const aboutCards = [
     title: 'Diverse Programs',
     desc: 'Explore a wide range of undergraduate, postgraduate, and doctoral programs in various disciplines.',
     icon: BookOpen,
-    color: 'from-cyan-400 to-blue-600',
-    shadow: 'shadow-cyan-500/20',
+    color: 'from-violet-400 to-violet-600',
+    shadow: 'shadow-violet-500/20',
   },
   {
     title: 'Top Institutions',
     desc: 'Access to premier universities and colleges across Bengaluru with diverse program offerings.',
     icon: Landmark,
-    color: 'from-fuchsia-400 to-violet-600',
-    shadow: 'shadow-fuchsia-500/20',
+    color: 'from-violet-400 to-violet-600',
+    shadow: 'shadow-violet-500/20',
   },
   {
     title: 'City Advantages',
     desc: "Benefit from Bengaluru's tech ecosystem, cultural diversity, and excellent career opportunities.",
     icon: Building2,
-    color: 'from-amber-400 to-orange-500',
-    shadow: 'shadow-amber-500/20',
+    color: 'from-violet-400 to-orange-500',
+    shadow: 'shadow-violet-500/20',
   },
 ]
 
 const bengaluruData = [
-  { title: 'Innovation Hub', desc: 'India’s Silicon Valley, a global leader in IT, biotechnology, and innovation.', img: img1, color: 'from-blue-600/20' },
-  { title: 'Global Opportunities', desc: 'A thriving economy and multinational companies, the perfect launchpad for a career.', img: img2, color: 'from-purple-600/20' },
-  { title: 'Top Institutions', desc: 'Home to prestigious universities offering world-class education for every student.', img: img3, color: 'from-cyan-600/20' },
+  { title: 'Innovation Hub', desc: 'India’s Silicon Valley, a global leader in IT, biotechnology, and innovation.', img: img1, color: 'from-violet-600/20' },
+  { title: 'Global Opportunities', desc: 'A thriving economy and multinational companies, the perfect launchpad for a career.', img: img2, color: 'from-violet-600/20' },
+  { title: 'Top Institutions', desc: 'Home to prestigious universities offering world-class education for every student.', img: img3, color: 'from-violet-600/20' },
   { title: 'Cultural Melting Pot', desc: 'A vibrant mix of cultures and traditions, making it a welcoming city for everyone.', img: img4, color: 'from-orange-600/20' },
-  { title: 'Affordable Living', desc: 'High quality of life at a reasonable cost for students and professionals alike.', img: img5, color: 'from-emerald-600/20' },
-  { title: 'Thriving Ecosystem', desc: 'From startups to giants, a dynamic ecosystem for learning and growth.', img: img6, color: 'from-pink-600/20' },
+  { title: 'Affordable Living', desc: 'High quality of life at a reasonable cost for students and professionals alike.', img: img5, color: 'from-violet-600/20' },
+  { title: 'Thriving Ecosystem', desc: 'From startups to giants, a dynamic ecosystem for learning and growth.', img: img6, color: 'from-violet-600/20' },
 ]
 
 function AboutCardsSection() {
@@ -141,7 +141,7 @@ function AboutCardsSection() {
             key={card.title}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            className={`about-card group relative flex flex-col items-center rounded-[2rem] border border-white/10 bg-[#160a26]/80 p-6 text-center shadow-2xl backdrop-blur-2xl will-change-transform sm:p-8 md:rounded-[3.5rem] md:p-12 ${
+            className={`about-card group relative flex flex-col items-center rounded-[2rem] border border-white/10 bg-[#431f60]/80 p-6 text-center shadow-2xl backdrop-blur-2xl will-change-transform sm:p-8 md:rounded-[3.5rem] md:p-12 ${
               i === 1 ? 'z-20' : 'z-10'
             }`}
           >
@@ -164,25 +164,25 @@ const features = [
     title: 'Top Institutions',
     desc: 'Access to premier universities and colleges across Bengaluru with diverse program offerings.',
     icon: GraduationCap,
-    color: 'from-blue-500 to-cyan-400',
+    color: 'from-violet-500 to-violet-400',
   },
   {
     title: 'Diverse Programs',
     desc: 'Explore a wide range of undergraduate, postgraduate, and doctoral disciplines.',
     icon: BookOpen,
-    color: 'from-purple-500 to-pink-400',
+    color: 'from-violet-500 to-violet-400',
   },
   {
     title: 'City Advantages',
     desc: "Benefit from Bengaluru's tech ecosystem, cultural diversity, and career opportunities.",
     icon: MapPin,
-    color: 'from-emerald-500 to-teal-400',
+    color: 'from-violet-500 to-violet-400',
   },
   {
     title: 'Expert Guidance',
     desc: 'Get personalized consultations and end-to-end support from industry pros.',
     icon: BadgeCheck,
-    color: 'from-orange-500 to-yellow-400',
+    color: 'from-orange-500 to-violet-400',
   },
 ]
 
@@ -247,7 +247,7 @@ function WhyChooseSection() {
       tl.to(portalFlashRef.current, {
         opacity: 1,
         duration: 0.5,
-        backgroundColor: '#0a0516',
+        backgroundColor: '#431f60',
       }, 'zoom+=1.5')
     }, containerRef)
 
@@ -257,12 +257,12 @@ function WhyChooseSection() {
   return (
     <section
       ref={containerRef}
-      className="relative flex min-h-[100svh] w-full items-center justify-center overflow-hidden bg-[#080414] perspective-1000 py-16 md:h-screen md:py-0"
+      className="relative flex min-h-[100svh] w-full items-center justify-center overflow-hidden bg-[#431f60] perspective-1000 py-16 md:h-screen md:py-0"
       style={{ perspective: '2000px' }}
     >
       <div ref={portalFlashRef} className="absolute inset-0 z-[100] opacity-0 pointer-events-none" />
 
-      <div className="bg-glow absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-fuchsia-600/10 blur-[180px]" />
+      <div className="bg-glow absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[180px]" />
 
       <div className="relative flex h-full w-full items-center justify-center">
         <div ref={orbitalRef} className="relative flex h-[620px] w-[620px] scale-[0.65] items-center justify-center preserve-3d sm:scale-[0.82] md:scale-100">
@@ -270,12 +270,12 @@ function WhyChooseSection() {
             <div className="backface-hidden absolute inset-0 flex flex-col items-center justify-center rounded-full border border-white/20 bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-3xl shadow-[0_0_50px_rgba(168,85,247,0.3)]">
               <h2 className="text-center text-xl font-black uppercase tracking-tighter text-white md:text-3xl">
                 Why Choose <br />
-                <span className="text-fuchsia-400 underline decoration-fuchsia-500/50 underline-offset-8">StudyIn</span><br />
+                <span className="text-violet-400 underline decoration-violet-500/50 underline-offset-8">StudyIn</span><br />
                 Bengaluru?
               </h2>
             </div>
 
-            <div className="backface-hidden absolute inset-0 flex items-center justify-center rounded-full border-2 border-fuchsia-500 bg-[#0a0516] shadow-[0_0_80px_rgba(168,85,247,0.6)]" style={{ transform: 'rotateY(180deg)' }}>
+            <div className="backface-hidden absolute inset-0 flex items-center justify-center rounded-full border-2 border-violet-500 bg-[#431f60] shadow-[0_0_80px_rgba(168,85,247,0.6)]" style={{ transform: 'rotateY(180deg)' }}>
               <span className="animate-pulse text-2xl font-bold italic tracking-widest text-white">Why Bengaluru?</span>
             </div>
           </div>
@@ -299,7 +299,7 @@ function WhyChooseSection() {
                 >
                 <div className="why-card-content preserve-3d">
                   <div className={`rounded-3xl bg-gradient-to-br ${f.color} p-[1.5px] shadow-2xl`}>
-                    <div className="rounded-[calc(1.5rem-1px)] bg-[#0d041a]/95 p-6 backdrop-blur-2xl">
+                    <div className="rounded-[calc(1.5rem-1px)] bg-[#431f60]/95 p-6 backdrop-blur-2xl">
                       <div className={`mb-3 inline-flex rounded-xl bg-gradient-to-br ${f.color} p-2.5`}>
                         <Icon className="text-white" size={22} />
                       </div>
@@ -356,7 +356,7 @@ function WhyBengaluruSection() {
   }, [])
 
   return (
-    <section ref={triggerRef} className="relative -mt-10 overflow-hidden bg-[#0a0516] py-10 md:-mt-16 md:py-0">
+    <section ref={triggerRef} className="relative -mt-10 overflow-hidden bg-[#431f60] py-10 md:-mt-16 md:py-0">
       <div ref={contentRef} className="horizontal-wrapper flex min-h-[100svh] w-full flex-col md:h-screen md:w-[600vw] md:flex-row">
         {bengaluruData.map((item, index) => (
           <div key={item.title} className="relative flex min-h-[100svh] w-full items-center justify-center px-6 py-20 md:h-screen md:w-screen md:px-16 md:py-0 lg:px-32">
@@ -367,17 +367,17 @@ function WhyBengaluruSection() {
                 <h2 className="absolute top-10 left-4 text-5xl font-black uppercase tracking-tighter text-white/10 md:top-20 md:left-20 md:text-8xl">
                   Bengaluru
                 </h2>
-                <span className="font-mono text-lg text-fuchsia-500 md:text-2xl">0{index + 1}</span>
+                <span className="font-mono text-lg text-violet-500 md:text-2xl">0{index + 1}</span>
                 <h3 className="text-4xl font-black uppercase italic leading-none text-white md:text-7xl">
                   {item.title}
                 </h3>
-                <p className="max-w-lg border-l-4 border-fuchsia-500 pl-6 text-base leading-relaxed text-white/60 md:text-xl">
+                <p className="max-w-lg border-l-4 border-violet-500 pl-6 text-base leading-relaxed text-white/60 md:text-xl">
                   {item.desc}
                 </p>
               </div>
 
               <div className="group relative">
-                <div className="absolute -inset-4 rounded-[3rem] bg-fuchsia-500/20 opacity-0 blur-3xl transition-opacity duration-1000 group-hover:opacity-100" />
+                <div className="absolute -inset-4 rounded-[3rem] bg-violet-500/20 opacity-0 blur-3xl transition-opacity duration-1000 group-hover:opacity-100" />
                 <img
                   src={item.img}
                   alt={item.title}
@@ -390,7 +390,7 @@ function WhyBengaluruSection() {
               {bengaluruData.map((_, i) => (
                 <div
                   key={i}
-                  className={`h-1 transition-all duration-500 ${i === index ? 'w-12 bg-fuchsia-500' : 'w-4 bg-white/20'}`}
+                  className={`h-1 transition-all duration-500 ${i === index ? 'w-12 bg-violet-500' : 'w-4 bg-white/20'}`}
                 />
               ))}
             </div>
@@ -469,7 +469,7 @@ function Scene3D() {
       <Canvas dpr={[1, 2]} gl={{ antialias: true }}>
         <PerspectiveCamera makeDefault position={[0, 0, 5.5]} fov={38} />
         <ambientLight intensity={1.5} />
-        <spotLight position={[5, 10, 5]} angle={0.25} penumbra={1} intensity={3} color="#fdf4ff" />
+        <spotLight position={[5, 10, 5]} angle={0.25} penumbra={1} intensity={3} color="#ffffff" />
         <pointLight position={[-10, -10, -10]} color="#d946ef" intensity={2} />
         <pointLight position={[10, -5, 5]} color="#22d3ee" intensity={1.5} />
 
@@ -478,7 +478,7 @@ function Scene3D() {
           <EducationModel />
           <Environment preset="city" />
           {/* Adjusted Contact Shadow to match new model position and scale */}
-          <ContactShadows position={[2.4, -1.5, 0]} opacity={0.4} scale={4} blur={2.5} color="#000000" />
+          <ContactShadows position={[2.4, -1.5, 0]} opacity={0.4} scale={4} blur={2.5} color="#431f60" />
         </Suspense>
 
         <OrbitControls 
@@ -541,14 +541,14 @@ const About = () => {
   }, []);
 
   return (
-    <main ref={containerRef} className="relative min-h-screen overflow-hidden bg-[#0d041a] px-4 sm:px-6">
+    <main ref={containerRef} className="relative min-h-screen overflow-hidden bg-[#431f60] px-4 sm:px-6">
       
       {/* ── PARALLAX BACKGROUND TEXT ── */}
 
       {/* Global Background Ambience */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-fuchsia-600/15 blur-[150px] rounded-full animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-cyan-600/10 blur-[150px] rounded-full" />
+        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-violet-600/15 blur-[150px] rounded-full animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-violet-600/10 blur-[150px] rounded-full" />
         <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       </div>
 
@@ -566,17 +566,17 @@ const About = () => {
             
             {/* Adorable Floating Glass Badge */}
             <div className="reveal absolute -top-12 -left-8 hidden items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 shadow-[0_10px_30px_rgba(217,70,239,0.15)] backdrop-blur-md animate-[bounce_4s_infinite] md:flex">
-              <span className="h-2 w-2 rounded-full bg-fuchsia-400 shadow-[0_0_10px_#d946ef]"></span>
+              <span className="h-2 w-2 rounded-full bg-violet-400 shadow-[0_0_10px_#d946ef]"></span>
               <span className="text-xs font-bold text-white/80 uppercase tracking-widest">Est. 2024</span>
             </div>
 
-            <div className="reveal inline-block px-5 py-2 mb-8 rounded-full border border-cyan-500/20 bg-cyan-500/10 backdrop-blur-xl uppercase tracking-[0.4em] text-[10px] text-cyan-300 font-black shadow-[0_0_20px_rgba(34,211,238,0.1)]">
+            <div className="reveal inline-block px-5 py-2 mb-8 rounded-full border border-violet-500/20 bg-violet-500/10 backdrop-blur-xl uppercase tracking-[0.4em] text-[10px] text-violet-300 font-black shadow-[0_0_20px_rgba(34,211,238,0.1)]">
               Our Identity
             </div>
             
             <h1 className="reveal mb-6 text-[clamp(3rem,13vw,7rem)] font-black leading-[0.9] tracking-tighter text-white drop-shadow-2xl lg:mb-8 lg:text-[clamp(4rem,9vw,8rem)]">
               About <br />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-400 via-white to-cyan-400">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-white to-violet-400">
                 Study in
               </span><br />
               Bengaluru
@@ -615,3 +615,6 @@ const About = () => {
 };
 
 export default About;
+
+
+

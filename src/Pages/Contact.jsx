@@ -24,9 +24,9 @@ export default function Contact() {
     resizeCanvas();
 
     const draw = () => {
-      ctx.fillStyle = "rgba(8, 4, 20, 0.1)"; // Match your deep purple theme
+      ctx.fillStyle = "rgba(8, 4, 20, 0.1)"; // Match your deep violet theme
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#a21caf"; // Fuchsia-700
+      ctx.fillStyle = "#d946ef"; // Fuchsia-500
       ctx.font = fontSize + "px monospace";
 
       for (let i = 0; i < drops.length; i++) {
@@ -46,14 +46,14 @@ export default function Contact() {
   }, []);
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-[#080414] px-4 py-20 sm:px-6 md:px-6 md:py-24">
+    <div className="relative min-h-screen w-full overflow-hidden bg-[#0a0212] px-4 py-20 sm:px-6 md:px-6 md:py-24">
       {/* Background Matrix Canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 z-0 opacity-20 pointer-events-none" />
 
       <div className="relative z-10 mx-auto max-w-7xl">
         {/* HEADER SECTION */}
         <div className="mb-14 text-center md:mb-20">
-          <h2 className="mb-4 text-[clamp(2.5rem,10vw,4.8rem)] font-black uppercase tracking-tighter text-white md:text-7xl">
+            <h2 className="mb-4 text-[clamp(2.5rem,10vw,4.8rem)] font-black uppercase tracking-tighter text-white md:text-7xl">
             Get in <span className="text-fuchsia-500">Touch</span>
           </h2>
           <p className="mx-auto max-w-2xl text-base text-white/40 sm:text-lg">
@@ -103,14 +103,14 @@ export default function Contact() {
             {/* QUICK CONTACTS GRID */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <a href="https://wa.me/919946953953" className="flex items-center gap-4 rounded-3xl border border-white/10 bg-white/5 p-5 transition-all hover:bg-white/10 sm:p-6">
-                <MessageSquare className="text-green-400" size={24} />
+                <MessageSquare className="text-fuchsia-400" size={24} />
                 <div>
                   <p className="text-white/40 text-xs uppercase tracking-widest font-bold">WhatsApp</p>
                   <p className="text-white font-medium">+91 99469 53953</p>
                 </div>
               </a>
               <a href="tel:+919946953953" className="flex items-center gap-4 rounded-3xl border border-white/10 bg-white/5 p-5 transition-all hover:bg-white/10 sm:p-6">
-                <Phone className="text-blue-400" size={24} />
+                <Phone className="text-fuchsia-400" size={24} />
                 <div>
                   <p className="text-white/40 text-xs uppercase tracking-widest font-bold">Call Us</p>
                   <p className="text-white font-medium">+91 99469 53953</p>
@@ -125,8 +125,8 @@ export default function Contact() {
                 className="w-full h-full grayscale invert opacity-70 group-hover:grayscale-0 group-hover:invert-0 group-hover:opacity-100 transition-all duration-700"
                 allowFullScreen="" loading="lazy">
               </iframe>
-              <div className="absolute top-4 left-4 bg-[#080414]/80 backdrop-blur-md px-4 py-2 rounded-xl flex items-center gap-2 border border-white/10">
-                <Star className="text-yellow-400 fill-yellow-400" size={16} />
+              <div className="absolute top-4 left-4 bg-[#0a0212]/80 backdrop-blur-md px-4 py-2 rounded-xl flex items-center gap-2 border border-white/10">
+                <Star className="text-fuchsia-400 fill-fuchsia-400" size={16} />
                 <span className="text-white font-bold text-sm">4.5 (72 Reviews)</span>
               </div>
             </div>
@@ -137,10 +137,13 @@ export default function Contact() {
       {/* FLOATING WHATSAPP BUTTON */}
       <a 
         href="https://wa.me/919946953953" 
-        className="fixed bottom-4 right-4 z-[100] rounded-full bg-green-500 p-4 text-white shadow-[0_0_30px_rgba(34,197,94,0.4)] transition-all hover:scale-110 active:scale-95 animate-bounce sm:bottom-8 sm:right-8 sm:p-5"
+        className="fixed bottom-4 right-4 z-[100] rounded-full bg-fuchsia-500 p-4 text-white shadow-[0_0_30px_rgba(192,132,252,0.4)] transition-all hover:scale-110 active:scale-95 animate-bounce sm:bottom-8 sm:right-8 sm:p-5"
       >
         <MessageSquare size={32} />
       </a>
     </div>
   );
 }
+
+
+

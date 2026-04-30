@@ -183,3 +183,5 @@ function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
 }
 
 export default Navbar;
+
+

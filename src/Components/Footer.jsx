@@ -24,7 +24,7 @@ const Footer = () => {
               </h2>
             </div>
             <p className="text-white/60 text-sm leading-relaxed">
-              Making Bengaluru the Education Capital of Asia. Empowering students with quality education and opportunities in India’s Silicon Valley.
+              Making Bengaluru the Education Capital of Asia. Empowering students with quality education and opportunities in Indiaâ€™s Silicon Valley.
             </p>
             <div className="flex gap-4">
               {[Mail, MessageSquare, Phone, ChevronRight, MapPin].map((Icon, i) => (
@@ -91,7 +91,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-white/30 text-xs">
-            © {currentYear} <span className="text-white/60 font-semibold">StudyInBengaluru.in</span> — All rights reserved.
+            © {currentYear} <span className="text-white/60 font-semibold">StudyInBengaluru.in</span> - All rights reserved.
           </p>
           <div className="flex gap-8">
             {['Privacy Policy', 'Refund & Cancellation', 'Terms & Conditions'].map((item) => (
@@ -107,3 +107,7 @@ const Footer = () => {
 };
 
 export default Footer;
+
+
+
+

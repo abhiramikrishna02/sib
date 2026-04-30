@@ -32,8 +32,17 @@ function getPathname() {
 
 function App() {
   const [pathname, setPathname] = useState(getPathname)
+  const [locationHash, setLocationHash] = useState(window.location.hash)
   const [applyOpen, setApplyOpen] = useState(false)
+  const [globalData, setGlobalData] = useState(() => {
+    const saved = localStorage.getItem('sib_data')
+    return saved ? JSON.parse(saved) : { Universities: [], Colleges: [], Courses: [] }
+  })
   const lenisRef = useRef(null)
+
+  useEffect(() => {
+    localStorage.setItem('sib_data', JSON.stringify(globalData))
+  }, [globalData])
 
   useEffect(() => {
     window.history.scrollRestoration = 'manual'
@@ -65,6 +74,7 @@ function App() {
     const onPopState = () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
       setPathname(getPathname())
+      setLocationHash(window.location.hash)
     }
 
     window.addEventListener('popstate', onPopState)
@@ -94,12 +104,15 @@ function App() {
   const Page = routeMap[pathname] ?? Home
 
   const navigate = (to) => {
-    const nextPath = to.replace(/\/+$/, '') || '/'
-    if (nextPath === pathname) return
+    const [rawPath, rawHash = ''] = to.split('#')
+    const nextPath = rawPath.replace(/\/+$/, '') || '/'
+    const nextHash = rawHash ? `#${rawHash}` : ''
+    if (nextPath === pathname && nextHash === locationHash) return
     setApplyOpen(false)
     ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
-    window.history.pushState({}, '', nextPath)
+    window.history.pushState({}, '', `${nextPath}${nextHash}`)
     setPathname(nextPath)
+    setLocationHash(nextHash)
   }
 
   return (
@@ -114,7 +127,12 @@ function App() {
       )}
       
       <main className="site-main">
-        <Page onNavigate={navigate} />
+        <Page
+          onNavigate={navigate}
+          globalData={globalData}
+          setGlobalData={setGlobalData}
+          locationHash={locationHash}
+        />
       </main>
       
       <ApplyModal open={applyOpen} onClose={() => setApplyOpen(false)} />

@@ -20,7 +20,7 @@
 
 .eyebrow {
   margin: 0;
-  color: var(--accent);
+  color: var(--accent-bright-violet);
   font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -54,7 +54,7 @@
   padding: 1.5rem;
   border: 1px solid var(--border);
   border-radius: 1.25rem;
-  background: var(--surface);
+  background: var(--surface-strong);
   box-shadow: var(--shadow-soft);
 }
 
@@ -174,7 +174,7 @@
 }
 
 .secondary-btn {
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(244, 232, 247, 0.72);
   border-color: var(--border);
 }
 
@@ -248,14 +248,14 @@
   padding: 0.9rem 1rem;
   border-radius: 0.95rem;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(249, 247, 250, 0.82);
   color: var(--text);
 }
 
 .contact-form input:focus,
 .contact-form textarea:focus {
   outline: 2px solid rgba(154, 79, 45, 0.22);
-  border-color: rgba(154, 79, 45, 0.34);
+  border-color: rgba(123, 44, 191, 0.34);
 }
 
 .contact-card h3 {
