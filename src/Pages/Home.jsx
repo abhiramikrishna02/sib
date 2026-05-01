@@ -339,7 +339,7 @@ function HeroSection() {
             Study in Bengaluru
           </p>
           <h2 className="mt-3 text-[clamp(2.4rem,12vw,4rem)] font-black uppercase leading-[0.9] tracking-tight text-white">
-            India&apos;s Silicon Valley
+             India&apos;s Silicon Valley
           </h2>
           <p className="mt-4 text-sm leading-6 text-white/62">
             A mobile-first intro to Bengaluru admissions, guidance, and student support.
@@ -377,7 +377,7 @@ function HeroSection() {
         <div className="revealed-content text-center">
           
           <h2 className="text-[clamp(2.4rem,12vw,7rem)] font-black uppercase leading-[0.85] tracking-tight text-white sm:text-[clamp(3rem,8vw,7rem)]">
-            Study India's <br />
+            Study In India's <br />
             <span className="bg-gradient-to-r from-violet-300 via-violet-200 to-violet-200 bg-clip-text font-serif font-light italic text-transparent drop-shadow-[0_10px_30px_rgba(123,44,191,0.5)]">
               Silicon Valley
             </span>
@@ -663,6 +663,9 @@ function Opportunities({ onNavigate }) {
             <GraduationCap className="h-10 w-10 animate-pulse text-white" />
             <Sparkles className="h-10 w-10 animate-bounce text-white" />
           </div>
+          <p className="mb-4 text-[clamp(1.2rem,3vw,2.25rem)] font-bold uppercase tracking-[0.8em] text-white/45">
+            Explore
+          </p>
           <h2 className="opportunities-shimmer text-[clamp(4rem,15vw,12rem)] font-black uppercase italic tracking-tighter md:text-[14rem]">
             OPPORTUNITIES
           </h2>
@@ -726,10 +729,7 @@ const StatCard = memo(function StatCard({ stat, index, start }) {
           <p className="mx-auto mt-4 max-w-[14rem] text-sm leading-6 text-white/55">{stat.note}</p>
         </div>
         <div className="mt-6 h-px w-full bg-gradient-to-r from-transparent via-white/12 to-transparent" />
-        <div className="mt-4 flex items-center justify-between text-[0.65rem] uppercase tracking-[0.34em] text-white/30">
-          <span>Momentum</span>
-          <ArrowUpRight className="h-4 w-4" />
-        </div>
+        
       </div>
     </motion.article>
   )
@@ -785,36 +785,7 @@ function ImpactNumbersSection() {
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.14),transparent_55%)]" />
           <div className="relative z-10 px-5 py-10 sm:px-10 sm:py-14 lg:px-14 lg:py-16">
-            <div className="mx-auto max-w-4xl text-center">
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.5 }}
-                className="text-[0.72rem] font-bold uppercase tracking-[0.55em] text-white/45"
-              >
-                Numbers that matter
-              </motion.p>
-              <motion.h2
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.8, ease: 'easeOut' }}
-                className="mt-4 text-balance text-[clamp(2.2rem,5.5vw,5rem)] font-black uppercase leading-[0.9] tracking-[-0.05em]"
-              >
-                <span className="bg-gradient-to-r from-white via-violet-100 to-white bg-clip-text text-transparent">Built on</span>{' '}
-                <span className="bg-gradient-to-r from-violet-200 via-violet-300 to-violet-200 bg-clip-text text-transparent">Real Momentum</span>
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.65, delay: 0.08 }}
-                className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/62 sm:text-base"
-              >
-                Every number here represents trust, scale, and a student journey that feels guided from first visit to final admission.
-              </motion.p>
-            </div>
+            
 
             
             <div className="mt-8 overflow-hidden rounded-full border border-white/10 bg-white/[0.04]">
@@ -944,9 +915,7 @@ function VisionVideoSection() {
           <Sparkles size={16} className="animate-pulse" />
           <span className="text-[10px] font-black uppercase tracking-[0.8em]">The Vision</span>
         </div>
-        <h2 className="text-5xl font-black italic tracking-tighter text-white md:text-8xl">
-          BEYOND <br /> HORIZONS
-        </h2>
+        
       </div>
 
       <div className="flex h-full w-full items-center justify-center px-4">
@@ -968,19 +937,23 @@ function VisionVideoSection() {
             ref={textContentRef}
             className="absolute inset-0 z-30 flex items-center justify-center p-6 md:p-12"
           >
-            <div className="max-w-4xl text-center">
-              <p className="mb-6 inline-block rounded-full border border-violet-500/30 bg-violet-500/10 px-6 py-1 text-[10px] font-bold uppercase tracking-[0.4em] text-violet-300 backdrop-blur-md">
-                StudyInBengaluru Vision
+            <div className="w-full max-w-4xl px-2 text-center text-white">
+              <p
+                className="mx-auto max-w-3xl text-[1rem] font-medium leading-relaxed text-white/92 drop-shadow-[0_4px_18px_rgba(0,0,0,0.65)] md:text-[1.35rem] md:leading-[1.8]"
+                style={{
+                  textShadow: '0 3px 14px rgba(0,0,0,0.65), 0 0 28px rgba(213, 161, 255, 0.12)',
+                }}
+              >
+                StudyInBengaluru.com is Bengaluru&apos;s largest portal for admissions, with the vision of making the city the educational hub of Asia. The focus is on building trust and credibility, increasing brand awareness, and attracting students from across India and abroad, alongside strategic college tie-ups, franchise sales, and user engagement.
               </p>
-              <h3 className="text-3xl font-light leading-tight text-white md:text-6xl">
-                &quot;Education is the <span className="font-serif italic text-violet-400">passport</span> to the future, and{' '}
-                <span className="font-black text-white underline decoration-violet-500 underline-offset-8">
-                  StudyinBengaluru
-                </span> is your first-class ticket.&quot;
-              </h3>
-              <div className="mt-10 flex justify-center opacity-40">
-                <div className="h-px w-20 bg-gradient-to-r from-transparent via-white to-transparent" />
-              </div>
+              <p
+                className="mx-auto mt-8 max-w-2xl text-[0.95rem] leading-relaxed text-[#f4d9e2] md:text-[1.15rem]"
+                style={{
+                  textShadow: '0 2px 10px rgba(0,0,0,0.6), 0 0 20px rgba(214, 90, 138, 0.18)',
+                }}
+              >
+                &quot;Education is the passport to the future, and StudyInBengaluru is your first-class ticket.&quot;
+              </p>
             </div>
           </div>
         </div>
@@ -1062,11 +1035,7 @@ function VisionMissionSection() {
                 <span className="text-violet-500">Vision</span>
               </h2>
               <p className="text-base leading-relaxed text-white/60 sm:text-lg">
-                To transform Bengaluru into{' '}
-                <span className="font-semibold text-white underline decoration-violet-500">
-                  Asia&apos;s premier educational destination
-                </span>{' '}
-                by revolutionizing admission processes.
+                To transform Bengaluru into Asia&apos;s premier educational destination by revolutionizing admission processes, offering unparalleled career guidance, and fostering collaborative partnerships with top-tier institutions and industry leaders.
               </p>
             </div>
             <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-widest text-violet-500">
@@ -1091,11 +1060,7 @@ function VisionMissionSection() {
                 <span className="text-violet-500">Mission</span>
               </h2>
               <p className="text-base leading-relaxed text-white/60 sm:text-lg">
-                To empower students worldwide by providing{' '}
-                <span className="font-semibold text-white underline decoration-violet-500">
-                  access to world-class education
-                </span>
-                , nurturing global talent.
+                To attract and empower students worldwide by providing access to world-class education in India, nurturing global talent, and creating a network of future leaders who drive innovation and positive change.
               </p>
             </div>
             <div className="flex items-center gap-6">
@@ -1116,7 +1081,7 @@ function VisionMissionSection() {
 }
 
 
-function FinalCTASection() {
+function FinalCTASection({ onNavigate }) {
   const sectionRef = useRef(null)
   const contentRef = useRef(null)
   const titleRef = useRef(null)
@@ -1210,22 +1175,20 @@ function FinalCTASection() {
         
         <h2 
           ref={titleRef}
-          className="mb-8 text-[clamp(2.5rem,8vw,6rem)] font-black uppercase leading-[0.85] tracking-tighter text-white"
+          className="mb-6 text-[clamp(2rem,6vw,4.5rem)] font-black leading-[0.95] tracking-tighter text-white"
         >
-          Ready to <br />
-          <span className="bg-gradient-to-r from-violet-400 via-violet-400 to-violet-400 bg-clip-text text-transparent">
-            Evolve?
-          </span>
+          Start Your Educational Journey Today!
         </h2>
 
-        <p className="cta-description mx-auto mb-16 max-w-xl text-lg font-light text-white/50 md:text-2xl">
-          Don’t just dream about it. Step into Bengaluru’s most innovative educational ecosystem today.
+        <p className="cta-description mx-auto mb-16 max-w-2xl text-lg font-light text-white/70 md:text-2xl">
+          Get personalized guidance from our admission experts.
         </p>
 
         
         <div className="interactive-portal flex justify-center">
-          <a 
-            href="#contact"
+          <button
+            type="button"
+            onClick={() => onNavigate?.('/contact')}
             className="group relative flex h-48 w-48 items-center justify-center transition-transform duration-500 hover:scale-110 md:h-64 md:w-64"
           >
             
@@ -1238,7 +1201,7 @@ function FinalCTASection() {
               <span className="text-xl font-black uppercase md:text-2xl">Connect</span>
               <ArrowUpRight className="mt-2 h-6 w-6 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
             </div>
-          </a>
+          </button>
         </div>
 
         
@@ -1276,7 +1239,7 @@ function Home({ onNavigate }) {
       <ImpactNumbersSection />
       <VisionVideoSection />
       <VisionMissionSection />
-      <FinalCTASection />
+      <FinalCTASection onNavigate={onNavigate} />
     </>
   )
 }

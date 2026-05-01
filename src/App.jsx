@@ -13,6 +13,7 @@ import Home from './Pages/Home.jsx'
 import Services from './Pages/Services.jsx'
 import Login from './Components/Login.jsx'; // Add this line
 import Add from './Pages/Add.jsx';
+import { supabase } from './lib/supabase.js'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -30,19 +31,55 @@ function getPathname() {
   return window.location.pathname.replace(/\/+$/, '') || '/'
 }
 
+function groupOpportunities(rows = []) {
+  return {
+    Universities: rows
+      .filter((row) => row.category === 'Universities')
+      .map((row) => ({ ...row, feeRange: row.fee_range || '' })),
+    Colleges: rows
+      .filter((row) => row.category === 'Colleges')
+      .map((row) => ({ ...row, feeRange: row.fee_range || '' })),
+    Courses: rows
+      .filter((row) => row.category === 'Courses')
+      .map((row) => ({ ...row, feeRange: row.fee_range || '' })),
+  }
+}
+
 function App() {
   const [pathname, setPathname] = useState(getPathname)
   const [locationHash, setLocationHash] = useState(window.location.hash)
   const [applyOpen, setApplyOpen] = useState(false)
-  const [globalData, setGlobalData] = useState(() => {
-    const saved = localStorage.getItem('sib_data')
-    return saved ? JSON.parse(saved) : { Universities: [], Colleges: [], Courses: [] }
-  })
+  const [globalData, setGlobalData] = useState({ Universities: [], Colleges: [], Courses: [] })
+  const [dataLoading, setDataLoading] = useState(true)
   const lenisRef = useRef(null)
 
   useEffect(() => {
-    localStorage.setItem('sib_data', JSON.stringify(globalData))
-  }, [globalData])
+    let mounted = true
+
+    const loadGlobalData = async () => {
+      setDataLoading(true)
+      const { data, error } = await supabase
+        .from('opportunities')
+        .select('*')
+        .order('created_at', { ascending: true })
+
+      if (!mounted) return
+
+      if (error) {
+        console.error('Failed to load opportunities:', error)
+        setGlobalData({ Universities: [], Colleges: [], Courses: [] })
+      } else {
+        setGlobalData(groupOpportunities(data || []))
+      }
+      setDataLoading(false)
+    }
+
+    loadGlobalData()
+
+    return () => {
+      mounted = false
+    }
+  }, [])
 
   useEffect(() => {
     window.history.scrollRestoration = 'manual'
@@ -132,6 +169,7 @@ function App() {
           globalData={globalData}
           setGlobalData={setGlobalData}
           locationHash={locationHash}
+          dataLoading={dataLoading}
         />
       </main>
       
