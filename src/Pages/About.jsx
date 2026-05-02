@@ -36,22 +36,28 @@ const aboutCards = [
     title: 'Diverse Programs',
     desc: 'Explore a wide range of undergraduate, postgraduate, and doctoral programs in various disciplines.',
     icon: BookOpen,
-    color: 'from-violet-400 to-violet-600',
-    shadow: 'shadow-violet-500/20',
+    color: 'from-fuchsia-300 to-violet-500',
+    shadow: 'shadow-fuchsia-500/20',
+    panel: 'from-slate-900/88 via-fuchsia-950/78 to-violet-900/82',
+    border: 'border-fuchsia-300/20',
   },
   {
     title: 'Top Institutions',
     desc: 'Access to premier universities and colleges across Bengaluru with diverse program offerings.',
     icon: Landmark,
-    color: 'from-violet-400 to-violet-600',
-    shadow: 'shadow-violet-500/20',
+    color: 'from-cyan-300 to-violet-500',
+    shadow: 'shadow-cyan-500/20',
+    panel: 'from-slate-900/88 via-indigo-950/80 to-slate-950/92',
+    border: 'border-cyan-300/18',
   },
   {
     title: 'City Advantages',
     desc: "Benefit from Bengaluru's tech ecosystem, cultural diversity, and excellent career opportunities.",
     icon: Building2,
-    color: 'from-violet-400 to-orange-500',
-    shadow: 'shadow-violet-500/20',
+    color: 'from-orange-300 to-rose-500',
+    shadow: 'shadow-orange-500/20',
+    panel: 'from-stone-900/88 via-rose-950/80 to-slate-950/92',
+    border: 'border-orange-300/18',
   },
 ]
 
@@ -130,10 +136,15 @@ function AboutCardsSection() {
     <section
       ref={sectionRef}
       className="relative -mt-6 flex min-h-[88svh] w-full items-center justify-center overflow-hidden py-6 md:-mt-10 md:min-h-[100svh] md:py-0"
-      style={{ perspective: '2000px' }}
+      style={{
+        perspective: '2000px',
+        background:
+          'radial-gradient(circle at 50% 20%, rgba(168, 85, 247, 0.24), transparent 28%), radial-gradient(circle at 15% 35%, rgba(34, 211, 238, 0.12), transparent 22%), radial-gradient(circle at 85% 32%, rgba(251, 146, 60, 0.1), transparent 20%), linear-gradient(180deg, #431f60 0%, #38194f 52%, #241034 100%)',
+      }}
     >
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute left-1/2 top-1/2 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[150px]" />
+        <div className="absolute left-1/2 top-1/2 h-[860px] w-[860px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-400/14 blur-[170px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:84px_84px] opacity-[0.16]" />
       </div>
       <div className="relative z-10 grid w-full max-w-6xl grid-cols-1 gap-4 px-4 sm:px-6 md:grid-cols-3 md:gap-2">
         {aboutCards.map((card, i) => (
@@ -141,16 +152,17 @@ function AboutCardsSection() {
             key={card.title}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            className={`about-card group relative flex flex-col items-center rounded-[2rem] border border-white/10 bg-[#431f60]/80 p-6 text-center shadow-2xl backdrop-blur-2xl will-change-transform sm:p-8 md:rounded-[3.5rem] md:p-12 ${
+            className={`about-card group relative flex flex-col items-center rounded-[2rem] border bg-gradient-to-br ${card.panel} ${card.border} p-6 text-center shadow-2xl shadow-black/25 backdrop-blur-2xl will-change-transform sm:p-8 md:rounded-[3.5rem] md:p-12 ${
               i === 1 ? 'z-20' : 'z-10'
             }`}
           >
-            <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/5 blur-[40px] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <div className="absolute inset-0 rounded-[inherit] bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.12),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(255,255,255,0.05),_transparent_34%)] opacity-80" />
+            <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/8 blur-[44px] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
             <div className={`mb-6 flex h-20 w-20 items-center justify-center rounded-[1.5rem] bg-gradient-to-br ${card.color} shadow-2xl ${card.shadow} transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6 sm:mb-8 sm:h-24 sm:w-24 sm:rounded-[2rem]`}>
               <card.icon className="h-10 w-10 text-white sm:h-12 sm:w-12" />
             </div>
             <h3 className="mb-4 text-xl font-black uppercase tracking-tight text-white sm:mb-6 sm:text-2xl md:text-3xl">{card.title}</h3>
-            <p className="text-base font-light leading-relaxed text-white/60 sm:text-lg">{card.desc}</p>
+            <p className="text-base font-light leading-relaxed text-white/68 sm:text-lg">{card.desc}</p>
           </div>
         ))}
       </div>
@@ -201,7 +213,7 @@ function WhyChooseSection() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top top',
-          end: '+=400%',
+          end: '+=320%',
           scrub: 1,
           pin: true,
           anticipatePin: 1,
@@ -218,14 +230,24 @@ function WhyChooseSection() {
         orbitalRef.current,
         {
           rotate: 360,
+          scale: 1.02,
           duration: 3,
           ease: 'none',
         },
         'spin'
       )
 
-      cardContents.forEach((cardContent) => {
-        tl.to(cardContent, { rotate: -360, duration: 3, ease: 'none' }, 'spin')
+      cardContents.forEach((cardContent, index) => {
+        tl.to(
+          cardContent,
+          {
+            rotate: index % 2 === 0 ? -180 : 180,
+            y: index === 1 ? -12 : 12,
+            duration: 3,
+            ease: 'none',
+          },
+          'spin'
+        )
       })
 
       tl.to(coreRef.current, {
@@ -247,7 +269,7 @@ function WhyChooseSection() {
       tl.to(portalFlashRef.current, {
         opacity: 1,
         duration: 0.5,
-        backgroundColor: '#431f60',
+        backgroundColor: '#1b1028',
       }, 'zoom+=1.5')
     }, containerRef)
 
@@ -267,7 +289,7 @@ function WhyChooseSection() {
       <div className="relative flex h-full w-full items-center justify-center">
         <div ref={orbitalRef} className="relative flex h-[620px] w-[620px] scale-[0.65] items-center justify-center preserve-3d sm:scale-[0.82] md:scale-100">
           <div ref={coreRef} className="relative z-50 preserve-3d h-64 w-64 md:h-80 md:w-80">
-            <div className="backface-hidden absolute inset-0 flex flex-col items-center justify-center rounded-full border border-white/20 bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-3xl shadow-[0_0_50px_rgba(168,85,247,0.3)]">
+            <div className="backface-hidden absolute inset-0 flex flex-col items-center justify-center rounded-full border border-white/35 bg-gradient-to-br from-[#2b133f]/92 via-[#1f1735]/88 to-[#120a1f]/94 backdrop-blur-3xl shadow-[0_0_50px_rgba(88,28,135,0.18)]">
               <h2 className="text-center text-xl font-black uppercase tracking-tighter text-white md:text-3xl">
                 Why Choose <br />
                 <span className="text-violet-400 underline decoration-violet-500/50 underline-offset-8">StudyIn</span><br />
@@ -275,7 +297,7 @@ function WhyChooseSection() {
               </h2>
             </div>
 
-            <div className="backface-hidden absolute inset-0 flex items-center justify-center rounded-full border-2 border-violet-500 bg-[#431f60] shadow-[0_0_80px_rgba(168,85,247,0.6)]" style={{ transform: 'rotateY(180deg)' }}>
+            <div className="backface-hidden absolute inset-0 flex items-center justify-center rounded-full border-2 border-violet-300/70 bg-gradient-to-br from-[#1f1432] via-[#311a4b] to-[#130b22] shadow-[0_0_80px_rgba(168,85,247,0.28)]" style={{ transform: 'rotateY(180deg)' }}>
               <span className="animate-pulse text-2xl font-bold italic tracking-widest text-white">Why Bengaluru?</span>
             </div>
           </div>
@@ -298,13 +320,13 @@ function WhyChooseSection() {
                   }}
                 >
                 <div className="why-card-content preserve-3d">
-                  <div className={`rounded-3xl bg-gradient-to-br ${f.color} p-[1.5px] shadow-2xl`}>
-                    <div className="rounded-[calc(1.5rem-1px)] bg-[#431f60]/95 p-6 backdrop-blur-2xl">
+                  <div className={`rounded-3xl bg-gradient-to-br ${f.color} p-[1.5px] shadow-2xl shadow-black/15`}>
+                    <div className="rounded-[calc(1.5rem-1px)] bg-[#140b1f]/92 p-6 backdrop-blur-2xl">
                       <div className={`mb-3 inline-flex rounded-xl bg-gradient-to-br ${f.color} p-2.5`}>
                         <Icon className="text-white" size={22} />
                       </div>
                       <h3 className="mb-2 text-lg font-bold uppercase text-white">{f.title}</h3>
-                      <p className="text-sm leading-relaxed text-white/50">{f.desc}</p>
+                      <p className="text-sm leading-relaxed text-white/66">{f.desc}</p>
                     </div>
                   </div>
                 </div>
@@ -321,13 +343,60 @@ function WhyBengaluruSection() {
   const triggerRef = useRef(null)
   const contentRef = useRef(null)
 
+  const slides = [
+    {
+      title: 'Innovation Hub',
+      desc: "Bengaluru is India's Silicon Valley, a global leader in IT, biotechnology, and innovation, offering unparalleled opportunities for tech enthusiasts.",
+      color: 'from-blue-600',
+      glow: 'rgba(37, 99, 235, 0.2)',
+      img: img1,
+    },
+    {
+      title: 'Global Opportunities',
+      desc: 'With its thriving economy and multinational companies, Bengaluru is the perfect launchpad for a global career.',
+      color: 'from-fuchsia-600',
+      glow: 'rgba(192, 38, 211, 0.2)',
+      img: img2,
+    },
+    {
+      title: 'Top Institutions',
+      desc: 'Home to prestigious universities and colleges offering diverse courses, Bengaluru ensures world-class education for every student.',
+      color: 'from-violet-600',
+      glow: 'rgba(124, 58, 237, 0.2)',
+      img: img3,
+    },
+    {
+      title: 'Cultural Melting Pot',
+      desc: 'Experience a vibrant mix of cultures, traditions, and communities, making Bengaluru a welcoming city for everyone.',
+      color: 'from-orange-500',
+      glow: 'rgba(249, 115, 22, 0.2)',
+      img: img4,
+    },
+    {
+      title: 'Affordable Living',
+      desc: 'Enjoy a high quality of life at a reasonable cost, making Bengaluru an ideal destination for students and professionals alike.',
+      color: 'from-emerald-500',
+      glow: 'rgba(16, 185, 129, 0.2)',
+      img: img5,
+    },
+    {
+      title: 'Thriving Ecosystem',
+      desc: 'From startups to established giants, Bengaluru offers a dynamic ecosystem for learning, networking, and growth.',
+      color: 'from-rose-500',
+      glow: 'rgba(225, 29, 72, 0.2)',
+      img: img6,
+    },
+  ]
+
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
+      const items = gsap.utils.toArray('.bengaluru-slide')
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: triggerRef.current,
           start: 'top top',
-          end: '+=500%',
+          end: () => `+=${contentRef.current.scrollWidth}`,
           scrub: 1,
           pin: true,
           anticipatePin: 1,
@@ -335,64 +404,132 @@ function WhyBengaluruSection() {
         },
       })
 
-      tl.fromTo(
-        contentRef.current,
-        { scale: 0.8, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 1.2, ease: 'power3.out' }
-      )
+      tl.to(contentRef.current, {
+        x: () => -(contentRef.current.scrollWidth - window.innerWidth),
+        ease: 'none',
+      })
 
-      tl.to(
-        contentRef.current,
-        {
-          x: '-500vw',
-          ease: 'none',
-          duration: 4,
-        },
-        '<'
-      )
+      items.forEach((slide) => {
+        const title = slide.querySelector('h3')
+        const img = slide.querySelector('.slide-img')
+        const num = slide.querySelector('.bg-number')
+        const text = slide.querySelector('p')
+
+        gsap.fromTo(
+          [title, text],
+          { y: 60, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 1,
+            stagger: 0.1,
+            scrollTrigger: {
+              trigger: slide,
+              containerAnimation: tl,
+              start: 'left 85%',
+              end: 'left 35%',
+              scrub: true,
+            },
+          }
+        )
+
+        gsap.to(num, {
+          x: -100,
+          scrollTrigger: {
+            trigger: slide,
+            containerAnimation: tl,
+            start: 'left right',
+            end: 'right left',
+            scrub: true,
+          },
+        })
+
+        gsap.fromTo(
+          img,
+          { scale: 0.85, opacity: 0 },
+          {
+            scale: 1,
+            opacity: 1,
+            scrollTrigger: {
+              trigger: slide,
+              containerAnimation: tl,
+              start: 'left 95%',
+              end: 'left 40%',
+              scrub: true,
+            },
+          }
+        )
+      })
     }, triggerRef)
 
     return () => ctx.revert()
   }, [])
 
   return (
-    <section ref={triggerRef} className="relative -mt-10 overflow-hidden bg-[#431f60] py-10 md:-mt-16 md:py-0">
-      <div ref={contentRef} className="horizontal-wrapper flex min-h-[100svh] w-full flex-col md:h-screen md:w-[600vw] md:flex-row">
-        {bengaluruData.map((item, index) => (
-          <div key={item.title} className="relative flex min-h-[100svh] w-full items-center justify-center px-6 py-20 md:h-screen md:w-screen md:px-16 md:py-0 lg:px-32">
-            <div className={`absolute inset-0 bg-gradient-to-r ${item.color} to-transparent opacity-30`} />
+    <section ref={triggerRef} className="relative overflow-hidden bg-[#1a0b2e]">
+      <div
+        className="absolute inset-0 opacity-20"
+        style={{ background: 'radial-gradient(circle at 50% 50%, #431f60 0%, transparent 70%)' }}
+      />
+
+      <div ref={contentRef} className="flex h-screen w-fit flex-row flex-nowrap">
+        {slides.map((item, index) => (
+          <div
+            key={item.title}
+            className="bengaluru-slide relative flex h-screen w-[85vw] flex-shrink-0 items-center justify-center px-10 md:px-16 lg:px-20"
+          >
+            <span className="bg-number pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none text-[22vw] font-black leading-none text-white/[0.03]">
+              0{index + 1}
+            </span>
 
             <div className="relative z-10 grid w-full max-w-7xl grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-12">
-              <div className="space-y-5">
-                <h2 className="absolute top-10 left-4 text-5xl font-black uppercase tracking-tighter text-white/10 md:top-20 md:left-20 md:text-8xl">
-                  Bengaluru
-                </h2>
-                <span className="font-mono text-lg text-violet-500 md:text-2xl">0{index + 1}</span>
-                <h3 className="text-4xl font-black uppercase italic leading-none text-white md:text-7xl">
-                  {item.title}
-                </h3>
-                <p className="max-w-lg border-l-4 border-violet-500 pl-6 text-base leading-relaxed text-white/60 md:text-xl">
+              <div className="order-2 space-y-6 md:order-1">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-4">
+                    <span className="h-px w-10 bg-gradient-to-r from-violet-500 to-transparent" />
+                    <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-violet-400">
+                      Feature 0{index + 1}
+                    </span>
+                  </div>
+                  <h3 className="text-4xl font-black uppercase italic leading-[0.95] text-white md:text-7xl lg:text-8xl">
+                    {item.title}
+                  </h3>
+                </div>
+
+                <p className="max-w-md border-l-2 border-white/5 pl-6 text-base leading-relaxed text-white/50 md:text-lg">
                   {item.desc}
                 </p>
+
+                <div className="flex gap-2 pt-2">
+                  {slides.map((_, i) => (
+                    <div
+                      key={i}
+                      className={`h-1 rounded-full transition-all duration-500 ${i === index ? 'w-10 bg-white' : 'w-2 bg-white/10'}`}
+                    />
+                  ))}
+                </div>
               </div>
 
-              <div className="group relative">
-                <div className="absolute -inset-4 rounded-[3rem] bg-violet-500/20 opacity-0 blur-3xl transition-opacity duration-1000 group-hover:opacity-100" />
-                <img
-                  src={item.img}
-                  alt={item.title}
-                  className="relative z-10 aspect-[4/5] w-full rounded-[3rem] border border-white/10 object-cover shadow-2xl"
-                />
-              </div>
-            </div>
+              <div className="order-1 flex justify-center md:order-2">
+                <div className="group relative w-full max-w-[400px]">
+                  <div
+                    className={`absolute -inset-4 rounded-[2.5rem] bg-gradient-to-br ${item.color} opacity-10 blur-3xl transition-opacity duration-700 group-hover:opacity-30`}
+                    style={{ boxShadow: `0 0 120px 20px ${item.glow}` }}
+                  />
 
-            <div className="absolute bottom-10 left-1/2 flex -translate-x-1/2 gap-4">
-              {bengaluruData.map((_, i) => (
-                <div
-                  key={i}
-                  className={`h-1 transition-all duration-500 ${i === index ? 'w-12 bg-violet-500' : 'w-4 bg-white/20'}`}
-                />
-              ))}
+                  <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/5 p-2 backdrop-blur-sm transition-transform duration-500 group-hover:scale-[1.02]">
+                    <img
+                      src={item.img}
+                      alt={item.title}
+                      className="slide-img aspect-[4/5] w-full rounded-[2rem] object-cover grayscale-[0.2] transition-all duration-700 group-hover:grayscale-0"
+                    />
+
+                    <div className="absolute bottom-6 right-6 flex h-10 w-10 items-center justify-center rounded-xl border border-white/20 bg-white/10 backdrop-blur-md">
+                      <div className={`h-1.5 w-1.5 rounded-full bg-gradient-to-r ${item.color} animate-pulse`} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         ))}
@@ -547,8 +684,8 @@ const About = () => {
 
       {/* Global Background Ambience */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-violet-600/15 blur-[150px] rounded-full animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-violet-600/10 blur-[150px] rounded-full" />
+        <div className="absolute top-[-10%] left-[-10%] h-[600px] w-[600px] rounded-full bg-violet-600/15 blur-[150px] animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] h-[600px] w-[600px] rounded-full bg-violet-600/10 blur-[150px]" />
         <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       </div>
 
@@ -589,7 +726,7 @@ const About = () => {
             {/* Creative Scroll Indicator */}
             <div className="reveal flex items-center justify-center gap-4 opacity-60 lg:justify-start">
                <div className="h-px w-12 bg-gradient-to-r from-transparent to-white"></div>
-               <span className="text-[9px] uppercase tracking-[0.5em] font-bold">Scroll to Explore</span>
+               <span className="text-[9px] uppercase tracking-[0.5em] font-bold text-white">Scroll to Explore</span>
             </div>
           </div>
           

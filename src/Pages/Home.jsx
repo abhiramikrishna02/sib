@@ -471,7 +471,6 @@ function HeroSection() {
   )
 }
 
-// --- START OF NEW REPLACEMENT BLOCK ---
 const cardData = [
   { title: 'Universities', subtitle: 'GLOBAL ACCESS', icon: GraduationCap, color: 'from-violet-600 via-violet-400 to-violet-500', glow: 'rgba(59, 130, 246, 0.5)', path: '/services#universities' },
   { title: 'Colleges', subtitle: 'GLOBAL ACCESS', icon: School, color: 'from-violet-600 via-violet-400 to-violet-500', glow: 'rgba(168, 85, 247, 0.5)', path: '/services#colleges' },
@@ -509,13 +508,11 @@ function GlassCard({ item, onNavigate }) {
         }
       }}
     >
-      {/* Animated Background Gradient on Hover */}
       <div className="absolute inset-0 z-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100">
         <div
           className="absolute -inset-[100%] animate-[spin_8s_linear_infinite] opacity-55"
           style={{ background: `conic-gradient(from 0deg, transparent 0%, ${item.glow || 'rgba(255,255,255,0.5)'} 50%, transparent 100%)` }}
         />
-        {/* Dark inner mask to maintain text readability while creating a glowing border effect */}
         <div className="absolute inset-[1.5px] rounded-[2.5rem] bg-[#251034]/92 backdrop-blur-3xl transition-colors duration-500" />
       </div>
 
@@ -528,23 +525,15 @@ function GlassCard({ item, onNavigate }) {
         }}
       />
 
-      {/* Top Section: Icon & Accents */}
       <div className="relative z-10 flex items-start justify-between">
         <div className="relative flex h-20 w-20 items-center justify-center">
-          {/* Dynamic Glow Behind Icon */}
           <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${item.color} blur-2xl opacity-45 transition-opacity duration-500 group-hover:opacity-95`} />
-          
-          {/* Glass Icon Container */}
           <div className="relative flex h-full w-full items-center justify-center rounded-3xl border border-white/26 bg-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_0_24px_rgba(168,85,247,0.18)] backdrop-blur-md transition-all duration-500 group-hover:scale-110 group-hover:border-white/55 group-hover:bg-white/15">
             <Icon className="text-white drop-shadow-[0_0_18px_rgba(255,255,255,0.55)] transition-transform duration-500 group-hover:rotate-12" size={32} strokeWidth={1.6} />
           </div>
-          
-          {/* Corner accents expanding on hover */}
           <div className="absolute -right-2 -top-2 h-4 w-4 border-r-2 border-t-2 border-white/40 transition-all duration-500 group-hover:-right-3 group-hover:-top-3 group-hover:border-white/90" />
           <div className="absolute -bottom-2 -left-2 h-4 w-4 border-b-2 border-l-2 border-white/40 transition-all duration-500 group-hover:-bottom-3 group-hover:-left-3 group-hover:border-white/90" />
         </div>
-        
-        {/* Top Right Minimalist Decoration */}
         <div className="flex flex-col items-end gap-1.5 opacity-45 transition-opacity duration-500 group-hover:opacity-100">
           <div className="h-1 w-1 rounded-full bg-white" />
           <div className="h-1 w-1 rounded-full bg-white" />
@@ -552,7 +541,6 @@ function GlassCard({ item, onNavigate }) {
         </div>
       </div>
 
-      {/* Middle Section: Text Content */}
       <div className="relative z-10 mt-10 flex flex-col gap-3">
         <div className="flex items-center gap-3">
           <div className="h-[2px] w-6 rounded-full bg-gradient-to-r from-white/85 to-transparent shadow-[0_0_12px_rgba(255,255,255,0.35)] transition-all duration-500 group-hover:w-12" />
@@ -565,7 +553,6 @@ function GlassCard({ item, onNavigate }) {
         </h3>
       </div>
 
-      {/* Bottom Section: Button fixed to bottom using mt-auto */}
       <div className="relative z-10 mt-auto w-full pt-6">
         <div className="relative mb-6 h-[1px] w-full overflow-hidden bg-white/14">
           <div className="absolute inset-y-0 left-0 w-1/2 -translate-x-[150%] bg-gradient-to-r from-transparent via-white/90 to-transparent transition-all duration-1000 ease-in-out group-hover:translate-x-[200%]" />
@@ -588,7 +575,6 @@ function GlassCard({ item, onNavigate }) {
         </button>
       </div>
 
-      {/* Decorative Animated Grid Pattern */}
       <div className="absolute -bottom-12 -right-12 z-0 h-40 w-40 opacity-20 transition-all duration-700 group-hover:-translate-x-4 group-hover:-translate-y-4 group-hover:scale-110 group-hover:opacity-45 md:opacity-12">
         <div className="grid h-full w-full grid-cols-5 grid-rows-5 gap-2">
           {[...Array(25)].map((_, i) => (
@@ -691,8 +677,6 @@ function Opportunities({ onNavigate }) {
     </div>
   );
 }
-// --- END OF NEW REPLACEMENT BLOCK ---
-
 const StatCard = memo(function StatCard({ stat, index, start }) {
   const Icon = stat.icon
   return (
@@ -963,8 +947,41 @@ function VisionVideoSection() {
     </section>
   )
 }
-
-
+function VisionMissionCard({
+  cardRef,
+  wrapperClass = '',
+  glowClass,
+  bgClass,
+  icon: Icon,
+  iconClass,
+  number,
+  title,
+  titleAccentClass,
+  body,
+  footer,
+}) {
+  return (
+    <div ref={cardRef} className={`group relative ${wrapperClass}`}>
+      <div className={`absolute -inset-1 rounded-[3rem] bg-gradient-to-r ${glowClass} opacity-20 blur-xl transition duration-1000 group-hover:opacity-45`} />
+      <div className={`relative flex min-h-[420px] flex-col justify-between overflow-hidden rounded-[3rem] border border-white/8 ${bgClass} p-6 shadow-[0_20px_80px_rgba(8,15,31,0.45)] sm:p-8 md:h-[500px] md:p-10`}>
+        <div className="flex items-start justify-between">
+          <div className={`rounded-2xl p-4 ${iconClass}`}>
+            <Icon className={`h-8 w-8 ${titleAccentClass}`} />
+          </div>
+          <span className="text-5xl font-black italic text-white/14 sm:text-6xl">{number}</span>
+        </div>
+        <div>
+          <h2 className="mb-5 text-4xl font-black uppercase tracking-tighter text-white sm:mb-6 sm:text-5xl">
+            Our <br />
+            <span className={titleAccentClass}>{title}</span>
+          </h2>
+          <p className="max-w-xl text-base leading-relaxed text-white/68 sm:text-lg">{body}</p>
+        </div>
+        {footer}
+      </div>
+    </div>
+  )
+}
 function VisionMissionSection() {
   const containerRef = useRef(null)
   const visionCardRef = useRef(null)
@@ -1005,82 +1022,63 @@ function VisionMissionSection() {
       className="relative flex min-h-[100svh] w-full items-center justify-center overflow-hidden border-y border-white/6 py-16 md:h-screen md:py-0"
       style={{
         background:
-          'radial-gradient(circle at 20% 20%, rgba(213, 161, 255, 0.12), transparent 30%), radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.12), transparent 28%), linear-gradient(180deg, #1B0A21 0%, #220A36 100%)',
+          'radial-gradient(circle at 18% 18%, rgba(56, 189, 248, 0.12), transparent 26%), radial-gradient(circle at 82% 78%, rgba(251, 146, 60, 0.11), transparent 24%), radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.08), transparent 42%), linear-gradient(180deg, #120a1d 0%, #1a0b2e 55%, #0e0717 100%)',
       }}
     >
       <div
-        className="absolute left-1/2 top-1/2 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/5 blur-[150px] pointer-events-none"
+        className="absolute left-1/2 top-1/2 h-[860px] w-[860px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-500/10 blur-[160px] pointer-events-none"
       />
       <div
-        className="absolute inset-0 opacity-10"
+        className="absolute inset-0 opacity-[0.16]"
         style={{
-          backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)',
-          backgroundSize: '40px 40px',
+          backgroundImage: 'radial-gradient(rgba(255,255,255,0.35) 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
         }}
       />
 
       <div className="container relative z-10 mx-auto grid grid-cols-1 gap-6 px-4 md:grid-cols-2 md:gap-8 md:px-6">
-        <div ref={visionCardRef} className="group relative">
-          <div className="absolute -inset-1 rounded-[3rem] bg-gradient-to-r from-violet-600 to-violet-600 opacity-20 blur transition duration-1000 group-hover:opacity-40" />
-          <div className="relative flex min-h-[420px] flex-col justify-between overflow-hidden rounded-[3rem] border border-white/8 bg-[#2a133d] p-6 sm:p-8 md:h-[500px] md:p-10">
-            <div className="flex items-start justify-between">
-              <div className="rounded-2xl bg-violet-500/10 p-4">
-                <Target className="h-8 w-8 text-violet-500" />
-              </div>
-              <span className="text-5xl font-black italic text-white/20 sm:text-6xl">01</span>
-            </div>
-            <div>
-              <h2 className="mb-5 text-4xl font-black uppercase tracking-tighter text-white sm:mb-6 sm:text-5xl">
-                Our <br />
-                <span className="text-violet-500">Vision</span>
-              </h2>
-              <p className="text-base leading-relaxed text-white/60 sm:text-lg">
-                To transform Bengaluru into Asia&apos;s premier educational destination by revolutionizing admission processes, offering unparalleled career guidance, and fostering collaborative partnerships with top-tier institutions and industry leaders.
-              </p>
-            </div>
-            <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-widest text-violet-500">
+        <VisionMissionCard
+          cardRef={visionCardRef}
+          glowClass="from-cyan-400 via-blue-500 to-violet-500"
+          bgClass="bg-[#17192b]/92 border-cyan-300/12"
+          icon={Target}
+          iconClass="border border-cyan-300/15 bg-cyan-400/10"
+          number="01"
+          title="Vision"
+          titleAccentClass="text-cyan-300"
+          body="To transform Bengaluru into Asia&apos;s premier educational destination by revolutionizing admission processes, offering unparalleled career guidance, and fostering collaborative partnerships with top-tier institutions and industry leaders."
+          footer={
+            <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-widest text-cyan-300">
               <span>View Roadmap</span>
               <MoveRight size={16} />
             </div>
-          </div>
-        </div>
-
-        <div ref={missionCardRef} className="group relative mt-4 md:mt-24">
-          <div className="absolute -inset-1 rounded-[3rem] bg-gradient-to-r from-violet-600 to-violet-600 opacity-20 blur transition duration-1000 group-hover:opacity-40" />
-          <div className="relative flex min-h-[420px] flex-col justify-between overflow-hidden rounded-[3rem] border border-white/8 bg-[#1f0c2d] p-6 sm:p-8 md:h-[500px] md:p-10">
-            <div className="flex items-start justify-between">
-              <div className="rounded-2xl bg-violet-500/10 p-4">
-                <Rocket className="h-8 w-8 text-violet-500" />
-              </div>
-              <span className="text-5xl font-black italic text-white/20 sm:text-6xl">02</span>
-            </div>
-            <div>
-              <h2 className="mb-5 text-4xl font-black uppercase tracking-tighter text-white sm:mb-6 sm:text-5xl">
-                Our <br />
-                <span className="text-violet-500">Mission</span>
-              </h2>
-              <p className="text-base leading-relaxed text-white/60 sm:text-lg">
-                To attract and empower students worldwide by providing access to world-class education in India, nurturing global talent, and creating a network of future leaders who drive innovation and positive change.
-              </p>
-            </div>
+          }
+        />
+        <VisionMissionCard
+          cardRef={missionCardRef}
+          wrapperClass="mt-4 md:mt-24"
+          glowClass="from-orange-400 via-rose-500 to-fuchsia-500"
+          bgClass="bg-[#201126]/92 border-orange-300/12"
+          icon={Rocket}
+          iconClass="border border-orange-300/15 bg-orange-400/10"
+          number="02"
+          title="Mission"
+          titleAccentClass="text-orange-300"
+          body="To attract and empower students worldwide by providing access to world-class education in India, nurturing global talent, and creating a network of future leaders who drive innovation and positive change."
+          footer={
             <div className="flex items-center gap-6">
               {['Empower', 'Nurture', 'Lead'].map((tag) => (
-                <span
-                  key={tag}
-                  className="flex items-center gap-2 text-[10px] font-black uppercase tracking-tighter text-violet-500/60"
-                >
+                <span key={tag} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-tighter text-orange-300/70">
                   <Sparkles size={10} /> {tag}
                 </span>
               ))}
             </div>
-          </div>
-        </div>
+          }
+        />
       </div>
     </section>
   )
 }
-
-
 function FinalCTASection({ onNavigate }) {
   const sectionRef = useRef(null)
   const contentRef = useRef(null)
@@ -1191,11 +1189,8 @@ function FinalCTASection({ onNavigate }) {
             onClick={() => onNavigate?.('/contact')}
             className="group relative flex h-48 w-48 items-center justify-center transition-transform duration-500 hover:scale-110 md:h-64 md:w-64"
           >
-            
             <div className="absolute inset-0 rounded-full border border-dashed border-white/20 animate-[spin_10s_linear_infinite]" />
             <div className="absolute inset-4 rounded-full border border-violet-500/30 animate-[spin_6s_linear_infinite_reverse]" />
-            
-            
             <div className="relative flex h-full w-full flex-col items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-violet-700 p-2 text-white shadow-[0_0_50px_rgba(168,85,247,0.4)] transition-all group-hover:shadow-[0_0_80px_rgba(168,85,247,0.7)]">
               <span className="text-[0.65rem] font-bold uppercase tracking-widest opacity-70">Start Now</span>
               <span className="text-xl font-black uppercase md:text-2xl">Connect</span>
@@ -1203,8 +1198,6 @@ function FinalCTASection({ onNavigate }) {
             </div>
           </button>
         </div>
-
-        
         <div className="mt-24 flex justify-center opacity-20">
           <div className="flex flex-col items-center gap-4">
              <div className="h-16 w-px bg-gradient-to-b from-white to-transparent" />

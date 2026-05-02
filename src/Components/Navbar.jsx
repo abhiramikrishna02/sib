@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { useEffect, useMemo, useState, useRef } from "react";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { Menu, X, Sparkles, Zap } from "lucide-react";
 
 const links = [
   { href: "/", label: "Home" },
@@ -10,28 +10,60 @@ const links = [
 ];
 
 const themes = {
-  home: { from: "#7b2cbf", via: "#a855f7", to: "#3c096c", glow: "rgba(168, 85, 247, 0.4)" },
-  about: { from: "#3a0ca3", via: "#4361ee", to: "#4cc9f0", glow: "rgba(67, 97, 238, 0.4)" },
-  services: { from: "#2d6a4f", via: "#52b788", to: "#081c15", glow: "rgba(82, 183, 136, 0.4)" },
-  contact: { from: "#e01e37", via: "#ff4d6d", to: "#800f2f", glow: "rgba(255, 77, 109, 0.4)" },
+  home: { from: "#7b2cbf", via: "#a855f7", to: "#3c096c", primary: "#a855f7", secondary: "#3c096c" },
+  about: { from: "#3a0ca3", via: "#4361ee", to: "#4cc9f0", primary: "#4361ee", secondary: "#3a0ca3" },
+  services: { from: "#2d6a4f", via: "#52b788", to: "#081c15", primary: "#52b788", secondary: "#081c15" },
+  contact: { from: "#e01e37", via: "#ff4d6d", to: "#800f2f", primary: "#ff4d6d", secondary: "#800f2f" },
 };
 
 function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [hoveredTab, setHoveredTab] = useState(null);
+  const navRef = useRef(null);
+
+  // Mouse Position for 3D Tilt & Spotlight
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  // Smooth springs for the 3D effect
+  const mouseXSpring = useSpring(x);
+  const mouseYSpring = useSpring(y);
+
+  // Rotate transformations for 3D Tilt
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["7deg", "-7deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-7deg", "7deg"]);
 
   const active = currentPath === "/" ? "home" : currentPath.replace("/", "");
   const theme = useMemo(() => themes[active] ?? themes.home, [active]);
-
-  // Spring physics for the "Physical Jump"
-  const springConfig = { type: "spring", stiffness: 400, damping: 30 };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const handleMouseMove = (e) => {
+    if (!navRef.current) return;
+    const rect = navRef.current.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    
+    // Normalize values between -0.5 and 0.5
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+    setHoveredTab(null);
+  };
 
   const handleNavigate = (event, to) => {
     event.preventDefault();
@@ -41,53 +73,70 @@ function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-[100] px-4 pt-4">
+    <header className="fixed inset-x-0 top-0 z-[100] px-4 pt-6 perspective-1000">
       <motion.div 
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="mx-auto max-w-6xl"
       >
-        <div className={`relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-[#08040d]/60 backdrop-blur-2xl transition-all duration-500 ${scrolled ? "shadow-[0_20px_50px_rgba(0,0,0,0.5)]" : ""}`}>
-          
-          {/* --- PASSING AURA LIGHTS --- */}
+        <motion.div 
+          ref={navRef}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+          className={`group relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-[#08040d]/60 backdrop-blur-3xl transition-all duration-700 ${
+            scrolled ? "py-2 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.9)]" : "py-5"
+          }`}
+        >
+          {/* --- BORDER BEAM EFFECT --- */}
+          <div className="absolute inset-px z-0 overflow-hidden rounded-[2.5rem] pointer-events-none">
+             <motion.div 
+                className="absolute h-full w-20 opacity-40 blur-xl"
+                style={{ background: `linear-gradient(to right, transparent, ${theme.primary}, transparent)` }}
+                animate={{ x: ['-100%', '1000%'] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+             />
+          </div>
+
+          {/* --- HOLOGRAPHIC GRID OVERLAY --- */}
+          <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] group-hover:opacity-[0.07] transition-opacity duration-500" />
+
+          {/* --- DYNAMIC GLOW NUCLEUS --- */}
           <motion.div
-            className="absolute inset-0 z-0 opacity-30"
-            animate={{
-              background: [
-                `radial-gradient(600px circle at 0% 50%, ${theme.via}22, transparent 40%)`,
-                `radial-gradient(600px circle at 100% 50%, ${theme.via}22, transparent 40%)`,
-                `radial-gradient(600px circle at 0% 50%, ${theme.via}22, transparent 40%)`,
-              ]
+            className="pointer-events-none absolute -inset-px z-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            style={{
+              background: `radial-gradient(400px circle at var(--mouse-x) var(--mouse-y), ${theme.primary}10, transparent 80%)`
             }}
-            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
           />
 
-          {/* Top Edge Glow Line */}
-          <motion.div 
-            className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-fuchsia-500/50 to-transparent"
-            animate={{ x: ['-100%', '100%'] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-          />
-
-          <div className="relative z-10 flex h-20 items-center justify-between px-6">
+          <div className="relative z-10 flex items-center justify-between px-10">
             
-            {/* --- LOGO NUCLEUS --- */}
-            <a href="/" onClick={(e) => handleNavigate(e, "/")} className="group flex items-center gap-3">
-              <motion.div
-                className="relative flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-white/10 to-white/5 shadow-xl"
-                whileHover={{ rotate: 180 }}
-              >
-                <div className="absolute inset-0 rounded-xl bg-fuchsia-600 blur-md opacity-20 group-hover:opacity-60 transition-opacity" />
-                <span className="relative text-xl font-black text-white">S</span>
-              </motion.div>
-              <div className="hidden flex-col sm:flex">
-                <span className="text-sm font-black tracking-widest text-white">SIB.</span>
-                <span className="text-[10px] uppercase text-fuchsia-400/80">Premium Portal</span>
+            {/* --- LOGO: TITANIUM STYLE --- */}
+            <motion.a 
+              href="/" 
+              onClick={(e) => handleNavigate(e, "/")} 
+              className="flex items-center gap-4"
+              style={{ transform: "translateZ(30px)" }}
+            >
+              <div className="relative flex h-12 w-12 items-center justify-center">
+                <div className="absolute inset-0 rotate-45 rounded-xl border border-white/10 bg-white/5 transition-transform group-hover:rotate-90 duration-700" />
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/10 to-transparent blur-sm" />
+                <Zap size={22} className="relative z-10" style={{ color: theme.primary }} />
+                <motion.div 
+                   className="absolute inset-0 rounded-full blur-2xl opacity-30"
+                   style={{ backgroundColor: theme.primary }}
+                   animate={{ scale: [1, 1.2, 1] }}
+                   transition={{ duration: 3, repeat: Infinity }}
+                />
               </div>
-            </a>
+              <div className="flex flex-col">
+                <span className="text-xl font-black uppercase tracking-tighter text-white">SIB<span style={{ color: theme.primary }}>_</span>CORE</span>
+                <span className="text-[8px] font-bold uppercase tracking-[0.4em] text-white/30">Neural Interface v2</span>
+              </div>
+            </motion.a>
 
-            {/* --- DESKTOP NAV --- */}
-            <nav className="hidden items-center gap-1 rounded-full border border-white/5 bg-black/20 p-1.5 md:flex">
+            {/* --- JUMPING NAV: WITH TECH BRACKETS --- */}
+            <nav className="hidden items-center gap-2 rounded-2xl border border-white/5 bg-black/40 p-1.5 md:flex" style={{ transform: "translateZ(20px)" }}>
               {links.map((link) => {
                 const isActive = currentPath === link.href;
                 return (
@@ -95,35 +144,32 @@ function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
                     key={link.href}
                     href={link.href}
                     onMouseEnter={() => setHoveredTab(link.href)}
-                    onMouseLeave={() => setHoveredTab(null)}
                     onClick={(e) => handleNavigate(e, link.href)}
-                    className={`relative px-6 py-2.5 text-sm font-bold transition-colors duration-300 ${isActive ? "text-white" : "text-white/50 hover:text-white"}`}
+                    className={`relative px-7 py-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 ${
+                      isActive ? "text-white" : "text-white/40 hover:text-white"
+                    }`}
                   >
-                    {/* PHYSICAL JUMPING PILL */}
+                    {/* LIQUID JUMP PILL */}
                     {isActive && (
                       <motion.div
-                        layoutId="activePill"
-                        className="absolute inset-0 z-0 rounded-full shadow-[0_0_20px_rgba(168,85,247,0.4)]"
+                        layoutId="nav-glow-pill"
+                        className="absolute inset-0 z-0 rounded-xl"
                         style={{
                           background: `linear-gradient(135deg, ${theme.from}, ${theme.via})`,
+                          boxShadow: `0 0 25px ${theme.primary}66`
                         }}
-                        transition={springConfig}
+                        transition={{ type: "spring", stiffness: 400, damping: 30, mass: 1 }}
                       >
-                        {/* Aura spill inside the pill */}
-                        <motion.div 
-                          className="absolute inset-0 rounded-full bg-white/20 blur-sm"
-                          animate={{ opacity: [0.5, 0.8, 0.5] }}
-                          transition={{ duration: 2, repeat: Infinity }}
-                        />
+                        <div className="absolute inset-0 rounded-xl bg-[url('https://www.transparenttextures.com/patterns/diagmonds-light.png')] opacity-20" />
                       </motion.div>
                     )}
                     
-                    {/* Hover Indicator */}
+                    {/* HOVER INDICATOR */}
                     {hoveredTab === link.href && !isActive && (
                       <motion.div
-                        layoutId="hoverPill"
-                        className="absolute inset-0 z-0 rounded-full bg-white/5"
-                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                        layoutId="hover-outline"
+                        className="absolute inset-0 z-0 rounded-xl border border-white/10 bg-white/5"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
                       />
                     )}
 
@@ -133,55 +179,70 @@ function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
               })}
             </nav>
 
-            {/* --- ACTION BUTTON --- */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="hidden rounded-full bg-white px-6 py-2.5 text-xs font-black uppercase tracking-tighter text-black md:block"
-              onClick={() => {
-                if (onApplyClick) onApplyClick()
-                else window.location.href = "/apply"
-              }}
-            >
-              Apply Now
-            </motion.button>
+            {/* --- ACTION BUTTON: THE "PULSE" --- */}
+            <div className="hidden md:block" style={{ transform: "translateZ(40px)" }}>
+              <motion.button
+                whileHover={{ scale: 1.1, letterSpacing: "0.3em" }}
+                whileTap={{ scale: 0.9 }}
+                style={{ background: theme.primary }}
+                className="group relative overflow-hidden rounded-xl px-10 py-4 text-[10px] font-black uppercase tracking-widest text-white shadow-2xl transition-all"
+                onClick={() => onApplyClick ? onApplyClick() : window.location.href = "/apply"}
+              >
+                <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                <span className="relative z-10 flex items-center gap-2">
+                   Apply <Sparkles size={14} />
+                </span>
+              </motion.button>
+            </div>
 
             {/* Mobile Toggle */}
             <button className="md:hidden text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              {mobileMenuOpen ? <X /> : <Menu />}
+              {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
           </div>
-        </div>
+
+          {/* Corner Tech Accents */}
+          <div className="absolute top-0 left-0 h-4 w-4 border-t-2 border-l-2 border-white/5" />
+          <div className="absolute top-0 right-0 h-4 w-4 border-t-2 border-r-2 border-white/5" />
+          <div className="absolute bottom-0 left-0 h-4 w-4 border-b-2 border-l-2 border-white/5" />
+          <div className="absolute bottom-0 right-0 h-4 w-4 border-b-2 border-r-2 border-white/5" />
+        </motion.div>
       </motion.div>
 
-      {/* --- MOBILE OVERLAY --- */}
+      {/* --- MOBILE OVERLAY (FULL SCREEN BLUR) --- */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            animate={{ opacity: 1, backdropFilter: "blur(12px)" }}
-            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            className="fixed inset-0 z-[-1] flex flex-col items-center justify-center bg-black/60"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[-1] flex flex-col items-center justify-center bg-black/90 backdrop-blur-2xl"
           >
-            {links.map((link, i) => (
-              <motion.a
-                key={link.href}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                onClick={(e) => handleNavigate(e, link.href)}
-                className="py-4 text-4xl font-black text-white"
-              >
-                {link.label}
-              </motion.a>
-            ))}
+             <div className="flex flex-col gap-10 text-center">
+              {links.map((link, i) => (
+                <motion.a
+                  key={link.href}
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: i * 0.1 }}
+                  onClick={(e) => handleNavigate(e, link.href)}
+                  className="text-6xl font-black uppercase italic tracking-tighter text-white hover:text-fuchsia-500 transition-colors"
+                >
+                  {link.label}
+                </motion.a>
+              ))}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      <style>{`
+        .perspective-1000 {
+          perspective: 1000px;
+        }
+      `}</style>
     </header>
   );
 }
 
 export default Navbar;
-
-
