@@ -136,28 +136,28 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
     const displayItems = showAll[title] ? items : items.slice(0, 6);
 
     return (
-      <section className="mb-24">
-        <div className="flex justify-between items-end mb-10 border-b border-white/5 pb-6">
-          <div className="flex items-center gap-5">
-            <div className="h-14 w-14 rounded-2xl bg-fuchsia-500/10 flex items-center justify-center border border-fuchsia-500/20 text-fuchsia-400">
+      <section className="mb-16 sm:mb-20 md:mb-24">
+        <div className="mb-8 flex flex-col items-start gap-4 border-b border-white/5 pb-5 sm:mb-10 sm:flex-row sm:items-end sm:justify-between sm:pb-6">
+          <div className="flex items-center gap-4 sm:gap-5">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-fuchsia-500/20 bg-fuchsia-500/10 text-fuchsia-400 sm:h-14 sm:w-14">
               <Icon size={28} />
             </div>
             <div>
-              <h2 className="text-3xl font-black italic tracking-tighter text-white uppercase">{title}</h2>
+              <h2 className="text-2xl font-black italic uppercase tracking-tighter text-white sm:text-3xl">{title}</h2>
               <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.3em]">{items.length} Entries</p>
             </div>
           </div>
           <button 
             onClick={() => { setIsEditing(false); setActiveCategory(title); }}
-            className="bg-white px-8 py-3 rounded-xl text-black text-[11px] font-black uppercase tracking-widest hover:bg-fuchsia-500 hover:text-white transition-all"
+            className="w-full rounded-xl bg-white px-5 py-3 text-[11px] font-black uppercase tracking-widest text-black transition-all hover:bg-fuchsia-500 hover:text-white sm:w-auto sm:px-8"
           >
             + ADD {title.slice(0, -1)}
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {displayItems.map((item) => (
-            <motion.div layout key={item.id} className="bg-white/[0.03] border border-white/10 rounded-[2.5rem] p-8 relative group flex flex-col justify-between overflow-hidden">
+            <motion.div layout key={item.id} className="group relative flex flex-col justify-between overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 sm:rounded-[2.5rem] sm:p-8">
               <div className="relative z-10">
                 <div className="flex justify-between items-start mb-6">
                   <h3 className="text-xl font-bold text-white leading-tight">{item.name}</h3>
@@ -186,16 +186,16 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
               </div>
 
               {/* CLEAN ACTION BAR AT BOTTOM */}
-              <div className="mt-8 pt-6 border-t border-white/5 flex justify-end items-center gap-3">
+              <div className="mt-8 flex items-center justify-end gap-3 border-t border-white/5 pt-6">
                 <button 
                   onClick={() => handleEdit(title, item)}
-                  className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-xl text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-white hover:bg-fuchsia-500 transition-all duration-300"
+                  className="flex items-center gap-2 rounded-xl bg-white/5 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white/40 transition-all duration-300 hover:bg-fuchsia-500 hover:text-white"
                 >
                   <Pencil size={12} /> Edit
                 </button>
                 <button 
                   onClick={() => removeItem(title, item.id)}
-                  className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-xl text-[10px] font-black uppercase tracking-widest text-white/20 hover:text-white hover:bg-red-500 transition-all duration-300"
+                  className="flex items-center gap-2 rounded-xl bg-white/5 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white/20 transition-all duration-300 hover:bg-red-500 hover:text-white"
                 >
                   <Trash2 size={12} /> Delete
                 </button>
@@ -214,14 +214,14 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#06010a] text-white p-6 md:p-16 relative">
+    <div className="relative min-h-screen bg-[#06010a] p-4 text-white sm:p-6 md:p-16">
       <div className="max-w-7xl mx-auto relative z-10">
-        <header className="flex justify-between items-start mb-24">
+        <header className="mb-16 flex flex-col items-start gap-6 sm:mb-20 sm:flex-row sm:justify-between sm:items-start md:mb-24">
           <div>
-            <h1 className="text-6xl font-black italic tracking-tighter text-white">CORE<span className="text-fuchsia-500">.</span></h1>
+            <h1 className="text-[clamp(2.8rem,12vw,6rem)] font-black italic tracking-tighter text-white">CORE<span className="text-fuchsia-500">.</span></h1>
             <p className="text-white/20 text-xs font-bold uppercase tracking-[0.5em] mt-2">Database Management</p>
           </div>
-          <button onClick={() => onNavigate('/')} className="flex items-center gap-3 text-white/40 hover:text-white transition-all text-[10px] font-bold uppercase tracking-widest pt-4">
+          <button onClick={() => onNavigate('/')} className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-white/40 transition-all hover:text-white sm:pt-4">
             <ArrowLeft size={16} /> Exit Admin
           </button>
         </header>
@@ -236,9 +236,9 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
             <motion.div initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 0}} onClick={closeModal} className="absolute inset-0 bg-black/90 backdrop-blur-xl" />
             
-            <motion.div initial={{y: 50, opacity: 0}} animate={{y: 0, opacity: 1}} className="relative w-full max-w-4xl bg-[#12081d] border border-white/10 rounded-[3rem] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+            <motion.div initial={{y: 50, opacity: 0}} animate={{y: 0, opacity: 1}} className="relative flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-[2rem] border border-white/10 bg-[#12081d] shadow-2xl sm:rounded-[3rem]">
               
-              <div className="p-8 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
+              <div className="flex items-center justify-between border-b border-white/5 bg-white/[0.02] p-5 sm:p-8">
                 <div>
                     <h2 className="text-3xl font-black italic tracking-tighter uppercase">
                         {isEditing ? `Edit ${activeCategory.slice(0,-1)}` : `New ${activeCategory.slice(0,-1)}`}
@@ -248,12 +248,12 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
                 <button onClick={closeModal} className="p-2 hover:bg-white/10 rounded-full transition-all"><X /></button>
               </div>
 
-              <form onSubmit={handleSubmit} className="p-8 md:p-12 overflow-y-auto custom-scrollbar">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                  <div className="space-y-8">
+              <form onSubmit={handleSubmit} className="overflow-y-auto p-5 custom-scrollbar sm:p-8 md:p-12">
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12">
+                  <div className="space-y-6 sm:space-y-8">
                     <div className="space-y-4">
                       <h4 className="text-fuchsia-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-2"><Info size={14}/> Basic Information</h4>
-                      <input placeholder="Official Name" className="w-full bg-white/5 border border-white/10 rounded-xl p-4 outline-none focus:border-fuchsia-500" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required/>
+                      <input placeholder="Official Name" className="w-full rounded-xl border border-white/10 bg-white/5 p-4 outline-none focus:border-fuchsia-500" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required/>
                       <div className="grid grid-cols-2 gap-4">
                         <input placeholder="Rating" className="bg-white/5 border border-white/10 rounded-xl p-4 outline-none focus:border-fuchsia-500" value={formData.rating} onChange={e => setFormData({...formData, rating: e.target.value})} />
                         <input placeholder="Location" className="bg-white/5 border border-white/10 rounded-xl p-4 outline-none focus:border-fuchsia-500" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} required/>

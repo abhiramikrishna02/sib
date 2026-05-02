@@ -73,7 +73,7 @@ function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-[100] px-4 pt-6 perspective-1000">
+    <header className="fixed inset-x-0 top-0 z-[100] px-3 pt-4 sm:px-4 sm:pt-6 perspective-1000">
       <motion.div 
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -109,7 +109,7 @@ function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
             }}
           />
 
-          <div className="relative z-10 flex items-center justify-between px-10">
+          <div className="relative z-10 flex items-center justify-between px-4 sm:px-10">
             
             {/* --- LOGO: TITANIUM STYLE --- */}
             <motion.a 
@@ -218,7 +218,7 @@ function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[-1] flex flex-col items-center justify-center bg-black/90 backdrop-blur-2xl"
           >
-             <div className="flex flex-col gap-10 text-center">
+            <div className="flex flex-col gap-8 px-6 text-center sm:gap-10">
               {links.map((link, i) => (
                 <motion.a
                   key={link.href}
@@ -226,7 +226,7 @@ function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: i * 0.1 }}
                   onClick={(e) => handleNavigate(e, link.href)}
-                  className="text-6xl font-black uppercase italic tracking-tighter text-white hover:text-fuchsia-500 transition-colors"
+                  className="text-4xl font-black uppercase italic tracking-tighter text-white transition-colors hover:text-fuchsia-500 sm:text-5xl"
                 >
                   {link.label}
                 </motion.a>

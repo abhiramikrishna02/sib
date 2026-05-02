@@ -38,25 +38,25 @@ export default function Services({ globalData, locationHash }) {
     if (items.length === 0) return null;
 
     return (
-      <div className="mb-24 scroll-mt-32" id={sectionId}>
-        <div className="flex items-center gap-4 mb-10 border-b border-white/5 pb-6">
-          <div className={`h-12 w-12 rounded-2xl flex items-center justify-center border ${accentStyles[accentColor].ring}`}>
+      <div className="mb-16 scroll-mt-32 sm:mb-20 md:mb-24" id={sectionId}>
+        <div className="mb-8 flex items-center gap-4 border-b border-white/5 pb-5 sm:mb-10 sm:pb-6">
+          <div className={`flex h-11 w-11 items-center justify-center rounded-2xl border sm:h-12 sm:w-12 ${accentStyles[accentColor].ring}`}>
             <Icon size={24} />
           </div>
           <div>
-            <h2 className="text-3xl font-black italic tracking-tighter text-white uppercase">{title}</h2>
+            <h2 className="text-2xl font-black italic uppercase tracking-tighter text-white sm:text-3xl">{title}</h2>
             <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.3em]">{items.length} Options Available</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
           {items.map((item) => (
             <motion.div 
               key={item.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white/[0.03] border border-white/10 rounded-[2.5rem] p-8 group hover:border-violet-500/30 transition-all duration-500 relative overflow-hidden"
+              className="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 transition-all duration-500 hover:border-violet-500/30 sm:rounded-[2.5rem] sm:p-8"
             >
               {/* Background Glow */}
               <div className="absolute -right-20 -top-20 w-40 h-40 bg-violet-500/5 blur-[80px] group-hover:bg-violet-500/10 transition-all" />
@@ -117,18 +117,18 @@ export default function Services({ globalData, locationHash }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#431f60] text-white pt-32 pb-20 px-6 md:px-16">
+    <div className="min-h-screen bg-[#431f60] text-white px-4 pb-16 pt-28 sm:px-6 sm:pb-20 sm:pt-32 md:px-16">
       <div className="max-w-7xl mx-auto">
-        <header className="mb-24 text-center">
+        <header className="mb-16 text-center sm:mb-20 md:mb-24">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
             <p className="text-violet-500 text-[10px] font-black uppercase tracking-[0.5em] mb-4">Explore our Database</p>
-            <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter text-white mb-6 uppercase">
+            <h1 className="mb-6 text-[clamp(2.8rem,12vw,4.8rem)] font-black italic uppercase tracking-tighter text-white md:text-8xl">
               Curated<span className="text-violet-500">.</span> Choices
             </h1>
-            <p className="text-white/40 max-w-2xl mx-auto text-sm md:text-lg leading-relaxed">
+            <p className="mx-auto max-w-2xl text-sm leading-relaxed text-white/40 md:text-lg">
               Browse through top-tier institutions and professional courses verified by our experts. 
               Find the perfect path for your academic journey.
             </p>
@@ -142,7 +142,7 @@ export default function Services({ globalData, locationHash }) {
 
         {/* Empty State Fallback */}
         {Universities.length === 0 && Colleges.length === 0 && Courses.length === 0 && (
-          <div className="py-40 text-center border border-white/5 rounded-[3rem] bg-white/[0.01]">
+          <div className="rounded-[3rem] border border-white/5 bg-white/[0.01] py-24 text-center sm:py-32 md:py-40">
             <Layers className="mx-auto text-white/10 mb-6" size={48} />
             <p className="text-white/20 text-xs font-black uppercase tracking-[0.3em]">No data has been published yet.</p>
           </div>

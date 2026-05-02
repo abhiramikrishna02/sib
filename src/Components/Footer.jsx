@@ -5,18 +5,18 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-[#0f021a] pt-20 pb-10 overflow-hidden border-t border-white/5">
+    <footer className="relative overflow-hidden border-t border-white/5 bg-[#0f021a] pb-8 pt-16 sm:pb-10 sm:pt-20">
       {/* Background Neon Glows */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/10 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none" />
 
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+      <div className="container relative z-10 mx-auto px-4 sm:px-6">
+        <div className="mb-12 grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4 sm:mb-16 sm:gap-12">
           
           {/* Brand Column */}
           <div className="space-y-6">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center font-bold text-white text-xl shadow-lg shadow-purple-500/20">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 text-xl font-bold text-white shadow-lg shadow-purple-500/20">
                 S
               </div>
               <h2 className="text-2xl font-black text-white tracking-tighter uppercase">
@@ -26,9 +26,9 @@ const Footer = () => {
             <p className="text-white/60 text-sm leading-relaxed">
               Making Bengaluru the Education Capital of Asia. Empowering students with quality education and opportunities in Indiaâ€™s Silicon Valley.
             </p>
-            <div className="flex gap-4">
+            <div className="flex gap-3 sm:gap-4">
               {[Mail, MessageSquare, Phone, ChevronRight, MapPin].map((Icon, i) => (
-                <a key={i} href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:bg-white hover:text-black hover:scale-110 transition-all duration-300">
+                <a key={i} href="#" className="flex h-9 w-9 items-center justify-center rounded-full bg-white/5 text-white/50 transition-all duration-300 hover:scale-110 hover:bg-white hover:text-black sm:h-10 sm:w-10">
                   <Icon size={18} />
                 </a>
               ))}
@@ -89,11 +89,11 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 text-center md:flex-row md:text-left">
           <p className="text-white/30 text-xs">
             © {currentYear} <span className="text-white/60 font-semibold">StudyInBengaluru.in</span> - All rights reserved.
           </p>
-          <div className="flex gap-8">
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-8 md:justify-end">
             {['Privacy Policy', 'Refund & Cancellation', 'Terms & Conditions'].map((item) => (
               <a key={item} href="#" className="text-white/30 hover:text-white text-xs transition-colors underline-offset-4 hover:underline">
                 {item}
