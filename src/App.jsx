@@ -11,6 +11,7 @@ import About from './Pages/About.jsx'
 import Contact from './Pages/Contact.jsx'
 import Home from './Pages/Home.jsx'
 import Services from './Pages/Services.jsx'
+import Details from './Pages/Details.jsx'
 import Login from './Components/Login.jsx'; // Add this line
 import Add from './Pages/Add.jsx';
 import { supabase } from './lib/supabase.js'
@@ -21,6 +22,7 @@ const routeMap = {
   '/': Home,
   '/about': About,
   '/services': Services,
+  '/details': Details,
   '/contact': Contact,
   '/login': Login,   // Add this
   '/admin': Login,    // Add this
@@ -31,17 +33,27 @@ function getPathname() {
   return window.location.pathname.replace(/\/+$/, '') || '/'
 }
 
-function groupOpportunities(rows = []) {
+function normalizeRows(rows = []) {
+  return rows.map((row) => ({
+    ...row,
+    feeRange: row.fee_range || row.feeRange || '',
+    image_url: row.image_url || '',
+    images: Array.isArray(row.images) ? row.images : [],
+    document_url: row.document_url || '',
+    document_name: row.document_name || '',
+    document_type: row.document_type || '',
+  }))
+}
+
+function groupEducationData({
+  universities = [],
+  colleges = [],
+  courses = [],
+} = {}) {
   return {
-    Universities: rows
-      .filter((row) => row.category === 'Universities')
-      .map((row) => ({ ...row, feeRange: row.fee_range || '' })),
-    Colleges: rows
-      .filter((row) => row.category === 'Colleges')
-      .map((row) => ({ ...row, feeRange: row.fee_range || '' })),
-    Courses: rows
-      .filter((row) => row.category === 'Courses')
-      .map((row) => ({ ...row, feeRange: row.fee_range || '' })),
+    Universities: normalizeRows(universities),
+    Colleges: normalizeRows(colleges),
+    Courses: normalizeRows(courses),
   }
 }
 
@@ -58,19 +70,33 @@ function App() {
 
     const loadGlobalData = async () => {
       setDataLoading(true)
-      const { data, error } = await supabase
-        .from('opportunities')
-        .select('*')
-        .order('created_at', { ascending: true })
+      const [universitiesResult, collegesResult, coursesResult] = await Promise.all([
+        supabase.from('universities').select('*').order('created_at', { ascending: true }),
+        supabase.from('colleges').select('*').order('created_at', { ascending: true }),
+        supabase.from('courses').select('*').order('created_at', { ascending: true }),
+      ])
 
       if (!mounted) return
 
-      if (error) {
-        console.error('Failed to load opportunities:', error)
+      const hasError = universitiesResult.error || collegesResult.error || coursesResult.error
+
+      if (hasError) {
+        console.error('Failed to load education data:', {
+          universities: universitiesResult.error,
+          colleges: collegesResult.error,
+          courses: coursesResult.error,
+        })
         setGlobalData({ Universities: [], Colleges: [], Courses: [] })
       } else {
-        setGlobalData(groupOpportunities(data || []))
+        setGlobalData(
+          groupEducationData({
+            universities: universitiesResult.data || [],
+            colleges: collegesResult.data || [],
+            courses: coursesResult.data || [],
+          })
+        )
       }
+
       setDataLoading(false)
     }
 
@@ -176,7 +202,7 @@ function App() {
       <ApplyModal open={applyOpen} onClose={() => setApplyOpen(false)} />
       
       {/* Only show Footer if not on login/admin pages */}
-      {pathname !== '/login' && pathname !== '/admin' && <Footer />}
+      {pathname !== '/login' && pathname !== '/admin' && <Footer onNavigate={navigate} />}
     </div>
   )
 }

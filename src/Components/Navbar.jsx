@@ -1,25 +1,10 @@
-import { useEffect, useMemo, useState, useRef } from "react";
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Menu, X, Sparkles, Zap } from "lucide-react";
-
-const links = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/services", label: "Services" },
-  { href: "/contact", label: "Contact" },
-];
-
-const themes = {
-  home: { from: "#7b2cbf", via: "#a855f7", to: "#3c096c", primary: "#a855f7", secondary: "#3c096c" },
-  about: { from: "#3a0ca3", via: "#4361ee", to: "#4cc9f0", primary: "#4361ee", secondary: "#3a0ca3" },
-  services: { from: "#2d6a4f", via: "#52b788", to: "#081c15", primary: "#52b788", secondary: "#081c15" },
-  contact: { from: "#e01e37", via: "#ff4d6d", to: "#800f2f", primary: "#ff4d6d", secondary: "#800f2f" },
-};
+import { useEffect, useMemo, useRef, useState } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { Sparkles, Zap } from "lucide-react";
+import Menu, { getMenuTheme } from "./Menu.jsx";
 
 function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
   const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [hoveredTab, setHoveredTab] = useState(null);
   const navRef = useRef(null);
 
   // Mouse Position for 3D Tilt & Spotlight
@@ -34,8 +19,7 @@ function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["7deg", "-7deg"]);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-7deg", "7deg"]);
 
-  const active = currentPath === "/" ? "home" : currentPath.replace("/", "");
-  const theme = useMemo(() => themes[active] ?? themes.home, [active]);
+  const theme = useMemo(() => getMenuTheme(currentPath), [currentPath]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -62,14 +46,6 @@ function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
   const handleMouseLeave = () => {
     x.set(0);
     y.set(0);
-    setHoveredTab(null);
-  };
-
-  const handleNavigate = (event, to) => {
-    event.preventDefault();
-    setMobileMenuOpen(false);
-    if (onNavigate) onNavigate(to);
-    else window.location.href = to;
   };
 
   return (
@@ -135,49 +111,7 @@ function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
               </div>
             </motion.a>
 
-            {/* --- JUMPING NAV: WITH TECH BRACKETS --- */}
-            <nav className="hidden items-center gap-2 rounded-2xl border border-white/5 bg-black/40 p-1.5 md:flex" style={{ transform: "translateZ(20px)" }}>
-              {links.map((link) => {
-                const isActive = currentPath === link.href;
-                return (
-                  <motion.a
-                    key={link.href}
-                    href={link.href}
-                    onMouseEnter={() => setHoveredTab(link.href)}
-                    onClick={(e) => handleNavigate(e, link.href)}
-                    className={`relative px-7 py-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 ${
-                      isActive ? "text-white" : "text-white/40 hover:text-white"
-                    }`}
-                  >
-                    {/* LIQUID JUMP PILL */}
-                    {isActive && (
-                      <motion.div
-                        layoutId="nav-glow-pill"
-                        className="absolute inset-0 z-0 rounded-xl"
-                        style={{
-                          background: `linear-gradient(135deg, ${theme.from}, ${theme.via})`,
-                          boxShadow: `0 0 25px ${theme.primary}66`
-                        }}
-                        transition={{ type: "spring", stiffness: 400, damping: 30, mass: 1 }}
-                      >
-                        <div className="absolute inset-0 rounded-xl bg-[url('https://www.transparenttextures.com/patterns/diagmonds-light.png')] opacity-20" />
-                      </motion.div>
-                    )}
-                    
-                    {/* HOVER INDICATOR */}
-                    {hoveredTab === link.href && !isActive && (
-                      <motion.div
-                        layoutId="hover-outline"
-                        className="absolute inset-0 z-0 rounded-xl border border-white/10 bg-white/5"
-                        transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
-                      />
-                    )}
-
-                    <span className="relative z-10">{link.label}</span>
-                  </motion.a>
-                );
-              })}
-            </nav>
+            <Menu currentPath={currentPath} onNavigate={onNavigate} theme={theme} />
 
             {/* --- ACTION BUTTON: THE "PULSE" --- */}
             <div className="hidden md:block" style={{ transform: "translateZ(40px)" }}>
@@ -194,11 +128,6 @@ function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
                 </span>
               </motion.button>
             </div>
-
-            {/* Mobile Toggle */}
-            <button className="md:hidden text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-            </button>
           </div>
 
           {/* Corner Tech Accents */}
@@ -208,33 +137,6 @@ function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
           <div className="absolute bottom-0 right-0 h-4 w-4 border-b-2 border-r-2 border-white/5" />
         </motion.div>
       </motion.div>
-
-      {/* --- MOBILE OVERLAY (FULL SCREEN BLUR) --- */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[-1] flex flex-col items-center justify-center bg-black/90 backdrop-blur-2xl"
-          >
-            <div className="flex flex-col gap-8 px-6 text-center sm:gap-10">
-              {links.map((link, i) => (
-                <motion.a
-                  key={link.href}
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: i * 0.1 }}
-                  onClick={(e) => handleNavigate(e, link.href)}
-                  className="text-4xl font-black uppercase italic tracking-tighter text-white transition-colors hover:text-fuchsia-500 sm:text-5xl"
-                >
-                  {link.label}
-                </motion.a>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <style>{`
         .perspective-1000 {
