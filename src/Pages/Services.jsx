@@ -110,69 +110,8 @@ export default function Services({ globalData, locationHash, onNavigate }) {
     )
   }
 
-  const renderTopCardGrid = (items, emptyText) => (
-    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-      {items.length > 0 ? items.map((item) => (
-        <motion.article
-          key={item.id}
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="overflow-hidden rounded-[1.4rem] bg-[#4e3072] shadow-xl shadow-black/10 transition-transform duration-300 hover:-translate-y-1"
-        >
-          <div className="relative h-44 overflow-hidden">
-            {getCardImage(item) ? (
-              <img src={getCardImage(item)} alt={item.name} className="h-full w-full object-cover" />
-            ) : (
-              <div className="h-full w-full bg-[linear-gradient(135deg,#7a5da0,#b58fdc)]" />
-            )}
-            {item.rating && (
-              <div className="absolute right-2 top-2 rounded-full bg-black/35 px-3 py-1 text-[10px] font-black text-yellow-300 backdrop-blur-md">
-                {'★'.repeat(Math.min(5, Math.round(Number(item.rating) || 0)))}
-              </div>
-            )}
-          </div>
-          <div className="p-4 text-white">
-            <h3 className="text-base font-black leading-snug sm:text-lg">{item.name}</h3>
-            <div className="mt-1 flex items-center gap-2 text-[10px] text-white/70">
-              <MapPin size={10} />
-              <span className="truncate">{item.location || 'Location not set'}</span>
-            </div>
-              <div className="mt-3 border-t border-white/10 pt-3">
-                <div className="flex items-center justify-between text-[10px] text-white/55">
-                  <span>Annual Fees From</span>
-                  {item.feeRange && <span className="font-semibold text-white">{item.feeRange}</span>}
-                </div>
-              <div className="mt-3 flex items-center justify-between gap-3">
-                <button
-                  onClick={() => onNavigate?.(`/details#type=college&id=${item.id}`)}
-                  className="text-[10px] font-black uppercase tracking-widest text-white/85 hover:text-white"
-                >
-                  View Details
-                </button>
-                {getDocumentUrl(item) && (
-                  <a
-                    href={getDocumentUrl(item)}
-                    download
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/10 px-3 py-2 text-[10px] font-black uppercase tracking-widest text-white/80 hover:bg-white hover:text-black"
-                  >
-                    <Download size={12} /> Download
-                  </a>
-                )}
-                <ArrowRight size={14} className="text-white/80" />
-              </div>
-              </div>
-            </div>
-          </motion.article>
-      )) : (
-        <div className="col-span-full rounded-3xl border border-white/10 bg-white/5 p-8 text-center text-white/60">{emptyText}</div>
-      )}
-    </div>
-  )
-
   return (
+
     <div className="min-h-screen bg-[#431f60] px-4 pb-16 pt-28 text-white sm:px-6 sm:pb-20 sm:pt-32 md:px-16">
       <div className="mx-auto max-w-7xl">
         <header className="mb-16 text-center sm:mb-20 md:mb-24">
@@ -383,29 +322,29 @@ export default function Services({ globalData, locationHash, onNavigate }) {
                   <Search size={18} className="shrink-0 text-[#2c1740]" />
                 </label>
               </div>
-              <div className="relative mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+              <div className="relative mt-8 grid grid-cols-1 items-start gap-5 md:grid-cols-2 xl:grid-cols-3">
                 {coursePageItems.length > 0 ? coursePageItems.map((item) => (
-                  <motion.article key={item.id} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="overflow-hidden rounded-[1.4rem] bg-[#4e3072] shadow-xl shadow-black/10 transition-transform duration-300 hover:-translate-y-1">
-                    <div className="p-5 text-white">
+                  <motion.article key={item.id} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="self-start overflow-hidden rounded-[1.25rem] bg-[#4e3072] shadow-xl shadow-black/10 transition-transform duration-300 hover:-translate-y-1">
+                    <div className="p-4 text-white sm:p-5">
                       <div className="flex items-start justify-between gap-3">
-                        <h3 className="text-xl font-black uppercase leading-tight sm:text-2xl">{item.name}</h3>
-                        <span className="rounded-full bg-[#dfffd8] px-3 py-1 text-[10px] font-black uppercase text-[#1b6b2a]">
+                        <h3 className="text-lg font-black uppercase leading-tight sm:text-xl">{item.name}</h3>
+                        <span className="shrink-0 rounded-full bg-[#dfffd8] px-2.5 py-1 text-[9px] font-black uppercase text-[#1b6b2a]">
                           {(String(item.level || item.levels || 'UG').toUpperCase().includes('PG') ? 'PG' : 'UG')}
                         </span>
                       </div>
-                      <p className="mt-2 text-sm text-white/75">Provided by: {selectedUniversity?.name || item.affiliation || 'Study in Bengaluru'}</p>
-                      <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-white/10 pt-4 text-sm">
-                        <div><div className="text-[11px] text-white/45">Fees</div><div className="mt-1 text-lg font-black text-white">{item.feeRange || item.fee_range || 'N/A'}</div></div>
-                        <div><div className="text-[11px] text-white/45">Duration</div><div className="mt-1 text-lg font-black text-white">{item.duration || 'N/A'}</div></div>
-                        <div><div className="text-[11px] text-white/45">Median LPA</div><div className="mt-1 text-lg font-black text-white">{item.rating ? `₹${item.rating}` : 'N/A'}</div></div>
-                        <div><div className="text-[11px] text-white/45">Affiliation</div><div className="mt-1 text-lg font-black text-white">{selectedUniversity?.name ? 'University' : (item.type || 'University')}</div></div>
+                      <p className="mt-2 text-[11px] leading-relaxed text-white/75">Provided by: {selectedUniversity?.name || item.affiliation || "Study in Bengaluru"}</p>
+                      <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-white/10 pt-3 text-sm">
+                        <div><div className="text-[10px] uppercase tracking-[0.16em] text-white/45">Fees</div><div className="mt-1 text-sm font-black text-white">{item.feeRange || item.fee_range || "N/A"}</div></div>
+                        <div><div className="text-[10px] uppercase tracking-[0.16em] text-white/45">Duration</div><div className="mt-1 text-sm font-black text-white">{item.duration || "N/A"}</div></div>
+                        <div><div className="text-[10px] uppercase tracking-[0.16em] text-white/45">Median LPA</div><div className="mt-1 text-sm font-black text-white">{item.rating ? "Rs. " + item.rating : "N/A"}</div></div>
+                        <div><div className="text-[10px] uppercase tracking-[0.16em] text-white/45">Affiliation</div><div className="mt-1 text-sm font-black text-white">{selectedUniversity?.name ? "University" : (item.type || "University")}</div></div>
                       </div>
-                      <div className="mt-6 flex items-center justify-end">
+                      <div className="mt-4 flex items-center justify-end">
                         <button
                           onClick={() => onNavigate?.(`/details#type=course&id=${item.id}`)}
-                          className="inline-flex items-center gap-2 text-sm font-black text-white/80 hover:text-white"
+                          className="inline-flex items-center gap-2 text-xs font-black text-white/80 hover:text-white"
                         >
-                          View Details <ArrowRight size={16} />
+                          View Details <ArrowRight size={14} />
                         </button>
                         {getDocumentUrl(item) && (
                           <a
@@ -413,7 +352,7 @@ export default function Services({ globalData, locationHash, onNavigate }) {
                             download
                             target="_blank"
                             rel="noreferrer"
-                            className="ml-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-2 text-[10px] font-black uppercase tracking-widest text-white/80 hover:bg-white hover:text-black"
+                            className="ml-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-2 text-[9px] font-black uppercase tracking-widest text-white/80 hover:bg-white hover:text-black"
                           >
                             <Download size={12} /> Download
                           </a>
@@ -450,3 +389,4 @@ export default function Services({ globalData, locationHash, onNavigate }) {
     </div>
   )
 }
+

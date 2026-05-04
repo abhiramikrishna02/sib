@@ -72,6 +72,8 @@ export default function Details({ onNavigate, globalData, locationHash }) {
     : []
   const universitySearch = ''
   const typeLabel = type === 'course' ? 'Course' : type === 'university' ? 'University' : 'Affiliated'
+  const showHeroMedia = type !== 'course'
+  const showGallery = gallery.length > 0 && type !== 'course'
 
   return (
     <div className="min-h-screen bg-[#431f60] px-4 pb-16 pt-44 text-white sm:px-6 md:px-16 md:pt-48">
@@ -154,18 +156,20 @@ export default function Details({ onNavigate, globalData, locationHash }) {
         )}
 
         <div className="relative z-10 rounded-[2.25rem] border border-white/10 bg-[#1a0b2e] p-4 shadow-2xl shadow-black/20 sm:p-5 md:p-6">
-          <div className="grid gap-5 lg:grid-cols-[320px_1fr]">
-            <div className="overflow-hidden rounded-[1.1rem] border border-white/10 bg-white/5">
-              {getCardImage(item) ? (
-                <img src={getCardImage(item)} alt={heroTitle} className="h-[260px] w-full object-cover" />
-              ) : (
-                <div className="flex h-[260px] items-center justify-center bg-[linear-gradient(135deg,#7a5da0,#b58fdc)]">
-                  <Building2 size={44} className="text-white/80" />
-                </div>
-              )}
-            </div>
+          <div className={`grid gap-5 ${showHeroMedia ? 'lg:grid-cols-[320px_1fr]' : 'lg:grid-cols-1'}`}>
+            {showHeroMedia && (
+              <div className="overflow-hidden rounded-[1.1rem] border border-white/10 bg-white/5">
+                {getCardImage(item) ? (
+                  <img src={getCardImage(item)} alt={heroTitle} className="h-[260px] w-full object-cover" />
+                ) : (
+                  <div className="flex h-[260px] items-center justify-center bg-[linear-gradient(135deg,#7a5da0,#b58fdc)]">
+                    <Building2 size={44} className="text-white/80" />
+                  </div>
+                )}
+              </div>
+            )}
 
-            <div className="flex flex-col justify-between gap-5">
+            <div className={`flex flex-col justify-between gap-5 ${showHeroMedia ? '' : 'lg:pt-2'}`}>
               <div>
                 <h1 className="text-[clamp(2rem,5vw,3rem)] font-black leading-tight text-white">
                   {heroTitle}
@@ -238,19 +242,21 @@ export default function Details({ onNavigate, globalData, locationHash }) {
               </p>
             </section>
 
-            <section className="rounded-[1.5rem] border border-white/10 bg-[#1a0b2e] p-5 sm:p-6">
-              <h2 className="text-2xl font-black text-white">
-                {type === 'university' ? 'University Gallery' : 'Campus Gallery'}
-              </h2>
-              <div className="mt-3 h-px bg-white/10" />
-              <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                {gallery.slice(0, 3).map((img, idx) => (
-                  <div key={idx} className="overflow-hidden rounded-xl border border-white/10 bg-white/5">
-                    <img src={img} alt={`${heroTitle} gallery ${idx + 1}`} className="h-44 w-full object-cover" />
-                  </div>
-                ))}
-              </div>
-            </section>
+            {showGallery && (
+              <section className="rounded-[1.5rem] border border-white/10 bg-[#1a0b2e] p-5 sm:p-6">
+                <h2 className="text-2xl font-black text-white">
+                  {type === 'university' ? 'University Gallery' : 'Campus Gallery'}
+                </h2>
+                <div className="mt-3 h-px bg-white/10" />
+                <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  {gallery.slice(0, 3).map((img, idx) => (
+                    <div key={idx} className="overflow-hidden rounded-xl border border-white/10 bg-white/5">
+                      <img src={img} alt={`${heroTitle} gallery ${idx + 1}`} className="h-44 w-full object-cover" />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
             <section className="rounded-[1.5rem] border border-white/10 bg-[#1a0b2e] p-5 sm:p-6">
               <h2 className="text-2xl font-black text-white">

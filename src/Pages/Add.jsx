@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabase.js';
 import {
@@ -105,17 +105,6 @@ function buildTablePayload(formData, category, { includeMedia = true } = {}) {
   return payload;
 }
 
-function buildDatabasePayload(formData, category, { includeMedia = true } = {}) {
-  const payload = buildOpportunityPayload(formData, category);
-
-  if (!includeMedia) {
-    delete payload.image_url;
-    delete payload.images;
-  }
-
-  return payload;
-}
-
 function normalizeOpportunity(row) {
   return {
     ...row,
@@ -147,6 +136,17 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
   };
 
   const [formData, setFormData] = useState(initialFormState);
+
+  useEffect(() => {
+    if (!activeCategory) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [activeCategory]);
 
   // Close modal and reset state
   const closeModal = () => {
@@ -513,12 +513,15 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
 
       <AnimatePresence>
         {activeCategory && (
-          <div className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto p-2 pt-3 md:p-4 md:pt-6">
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto p-2 md:p-4"
+            style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}
+          >
             <motion.div initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 0}} onClick={closeModal} className="absolute inset-0 bg-black/90 backdrop-blur-xl" />
             
-            <motion.div initial={{y: 50, opacity: 0}} animate={{y: 0, opacity: 1}} className="relative my-auto grid max-h-[calc(100dvh-1.5rem)] min-h-0 w-[98vw] max-w-[96rem] grid-rows-[auto_auto_auto] overflow-y-auto overscroll-contain rounded-[2rem] border border-white/10 bg-[#12081d] shadow-2xl sm:rounded-[3rem]" style={{ touchAction: 'pan-y' }}>
+            <motion.div initial={{y: 50, opacity: 0}} animate={{y: 0, opacity: 1}} className="relative z-10 flex w-[98vw] max-w-[96rem] flex-col overflow-hidden rounded-[2rem] border border-white/10 bg-[#12081d] shadow-2xl sm:rounded-[3rem]" style={{ maxHeight: 'calc(100dvh - 1.5rem)' }}>
               
-              <div className="flex items-center justify-between border-b border-white/5 bg-white/[0.02] p-4 sm:p-5 lg:p-6">
+              <div className="shrink-0 flex items-center justify-between border-b border-white/5 bg-white/[0.02] p-4 sm:p-5 lg:p-6">
                 <div>
                     <h2 className="text-2xl font-black italic tracking-tighter uppercase sm:text-[2rem]">
                         {isEditing ? `Edit ${activeCategory.slice(0,-1)}` : `New ${activeCategory.slice(0,-1)}`}
@@ -528,7 +531,12 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
                 <button onClick={closeModal} className="p-2 hover:bg-white/10 rounded-full transition-all"><X /></button>
               </div>
 
-              <form id="add-opportunity-form" onSubmit={handleSubmit} className="p-3 custom-scrollbar sm:p-4 lg:p-5">
+              <form
+                id="add-opportunity-form"
+                onSubmit={handleSubmit}
+                className="custom-scrollbar min-h-0 overflow-y-auto overscroll-contain p-3 sm:p-4 lg:p-5"
+                style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y', maxHeight: 'calc(100dvh - 14rem)' }}
+              >
                 {activeCategory === 'Universities' && (
                   <div className="grid gap-5 xl:grid-cols-[1.15fr_0.85fr] xl:gap-6">
                     <div className="space-y-5">
@@ -597,46 +605,85 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
                 )}
 
                 {activeCategory === 'Colleges' && (
-                  <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1fr_1fr] xl:gap-6">
-                    <div className="space-y-4 sm:space-y-5">
-                      <div className="space-y-3 rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
+                  <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1fr_1fr] xl:gap-5">
+                    <div className="space-y-3.5 sm:space-y-4">
+                      <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3.5 sm:p-4">
                         <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><Info size={14}/> Basic Information</h4>
-                        <input placeholder="College Name" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required/>
-                        <div className="grid grid-cols-2 gap-4">
-                          <input placeholder="Rating" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.rating} onChange={e => setFormData({...formData, rating: e.target.value})} />
-                          <input placeholder="Location" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} required/>
+                        <input placeholder="College Name" className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required/>
+                        <div className="grid grid-cols-2 gap-3.5">
+                          <input placeholder="Rating" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.rating} onChange={e => setFormData({...formData, rating: e.target.value})} />
+                          <input placeholder="Location" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} required/>
                         </div>
-                        <select className="w-full rounded-xl border border-white/10 bg-[#1e0f2d] p-3 outline-none focus:border-fuchsia-500" value={formData.university_id} onChange={e => setFormData({...formData, university_id: e.target.value})}>
+                        <select className="w-full rounded-xl border border-white/10 bg-[#1e0f2d] p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.university_id} onChange={e => setFormData({...formData, university_id: e.target.value})}>
                           <option value="">Select University</option>
                           {globalData.Universities?.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
                         </select>
                       </div>
 
-                      <div className="space-y-3 rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
-                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><Banknote size={14}/> Fee Details</h4>
-                        <input placeholder="Annual Fee Range" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.feeRange} onChange={e => setFormData({...formData, feeRange: e.target.value})} />
-                      </div>
-
-                      <div className="space-y-3 rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
-                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><Phone size={14}/> Contact Details</h4>
-                        <input placeholder="Phone" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
-                        <input placeholder="Email" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
-                        <input placeholder="Address" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} />
-                      </div>
-                    </div>
-
-                    <div className="space-y-5 sm:space-y-6">
-                      <div className="space-y-3 rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
-                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><ShieldCheck size={14}/> Quick Facts</h4>
-                        <div className="grid grid-cols-2 gap-4">
-                          <input placeholder="Institution Type" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} />
-                          <input placeholder="Course Levels" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.levels} onChange={e => setFormData({...formData, levels: e.target.value})} />
+                      <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3.5 sm:p-4">
+                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><Banknote size={14}/> Fee / Upload</h4>
+                        <input placeholder="Annual Fee Range" className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.feeRange} onChange={e => setFormData({...formData, feeRange: e.target.value})} />
+                        <div className="space-y-2 rounded-2xl border border-dashed border-white/10 bg-white/5 p-3.5">
+                          <h5 className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-fuchsia-400">
+                            <BookOpen size={12}/> Document Upload
+                          </h5>
+                          <p className="text-[10px] leading-snug text-white/45">
+                            Upload a PDF or document file for download from Services.
+                          </p>
+                          <div className="rounded-xl border border-dashed border-white/10 bg-black/15 p-3">
+                            {formData.document_name ? (
+                              <div className="flex items-center justify-between gap-3">
+                                <div className="min-w-0">
+                                  <div className="truncate text-xs font-black text-white">{formData.document_name}</div>
+                                  <div className="text-[9px] text-white/40">Stored in Supabase Storage</div>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => setFormData((prev) => ({ ...prev, document_url: '', document_name: '', document_type: '' }))}
+                                  className="rounded-full bg-red-500 px-2.5 py-1 text-[9px] font-black uppercase text-white"
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            ) : (
+                              <label className="flex cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-black/20 px-3 py-4 text-center">
+                                <div>
+                                  <div className="text-xs font-black text-white">Click to upload document</div>
+                                  <div className="mt-1 text-[9px] text-white/40">PDF, DOC, DOCX, XLS, TXT</div>
+                                </div>
+                                <input
+                                  type="file"
+                                  accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                  onChange={handleDocumentFileChange}
+                                  className="hidden"
+                                  aria-label="Upload document"
+                                />
+                              </label>
+                            )}
+                          </div>
                         </div>
                       </div>
 
-                      <div className="space-y-3 rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
+                      <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3.5 sm:p-4">
+                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><Phone size={14}/> Contact Details</h4>
+                        <input placeholder="Phone" className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
+                        <input placeholder="Email" className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+                        <input placeholder="Address" className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} />
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 sm:space-y-5">
+                      <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3.5 sm:p-4">
+                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><ShieldCheck size={14}/> Quick Facts</h4>
+                        <div className="grid grid-cols-2 gap-3.5">
+                          <input placeholder="Institution Type" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} />
+                          <input placeholder="Course Levels" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.levels} onChange={e => setFormData({...formData, levels: e.target.value})} />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3.5 sm:p-4">
                         <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><Layers size={14}/> About Section</h4>
-                        <textarea rows="4" placeholder="About the college..." className="w-full resize-none rounded-2xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.about} onChange={e => setFormData({...formData, about: e.target.value})} />
+                        <textarea rows="3" placeholder="About the college..." className="w-full resize-none rounded-2xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.about} onChange={e => setFormData({...formData, about: e.target.value})} />
                       </div>
                     </div>
                   </div>
@@ -660,6 +707,46 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
                           <option value="">Select College</option>
                           {globalData.Colleges?.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                         </select>
+                      </div>
+
+                      <div className="space-y-3 rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
+                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500">
+                          <BookOpen size={14}/> Document Upload
+                        </h4>
+                        <p className="text-[11px] text-white/45">
+                          Upload a PDF or document file that users can download from Services.
+                        </p>
+                        <div className="rounded-2xl border border-dashed border-white/10 bg-white/5 p-4">
+                          {formData.document_name ? (
+                            <div className="flex items-center justify-between gap-4">
+                              <div className="min-w-0">
+                                <div className="truncate text-sm font-black text-white">{formData.document_name}</div>
+                                <div className="text-[10px] text-white/45">Stored in Supabase Storage</div>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => setFormData((prev) => ({ ...prev, document_url: '', document_name: '', document_type: '' }))}
+                                className="rounded-full bg-red-500 px-3 py-1 text-[10px] font-black uppercase text-white"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          ) : (
+                            <label className="flex cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-black/20 px-4 py-5 text-center">
+                              <div>
+                                <div className="text-sm font-black text-white">Click to upload document</div>
+                                <div className="mt-1 text-[10px] text-white/40">PDF, DOC, DOCX, XLS, TXT</div>
+                              </div>
+                              <input
+                                type="file"
+                                accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                onChange={handleDocumentFileChange}
+                                className="hidden"
+                                aria-label="Upload document"
+                              />
+                            </label>
+                          )}
+                        </div>
                       </div>
 
                       <div className="space-y-3 rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
@@ -691,7 +778,7 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
                   </div>
                 )}
 
-                {activeCategory !== 'Universities' && (
+                {activeCategory === 'Colleges' && (
                   <div className="mt-5 space-y-3 rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
                     <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500">
                       <Layers size={14}/> Media Assets
@@ -768,48 +855,9 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
                   </div>
                 )}
 
-                <div className="mt-5 space-y-3 rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
-                  <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500">
-                    <BookOpen size={14}/> Document Upload
-                  </h4>
-                  <p className="text-[11px] text-white/45">
-                    Upload a PDF or document file that users can download from Services.
-                  </p>
-                  <div className="rounded-2xl border border-dashed border-white/10 bg-white/5 p-4">
-                    {formData.document_name ? (
-                      <div className="flex items-center justify-between gap-4">
-                        <div className="min-w-0">
-                          <div className="truncate text-sm font-black text-white">{formData.document_name}</div>
-                          <div className="text-[10px] text-white/45">Stored in Supabase Storage</div>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => setFormData((prev) => ({ ...prev, document_url: '', document_name: '', document_type: '' }))}
-                          className="rounded-full bg-red-500 px-3 py-1 text-[10px] font-black uppercase text-white"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    ) : (
-                      <label className="flex cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-black/20 px-4 py-5 text-center">
-                        <div>
-                          <div className="text-sm font-black text-white">Click to upload document</div>
-                          <div className="mt-1 text-[10px] text-white/40">PDF, DOC, DOCX, XLS, TXT</div>
-                        </div>
-                        <input
-                          type="file"
-                          accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                          onChange={handleDocumentFileChange}
-                          className="hidden"
-                          aria-label="Upload document"
-                        />
-                      </label>
-                    )}
-                  </div>
-                </div>
               </form>
 
-              <div className="border-t border-white/10 bg-[#12081d]/98 p-3 backdrop-blur-xl sm:p-4 lg:p-5">
+              <div className="shrink-0 border-t border-white/10 bg-[#12081d]/98 p-3 backdrop-blur-xl sm:p-4 lg:p-5">
                 <div className="flex flex-col items-center justify-between gap-4 rounded-[2rem] border border-white/10 bg-[#12081d]/95 p-4 md:flex-row md:gap-6 md:p-5">
                 {isEditing ? (
                   <button 

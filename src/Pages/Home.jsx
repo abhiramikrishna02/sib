@@ -327,7 +327,7 @@ function HeroSection() {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-[100svh] w-full overflow-hidden border-b border-white/6 bg-[#220A36] px-4 py-6 md:h-screen md:px-0 md:py-0"
+      className="relative min-h-[88svh] w-full overflow-hidden border-b border-white/6 bg-[#220A36] px-4 py-6 md:h-screen md:px-0 md:py-0"
       style={{
         background:
           'radial-gradient(circle at top left, rgba(168, 85, 247, 0.18), transparent 34%), radial-gradient(circle at bottom right, rgba(213, 161, 255, 0.12), transparent 28%), linear-gradient(180deg, #220A36 0%, #1B0A21 100%)',
@@ -338,7 +338,7 @@ function HeroSection() {
           <p className="text-[0.7rem] font-bold uppercase tracking-[0.45em] text-white/45">
             Study in Bengaluru
           </p>
-          <h2 className="mt-3 text-[clamp(2.4rem,12vw,4rem)] font-black uppercase leading-[0.9] tracking-tight text-white">
+          <h2 className="mt-3 text-[clamp(2rem,11vw,4rem)] font-black uppercase leading-[0.9] tracking-tight text-white">
              India&apos;s Silicon Valley
           </h2>
           <p className="mt-4 text-sm leading-6 text-white/62">
@@ -376,7 +376,7 @@ function HeroSection() {
       <div ref={contentRevealRef} className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none px-4 sm:px-6">
         <div className="revealed-content text-center">
           
-          <h2 className="text-[clamp(2.4rem,12vw,7rem)] font-black uppercase leading-[0.85] tracking-tight text-white sm:text-[clamp(3rem,8vw,7rem)]">
+          <h2 className="text-[clamp(2rem,10vw,7rem)] font-black uppercase leading-[0.92] tracking-tight text-white sm:text-[clamp(3rem,8vw,7rem)]">
             Study In India's <br />
             <span className="bg-gradient-to-r from-violet-300 via-violet-200 to-violet-200 bg-clip-text font-serif font-light italic text-transparent drop-shadow-[0_10px_30px_rgba(123,44,191,0.5)]">
               Silicon Valley
@@ -459,7 +459,7 @@ function HeroSection() {
           </g>
         </svg>
 
-        <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 md:bottom-10">
+        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 md:bottom-10">
           <span className="text-[0.6rem] font-bold uppercase tracking-[0.7em] text-white/50">
             Initiate Breakthrough
           </span>
@@ -497,7 +497,7 @@ function GlassCard({ item, onNavigate }) {
   return (
     <div
       onClick={handleNavigate}
-      className={`group relative flex h-[360px] min-w-[280px] flex-col overflow-hidden rounded-[2rem] border border-white/16 bg-[#2f1047]/92 p-6 shadow-[0_30px_70px_rgba(0,0,0,0.48)] backdrop-blur-3xl transition-all duration-700 hover:-translate-y-3 hover:border-white/45 hover:shadow-[0_35px_90px_rgba(0,0,0,0.6)] sm:h-[420px] sm:min-w-[320px] sm:p-8 md:min-w-[350px] ${item.path ? 'cursor-pointer' : ''}`}
+      className={`group relative flex shrink-0 h-[270px] min-w-[84vw] snap-start flex-col overflow-hidden rounded-[1.75rem] border border-white/16 bg-[#2f1047]/92 p-4 shadow-[0_30px_70px_rgba(0,0,0,0.48)] backdrop-blur-3xl transition-all duration-700 hover:-translate-y-3 hover:border-white/45 hover:shadow-[0_35px_90px_rgba(0,0,0,0.6)] sm:h-[420px] sm:min-w-[320px] sm:p-8 md:min-w-[350px] lg:min-w-[350px] ${item.path ? 'cursor-pointer' : ''}`}
       role={item.path ? 'button' : undefined}
       tabIndex={item.path ? 0 : undefined}
       onKeyDown={(e) => {
@@ -529,7 +529,7 @@ function GlassCard({ item, onNavigate }) {
         <div className="relative flex h-20 w-20 items-center justify-center">
           <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${item.color} blur-2xl opacity-45 transition-opacity duration-500 group-hover:opacity-95`} />
           <div className="relative flex h-full w-full items-center justify-center rounded-3xl border border-white/26 bg-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_0_24px_rgba(168,85,247,0.18)] backdrop-blur-md transition-all duration-500 group-hover:scale-110 group-hover:border-white/55 group-hover:bg-white/15">
-            <Icon className="text-white drop-shadow-[0_0_18px_rgba(255,255,255,0.55)] transition-transform duration-500 group-hover:rotate-12" size={32} strokeWidth={1.6} />
+            <Icon className="text-white drop-shadow-[0_0_18px_rgba(255,255,255,0.55)] transition-transform duration-500 group-hover:rotate-12" size={28} strokeWidth={1.6} />
           </div>
           <div className="absolute -right-2 -top-2 h-4 w-4 border-r-2 border-t-2 border-white/40 transition-all duration-500 group-hover:-right-3 group-hover:-top-3 group-hover:border-white/90" />
           <div className="absolute -bottom-2 -left-2 h-4 w-4 border-b-2 border-l-2 border-white/40 transition-all duration-500 group-hover:-bottom-3 group-hover:-left-3 group-hover:border-white/90" />
@@ -541,20 +541,20 @@ function GlassCard({ item, onNavigate }) {
         </div>
       </div>
 
-      <div className="relative z-10 mt-10 flex flex-col gap-3">
+      <div className="relative z-10 mt-6 flex flex-col gap-2 sm:mt-10 sm:gap-3">
         <div className="flex items-center gap-3">
           <div className="h-[2px] w-6 rounded-full bg-gradient-to-r from-white/85 to-transparent shadow-[0_0_12px_rgba(255,255,255,0.35)] transition-all duration-500 group-hover:w-12" />
-          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/72 transition-colors duration-500 group-hover:text-white">
+          <p className="text-[9px] font-black uppercase tracking-[0.32em] text-white/72 transition-colors duration-500 group-hover:text-white sm:text-[10px] sm:tracking-[0.4em]">
             {item.subtitle}
           </p>
         </div>
-        <h3 className="text-3xl font-black italic tracking-tighter text-white drop-shadow-[0_0_18px_rgba(213,161,255,0.35)] transition-all duration-500 group-hover:translate-x-2 group-hover:text-violet-100 md:text-4xl">
+        <h3 className="max-w-[10ch] text-[1.9rem] font-black italic leading-[0.95] tracking-tighter text-white drop-shadow-[0_0_18px_rgba(213,161,255,0.35)] transition-all duration-500 group-hover:translate-x-2 group-hover:text-violet-100 sm:max-w-none sm:text-3xl md:text-4xl">
           {item.title}
         </h3>
       </div>
 
-      <div className="relative z-10 mt-auto w-full pt-6">
-        <div className="relative mb-6 h-[1px] w-full overflow-hidden bg-white/14">
+      <div className="relative z-10 mt-auto w-full pt-4 sm:pt-6">
+        <div className="relative mb-4 h-[1px] w-full overflow-hidden bg-white/14 sm:mb-6">
           <div className="absolute inset-y-0 left-0 w-1/2 -translate-x-[150%] bg-gradient-to-r from-transparent via-white/90 to-transparent transition-all duration-1000 ease-in-out group-hover:translate-x-[200%]" />
         </div>
         
@@ -564,18 +564,18 @@ function GlassCard({ item, onNavigate }) {
             e.stopPropagation();
             handleNavigate();
           }}
-          className="group/btn relative flex w-full items-center justify-between overflow-hidden rounded-2xl border border-white/18 bg-white/08 px-6 py-4 transition-all duration-500 hover:border-white/55 hover:bg-white hover:shadow-[0_0_34px_rgba(213,161,255,0.28)]"
+          className="group/btn relative flex w-full items-center justify-between overflow-hidden rounded-2xl border border-white/18 bg-white/08 px-4 py-3 transition-all duration-500 hover:border-white/55 hover:bg-white hover:shadow-[0_0_34px_rgba(213,161,255,0.28)] sm:px-5 sm:py-3.5"
         >
-          <span className="relative z-10 text-[10px] font-black uppercase tracking-[0.2em] text-white/78 transition-colors group-hover/btn:text-black">
+          <span className="relative z-10 text-[9px] font-black uppercase tracking-[0.18em] text-white/78 transition-colors group-hover/btn:text-black sm:text-[10px] sm:tracking-[0.2em]">
             Initiate Access
           </span>
-          <div className="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/14 transition-colors group-hover/btn:bg-black/10">
-            <ArrowRight size={14} className="text-white transition-transform duration-300 group-hover/btn:translate-x-1 group-hover/btn:text-black" />
+          <div className="relative z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/14 transition-colors group-hover/btn:bg-black/10 sm:h-8 sm:w-8">
+            <ArrowRight size={12} className="text-white transition-transform duration-300 group-hover/btn:translate-x-1 group-hover/btn:text-black sm:size-[14px]" />
           </div>
         </button>
       </div>
 
-      <div className="absolute -bottom-12 -right-12 z-0 h-40 w-40 opacity-20 transition-all duration-700 group-hover:-translate-x-4 group-hover:-translate-y-4 group-hover:scale-110 group-hover:opacity-45 md:opacity-12">
+      <div className="absolute -bottom-10 -right-10 z-0 h-32 w-32 opacity-15 transition-all duration-700 group-hover:-translate-x-4 group-hover:-translate-y-4 group-hover:scale-110 group-hover:opacity-45 sm:-bottom-12 sm:-right-12 sm:h-40 sm:w-40 md:opacity-12">
         <div className="grid h-full w-full grid-cols-5 grid-rows-5 gap-2">
           {[...Array(25)].map((_, i) => (
             <div key={i} className="rounded-full bg-white/95" />
@@ -638,21 +638,35 @@ function Opportunities({ onNavigate }) {
       }}
     >
       <section
-        className="relative flex h-screen w-full items-center overflow-hidden border-b border-white/6"
+        className="relative flex min-h-[72svh] w-full items-start overflow-hidden border-b border-white/6 py-8 md:h-screen md:items-center md:py-0"
         style={{
           background:
             'radial-gradient(circle at 50% 22%, rgba(168, 85, 247, 0.22) 0%, rgba(34, 10, 54, 0.92) 45%, rgba(23, 15, 31, 1) 100%)',
         }}
       >
-        <div ref={bannerRef} className="absolute inset-0 z-0 flex flex-col items-center justify-center pointer-events-none">
+        <div className="relative z-10 w-full px-4 md:hidden">
+          <div className="mb-5 flex flex-col items-center text-center">
+            <p className="mb-2 text-[0.65rem] font-bold uppercase tracking-[0.45em] text-white/45">
+              Explore
+            </p>
+            <h2 className="opportunities-shimmer text-[2.3rem] font-black uppercase italic tracking-tighter text-white">
+              Opportunities
+            </h2>
+            <p className="mt-2 text-[0.65rem] font-bold uppercase tracking-[0.4em] text-violet-200/50">
+              Unlocking Potential
+            </p>
+          </div>
+        </div>
+
+        <div ref={bannerRef} className="absolute inset-0 z-0 hidden flex-col items-center justify-center pointer-events-none md:flex">
           <div className="mb-6 flex gap-6 opacity-20">
             <GraduationCap className="h-10 w-10 animate-pulse text-white" />
             <Sparkles className="h-10 w-10 animate-bounce text-white" />
           </div>
-          <p className="mb-4 text-[clamp(1.2rem,3vw,2.25rem)] font-bold uppercase tracking-[0.8em] text-white/45">
+          <p className="mb-4 text-[clamp(1rem,4vw,2.25rem)] font-bold uppercase tracking-[0.45em] text-white/45">
             Explore
           </p>
-          <h2 className="opportunities-shimmer text-[clamp(3rem,16vw,12rem)] font-black uppercase italic tracking-tighter sm:text-[clamp(4rem,15vw,12rem)] md:text-[14rem]">
+          <h2 className="opportunities-shimmer text-[clamp(2.4rem,15vw,12rem)] font-black uppercase italic tracking-tighter sm:text-[clamp(4rem,15vw,12rem)] md:text-[14rem]">
             OPPORTUNITIES
           </h2>
           <p className="mt-4 text-center text-sm font-bold uppercase tracking-[1em] text-violet-200/50">
@@ -661,14 +675,14 @@ function Opportunities({ onNavigate }) {
         </div>
 
         <div className="relative z-10 flex w-full items-center">
-          <div ref={cardsRef} className="flex gap-4 px-4 sm:gap-6 sm:px-8 md:gap-10 md:px-[10vw]">
+          <div ref={cardsRef} className="flex gap-4 overflow-x-auto px-4 pb-4 pt-1 snap-x snap-mandatory sm:gap-6 sm:px-8 sm:pb-0 md:gap-10 md:px-[10vw] md:overflow-visible md:snap-none">
             {cardData.map((item, index) => (
               <GlassCard key={`${item.title}-${index}`} item={item} onNavigate={onNavigate} />
             ))}
           </div>
         </div>
 
-        <div className="absolute bottom-10 left-1/2 z-20 -translate-x-1/2">
+        <div className="absolute bottom-6 left-1/2 z-20 -translate-x-1/2 md:bottom-10">
           <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-white/20 animate-pulse">
             Slide to Navigate
           </p>
@@ -1019,7 +1033,7 @@ function VisionMissionSection() {
   return (
     <section
       ref={containerRef}
-      className="relative flex min-h-[100svh] w-full items-center justify-center overflow-hidden border-y border-white/6 py-16 md:h-screen md:py-0"
+      className="relative flex min-h-[88svh] w-full items-center justify-center overflow-hidden border-y border-white/6 py-12 md:h-screen md:py-0"
       style={{
         background:
           'radial-gradient(circle at 18% 18%, rgba(56, 189, 248, 0.12), transparent 26%), radial-gradient(circle at 82% 78%, rgba(251, 146, 60, 0.11), transparent 24%), radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.08), transparent 42%), linear-gradient(180deg, #120a1d 0%, #1a0b2e 55%, #0e0717 100%)',
@@ -1141,7 +1155,7 @@ function FinalCTASection({ onNavigate }) {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden border-t border-white/6 py-32 lg:py-48"
+      className="relative overflow-hidden border-t border-white/6 py-20 sm:py-24 lg:py-48"
       style={{
         background:
           'radial-gradient(circle at 50% 0%, rgba(213, 161, 255, 0.1), transparent 30%), linear-gradient(180deg, #170F1F 0%, #220A36 100%)',
@@ -1158,8 +1172,8 @@ function FinalCTASection({ onNavigate }) {
 
       
       <div ref={bgShapeRef} className="pointer-events-none absolute inset-0 z-0">
-        <div className="floating-shape absolute top-20 left-[10%] h-16 w-16 rounded-xl border border-violet-500/30 bg-violet-500/5 backdrop-blur-sm" />
-        <div className="floating-shape absolute bottom-20 right-[15%] h-24 w-24 rounded-full border border-violet-500/20 bg-violet-500/5 backdrop-blur-sm" />
+        <div className="floating-shape absolute top-20 left-[10%] h-10 w-10 rounded-xl border border-violet-500/30 bg-violet-500/5 backdrop-blur-sm" />
+        <div className="floating-shape absolute bottom-20 right-[15%] h-14 w-14 rounded-full border border-violet-500/20 bg-violet-500/5 backdrop-blur-sm" />
         <div className="absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[140px]" />
       </div>
 
@@ -1173,12 +1187,12 @@ function FinalCTASection({ onNavigate }) {
         
         <h2 
           ref={titleRef}
-          className="mb-6 text-[clamp(2rem,6vw,4.5rem)] font-black leading-[0.95] tracking-tighter text-white"
+          className="mb-6 text-[clamp(1.8rem,7vw,4.5rem)] font-black leading-[0.95] tracking-tighter text-white sm:text-[clamp(2rem,6vw,4.5rem)]"
         >
           Start Your Educational Journey Today!
         </h2>
 
-        <p className="cta-description mx-auto mb-12 max-w-2xl text-base font-light text-white/70 sm:mb-16 sm:text-lg md:text-2xl">
+        <p className="cta-description mx-auto mb-12 max-w-2xl text-sm font-light text-white/70 sm:mb-16 sm:text-lg md:text-2xl">
           Get personalized guidance from our admission experts.
         </p>
 
@@ -1187,18 +1201,18 @@ function FinalCTASection({ onNavigate }) {
           <button
             type="button"
             onClick={() => onNavigate?.('/contact')}
-            className="group relative flex h-40 w-40 items-center justify-center transition-transform duration-500 hover:scale-110 sm:h-48 sm:w-48 md:h-64 md:w-64"
+            className="group relative flex h-32 w-32 items-center justify-center transition-transform duration-500 hover:scale-110 sm:h-48 sm:w-48 md:h-64 md:w-64"
           >
             <div className="absolute inset-0 rounded-full border border-dashed border-white/20 animate-[spin_10s_linear_infinite]" />
             <div className="absolute inset-4 rounded-full border border-violet-500/30 animate-[spin_6s_linear_infinite_reverse]" />
             <div className="relative flex h-full w-full flex-col items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-violet-700 p-2 text-white shadow-[0_0_50px_rgba(168,85,247,0.4)] transition-all group-hover:shadow-[0_0_80px_rgba(168,85,247,0.7)]">
               <span className="text-[0.65rem] font-bold uppercase tracking-widest opacity-70">Start Now</span>
-              <span className="text-xl font-black uppercase md:text-2xl">Connect</span>
+              <span className="text-lg font-black uppercase md:text-2xl">Connect</span>
               <ArrowUpRight className="mt-2 h-6 w-6 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
             </div>
           </button>
         </div>
-        <div className="mt-16 flex justify-center opacity-20 sm:mt-24">
+        <div className="mt-12 flex justify-center opacity-20 sm:mt-24">
           <div className="flex flex-col items-center gap-4">
              <div className="h-16 w-px bg-gradient-to-b from-white to-transparent" />
              <span className="text-[10px] font-bold uppercase tracking-[1em]">Scroll Up to Revisit</span>
@@ -1238,6 +1252,8 @@ function Home({ onNavigate }) {
 }
 
 export default Home
+
+
 
 
 
