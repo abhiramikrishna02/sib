@@ -46,13 +46,13 @@ export default function Contact() {
   }, []);
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-[#0a0212] px-4 py-16 sm:px-6 md:px-6 md:py-24">
+    <div className="relative min-h-screen w-full overflow-hidden bg-[#0a0212] px-4 pt-36 pb-16 sm:px-6 sm:pt-40 sm:pb-20 md:px-6 md:pt-44 md:pb-24 lg:pt-48">
       {/* Background Matrix Canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 z-0 opacity-20 pointer-events-none" />
 
       <div className="relative z-10 mx-auto max-w-7xl">
         {/* HEADER SECTION */}
-        <div className="mb-14 text-center md:mb-20">
+        <div className="mb-14 text-center md:mb-20 lg:mb-24">
           <h2 className="mb-4 text-[clamp(2.2rem,10vw,4.8rem)] font-black uppercase tracking-tighter text-white md:text-7xl">
             Get in <span className="text-fuchsia-500">Touch</span>
           </h2>

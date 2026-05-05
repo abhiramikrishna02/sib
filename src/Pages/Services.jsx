@@ -116,12 +116,12 @@ export default function Services({ globalData, locationHash, onNavigate }) {
       <div className="mx-auto max-w-7xl">
         <header className="mb-16 text-center sm:mb-20 md:mb-24">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <p className="mb-4 text-[10px] font-black uppercase tracking-[0.5em] text-violet-500">Explore our Database</p>
+            <p className="mb-4 text-[10px] font-black uppercase tracking-[0.5em] text-violet-500">Browse Educational Options</p>
             <h1 className="mb-6 text-[clamp(2.8rem,12vw,4.8rem)] font-black italic uppercase tracking-tighter text-white md:text-8xl">
-              Curated<span className="text-violet-500">.</span> Choices
+              Study<span className="text-violet-500">.</span> Directory
             </h1>
             <p className="mx-auto max-w-2xl text-sm leading-relaxed text-white/40 md:text-lg">
-              Browse through top-tier institutions and professional courses verified by our experts.
+              Explore trusted universities, colleges, and courses in one place.
             </p>
           </motion.div>
         </header>
@@ -132,9 +132,9 @@ export default function Services({ globalData, locationHash, onNavigate }) {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(168,85,247,0.32),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.18),transparent_28%)]" />
             <div className="relative px-4 py-10 sm:px-6 sm:py-12 md:px-10">
               <div className="mb-6 text-center">
-                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-violet-300/80">Top Universities</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-violet-300/80">Featured Universities</p>
                 <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/55">
-                  Discover the best universities to pursue your academic goals.
+                  Compare universities and open the colleges linked to each institution.
                 </p>
               </div>
               <div className="mx-auto mb-8 max-w-xl">
@@ -182,10 +182,10 @@ export default function Services({ globalData, locationHash, onNavigate }) {
 
                         <div className="mt-4">
                           <button
-                            onClick={() => onNavigate?.(`/services#colleges-${item.id}`)}
-                            className="inline-flex shrink-0 items-center justify-center rounded-full bg-violet-500 px-5 py-3 text-[11px] font-black uppercase tracking-widest text-white transition-colors hover:bg-white hover:text-black"
-                          >
-                            View Colleges
+                          onClick={() => onNavigate?.(`/services#colleges-${item.id}`)}
+                          className="inline-flex shrink-0 items-center justify-center rounded-full bg-violet-500 px-5 py-3 text-[11px] font-black uppercase tracking-widest text-white transition-colors hover:bg-white hover:text-black"
+                        >
+                            Explore Colleges
                           </button>
                         </div>
                       </div>
@@ -203,8 +203,8 @@ export default function Services({ globalData, locationHash, onNavigate }) {
           <section className="mb-16 scroll-mt-32 sm:mb-20 md:mb-24" id="college-view">
           <div className="overflow-hidden rounded-[2.5rem] border border-white/10 bg-[linear-gradient(180deg,rgba(39,12,57,0.98),rgba(132,95,170,0.6))] shadow-2xl">
             <div className="bg-[#22102f] px-4 py-6 text-center sm:px-6 sm:py-8">
-              <h2 className="text-[clamp(2.1rem,6vw,3.6rem)] font-black italic uppercase tracking-tighter text-[#b98cff]">Best Colleges</h2>
-              <p className="mt-2 text-[10px] font-medium text-white/60 sm:text-sm">Explore top-rated colleges offering diverse programs across Bengaluru</p>
+              <h2 className="text-[clamp(2.1rem,6vw,3.6rem)] font-black italic uppercase tracking-tighter text-[#b98cff]">Leading Colleges</h2>
+              <p className="mt-2 text-[10px] font-medium text-white/60 sm:text-sm">Browse colleges, ratings, and fee ranges across Bengaluru.</p>
             </div>
             <div className="relative px-4 py-8 sm:px-6 md:px-10">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.16),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.1),transparent_20%)]" />
@@ -217,7 +217,7 @@ export default function Services({ globalData, locationHash, onNavigate }) {
                   ))}
                 </div>
                 <label className="flex w-full items-center gap-3 rounded-full border border-[#6e5b86] bg-[#f0edf7] px-4 py-3 text-[#2c1740] shadow-lg shadow-black/10 lg:max-w-md">
-                  <input value={collegeSearch} onChange={(e) => setCollegeSearch(e.target.value)} placeholder="Search courses..." className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-[#2c1740]/55" />
+                  <input value={collegeSearch} onChange={(e) => setCollegeSearch(e.target.value)} placeholder="Search colleges..." className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-[#2c1740]/55" />
                   <Search size={18} className="shrink-0 text-[#2c1740]" />
                 </label>
               </div>
@@ -256,8 +256,8 @@ export default function Services({ globalData, locationHash, onNavigate }) {
         <section className="mb-16 scroll-mt-32 sm:mb-20 md:mb-24" id="colleges">
           <div className="overflow-hidden rounded-[2.5rem] border border-white/10 bg-[linear-gradient(180deg,rgba(39,12,57,0.98),rgba(132,95,170,0.6))] shadow-2xl">
             <div className="bg-[#22102f] px-4 py-6 text-center sm:px-6 sm:py-8">
-              <h2 className="text-[clamp(2.1rem,6vw,3.6rem)] font-black italic uppercase tracking-tighter text-[#b98cff]">Best Colleges</h2>
-              <p className="mt-2 text-[10px] font-medium text-white/60 sm:text-sm">Explore top-rated colleges offering diverse programs across Bengaluru</p>
+              <h2 className="text-[clamp(2.1rem,6vw,3.6rem)] font-black italic uppercase tracking-tighter text-[#b98cff]">Leading Colleges</h2>
+              <p className="mt-2 text-[10px] font-medium text-white/60 sm:text-sm">Browse colleges, ratings, and fee ranges across Bengaluru.</p>
             </div>
             <div className="relative px-4 py-8 sm:px-6 md:px-10">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.16),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.1),transparent_20%)]" />
@@ -270,7 +270,7 @@ export default function Services({ globalData, locationHash, onNavigate }) {
                   ))}
                 </div>
                 <label className="flex w-full items-center gap-3 rounded-full border border-[#6e5b86] bg-[#f0edf7] px-4 py-3 text-[#2c1740] shadow-lg shadow-black/10 lg:max-w-md">
-                  <input value={collegeSearch} onChange={(e) => setCollegeSearch(e.target.value)} placeholder="Search courses..." className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-[#2c1740]/55" />
+                  <input value={collegeSearch} onChange={(e) => setCollegeSearch(e.target.value)} placeholder="Search colleges..." className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-[#2c1740]/55" />
                   <Search size={18} className="shrink-0 text-[#2c1740]" />
                 </label>
               </div>
@@ -304,8 +304,8 @@ export default function Services({ globalData, locationHash, onNavigate }) {
           <section className="mb-16 scroll-mt-32 sm:mb-20 md:mb-24" id="courses">
           <div className="overflow-hidden rounded-[2.5rem] border border-white/10 bg-[linear-gradient(180deg,rgba(39,12,57,0.98),rgba(132,95,170,0.6))] shadow-2xl">
             <div className="bg-[#22102f] px-4 py-6 text-center sm:px-6 sm:py-8">
-              <h2 className="text-[clamp(2.1rem,6vw,3.6rem)] font-black italic uppercase tracking-tighter text-[#b98cff]">Explore Courses</h2>
-              <p className="mt-2 text-[10px] font-medium text-white/60 sm:text-sm">Find undergraduate, postgraduate, and short-term courses tailored to your career path</p>
+              <h2 className="text-[clamp(2.1rem,6vw,3.6rem)] font-black italic uppercase tracking-tighter text-[#b98cff]">Career Courses</h2>
+              <p className="mt-2 text-[10px] font-medium text-white/60 sm:text-sm">Find undergraduate and postgraduate courses matched to your goals.</p>
             </div>
             <div className="relative px-4 py-8 sm:px-6 md:px-10">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.16),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.1),transparent_20%)]" />

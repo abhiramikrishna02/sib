@@ -405,10 +405,12 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
               <div className="relative z-10 flex flex-1 flex-col p-4 sm:p-5">
                 <div className="mb-3 space-y-1.5">
                   <h3 className="text-lg font-black leading-tight text-white drop-shadow-md sm:text-xl">{item.name}</h3>
-                  <div className="flex items-center gap-2 text-[10px] text-white/45">
-                    <MapPin size={11} />
-                    <span className="truncate">{item.location || 'Location not set'}</span>
-                  </div>
+                  {title !== 'Universities' && (
+                    <div className="flex items-center gap-2 text-[10px] text-white/45">
+                      <MapPin size={11} />
+                      <span className="truncate">{item.location || 'Location not set'}</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="mb-3 flex flex-wrap gap-2">

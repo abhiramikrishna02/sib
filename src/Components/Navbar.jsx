@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Sparkles, Zap } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import Menu, { getMenuTheme } from "./Menu.jsx";
 
 function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
@@ -49,7 +49,7 @@ function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-[100] px-3 pt-4 sm:px-4 sm:pt-6 perspective-1000">
+    <header className="fixed inset-x-0 top-0 z-[100] px-3 pt-3 sm:px-4 sm:pt-4 perspective-1000">
       <motion.div 
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -61,7 +61,7 @@ function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
           onMouseLeave={handleMouseLeave}
           style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
           className={`group relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-[#08040d]/60 backdrop-blur-3xl transition-all duration-700 ${
-            scrolled ? "py-2 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.9)]" : "py-5"
+            scrolled ? "py-1.5 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.9)]" : "py-3.5"
           }`}
         >
           {/* --- BORDER BEAM EFFECT --- */}
@@ -85,29 +85,31 @@ function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
             }}
           />
 
-          <div className="relative z-10 flex items-center justify-between px-4 sm:px-10">
+          <div className="relative z-10 flex items-center justify-between px-3 sm:px-6">
             
             {/* --- LOGO: TITANIUM STYLE --- */}
             <motion.a 
               href="/" 
               onClick={(e) => handleNavigate(e, "/")} 
-              className="flex items-center gap-4"
+              className="group flex items-center gap-2.5 rounded-[1.6rem] border border-white/10 bg-[#180f28]/80 px-3 py-2 shadow-[0_20px_60px_-30px_rgba(0,0,0,0.9)] backdrop-blur-xl transition-all duration-300 hover:border-white/20 hover:bg-[#1d1230]/90 sm:gap-3 sm:px-4"
               style={{ transform: "translateZ(30px)" }}
             >
-              <div className="relative flex h-12 w-12 items-center justify-center">
-                <div className="absolute inset-0 rotate-45 rounded-xl border border-white/10 bg-white/5 transition-transform group-hover:rotate-90 duration-700" />
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/10 to-transparent blur-sm" />
-                <Zap size={22} className="relative z-10" style={{ color: theme.primary }} />
+              <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-[1.05rem] bg-white/5 ring-1 ring-white/10 sm:h-11 sm:w-11">
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent" />
+                <div className="absolute inset-[5px] rounded-full border-[4px] border-white/80" />
+                <div className="absolute left-[13px] top-[8px] h-3.5 w-3.5 rounded-full border-[4px] border-white/80" />
+                <div className="absolute left-[15px] top-[16px] h-3 w-3 rounded-full bg-[#180f28]" />
+                <div className="absolute top-[7px] left-[11px] h-1.5 w-6 rounded-full bg-white/80" />
                 <motion.div 
-                   className="absolute inset-0 rounded-full blur-2xl opacity-30"
+                   className="absolute inset-0 rounded-[1.15rem] opacity-20"
                    style={{ backgroundColor: theme.primary }}
-                   animate={{ scale: [1, 1.2, 1] }}
+                   animate={{ opacity: [0.12, 0.22, 0.12] }}
                    transition={{ duration: 3, repeat: Infinity }}
                 />
               </div>
-              <div className="flex flex-col">
-                <span className="text-xl font-black uppercase tracking-tighter text-white">SIB<span style={{ color: theme.primary }}>_</span>CORE</span>
-                <span className="text-[8px] font-bold uppercase tracking-[0.4em] text-white/30">Neural Interface v2</span>
+              <div className="flex flex-col leading-none">
+                <span className="text-[7px] font-semibold uppercase tracking-[0.34em] text-white/55 sm:text-[8px]">Study in</span>
+                <span className="text-[12px] font-black uppercase tracking-tight text-white sm:text-[14px]">BENGALURU.COM</span>
               </div>
             </motion.a>
 
@@ -119,9 +121,9 @@ function Navbar({ currentPath = "/", onNavigate, onApplyClick }) {
                 whileHover={{ scale: 1.1, letterSpacing: "0.3em" }}
                 whileTap={{ scale: 0.9 }}
                 style={{ background: theme.primary }}
-                className="group relative overflow-hidden rounded-xl px-10 py-4 text-[10px] font-black uppercase tracking-widest text-white shadow-2xl transition-all"
-                onClick={() => onApplyClick ? onApplyClick() : window.location.href = "/apply"}
-              >
+              className="group relative overflow-hidden rounded-xl px-8 py-3 text-[10px] font-black uppercase tracking-widest text-white shadow-2xl transition-all"
+              onClick={() => onApplyClick ? onApplyClick() : window.location.href = "/apply"}
+            >
                 <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                 <span className="relative z-10 flex items-center gap-2">
                    Apply <Sparkles size={14} />
