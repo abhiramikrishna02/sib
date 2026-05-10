@@ -497,7 +497,7 @@ function GlassCard({ item, onNavigate }) {
   return (
     <div
       onClick={handleNavigate}
-      className={`group relative flex shrink-0 h-[270px] min-w-[84vw] snap-start flex-col overflow-hidden rounded-[1.75rem] border border-white/16 bg-[#2f1047]/92 p-4 shadow-[0_30px_70px_rgba(0,0,0,0.48)] backdrop-blur-3xl transition-all duration-700 hover:-translate-y-3 hover:border-white/45 hover:shadow-[0_35px_90px_rgba(0,0,0,0.6)] sm:h-[420px] sm:min-w-[320px] sm:p-8 md:min-w-[350px] lg:min-w-[350px] ${item.path ? 'cursor-pointer' : ''}`}
+      className={`group relative flex h-[420px] w-full max-w-[390px] flex-col overflow-hidden rounded-[2.25rem] border border-white/8 bg-[#2b0d40]/72 p-8 shadow-[0_24px_90px_rgba(0,0,0,0.42)] backdrop-blur-[28px] transition-all duration-700 hover:-translate-y-3 hover:border-white/18 ${item.path ? 'cursor-pointer' : ''}`}
       role={item.path ? 'button' : undefined}
       tabIndex={item.path ? 0 : undefined}
       onKeyDown={(e) => {
@@ -510,52 +510,52 @@ function GlassCard({ item, onNavigate }) {
     >
       <div className="absolute inset-0 z-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100">
         <div
-          className="absolute -inset-[100%] animate-[spin_8s_linear_infinite] opacity-55"
-          style={{ background: `conic-gradient(from 0deg, transparent 0%, ${item.glow || 'rgba(255,255,255,0.5)'} 50%, transparent 100%)` }}
+          className="absolute -inset-[80%] opacity-45 blur-2xl transition-opacity duration-700 group-hover:opacity-70"
+          style={{ background: `radial-gradient(circle, ${item.glow || 'rgba(255,255,255,0.45)'} 0%, transparent 66%)` }}
         />
-        <div className="absolute inset-[1.5px] rounded-[2.5rem] bg-[#251034]/92 backdrop-blur-3xl transition-colors duration-500" />
+        <div className="absolute inset-[1.5px] rounded-[2.25rem] bg-[#2a0c3f]/92 backdrop-blur-3xl transition-colors duration-500" />
       </div>
 
       <div
         aria-hidden="true"
-        className="absolute inset-0 z-0 opacity-90"
+        className="absolute inset-0 z-0 opacity-100"
         style={{
           background:
-            'radial-gradient(circle at top left, rgba(213, 161, 255, 0.22), transparent 34%), radial-gradient(circle at top right, rgba(168, 85, 247, 0.18), transparent 28%), linear-gradient(180deg, rgba(95, 69, 114, 0.16) 0%, rgba(23, 15, 31, 0.16) 100%)',
+            'radial-gradient(circle at 50% 18%, rgba(191, 90, 255, 0.18), transparent 30%), radial-gradient(circle at top left, rgba(255,255,255,0.06), transparent 18%), linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(16, 7, 28, 0.08) 100%)',
         }}
       />
 
       <div className="relative z-10 flex items-start justify-between">
-        <div className="relative flex h-20 w-20 items-center justify-center">
-          <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${item.color} blur-2xl opacity-45 transition-opacity duration-500 group-hover:opacity-95`} />
-          <div className="relative flex h-full w-full items-center justify-center rounded-3xl border border-white/26 bg-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_0_24px_rgba(168,85,247,0.18)] backdrop-blur-md transition-all duration-500 group-hover:scale-110 group-hover:border-white/55 group-hover:bg-white/15">
-            <Icon className="text-white drop-shadow-[0_0_18px_rgba(255,255,255,0.55)] transition-transform duration-500 group-hover:rotate-12" size={28} strokeWidth={1.6} />
+        <div className="relative flex h-[74px] w-[74px] items-center justify-center">
+          <div className={`absolute inset-0 rounded-[1.5rem] bg-gradient-to-br ${item.color} blur-2xl opacity-35 transition-opacity duration-500 group-hover:opacity-70`} />
+          <div className="relative flex h-full w-full items-center justify-center rounded-[1.45rem] border border-white/14 bg-white/6 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_0_20px_rgba(255,255,255,0.05)] backdrop-blur-md transition-all duration-500 group-hover:scale-[1.03] group-hover:border-white/24 group-hover:bg-white/8">
+            <Icon className="text-white/75 drop-shadow-[0_0_12px_rgba(255,255,255,0.35)] transition-transform duration-500 group-hover:rotate-6" size={26} strokeWidth={1.65} />
           </div>
-          <div className="absolute -right-2 -top-2 h-4 w-4 border-r-2 border-t-2 border-white/40 transition-all duration-500 group-hover:-right-3 group-hover:-top-3 group-hover:border-white/90" />
-          <div className="absolute -bottom-2 -left-2 h-4 w-4 border-b-2 border-l-2 border-white/40 transition-all duration-500 group-hover:-bottom-3 group-hover:-left-3 group-hover:border-white/90" />
+          <div className="absolute -right-1.5 -top-1.5 h-4 w-4 border-r border-t border-white/20 transition-all duration-500 group-hover:border-white/45" />
+          <div className="absolute -bottom-1.5 -left-1.5 h-4 w-4 border-b border-l border-white/20 transition-all duration-500 group-hover:border-white/45" />
         </div>
-        <div className="flex flex-col items-end gap-1.5 opacity-45 transition-opacity duration-500 group-hover:opacity-100">
-          <div className="h-1 w-1 rounded-full bg-white" />
-          <div className="h-1 w-1 rounded-full bg-white" />
-          <div className="h-1 w-1 rounded-full bg-white" />
+        <div className="flex flex-col items-end gap-1.5 opacity-30 transition-opacity duration-500 group-hover:opacity-65">
+          <div className="h-1 w-1 rounded-full bg-white/90" />
+          <div className="h-1 w-1 rounded-full bg-white/90" />
+          <div className="h-1 w-1 rounded-full bg-white/90" />
         </div>
       </div>
 
-      <div className="relative z-10 mt-6 flex flex-col gap-2 sm:mt-10 sm:gap-3">
+      <div className="relative z-10 mt-7 flex flex-col gap-2 sm:mt-10 sm:gap-3">
         <div className="flex items-center gap-3">
-          <div className="h-[2px] w-6 rounded-full bg-gradient-to-r from-white/85 to-transparent shadow-[0_0_12px_rgba(255,255,255,0.35)] transition-all duration-500 group-hover:w-12" />
-          <p className="text-[9px] font-black uppercase tracking-[0.32em] text-white/72 transition-colors duration-500 group-hover:text-white sm:text-[10px] sm:tracking-[0.4em]">
+          <div className="h-[2px] w-7 rounded-full bg-gradient-to-r from-white/70 to-transparent shadow-[0_0_10px_rgba(255,255,255,0.18)] transition-all duration-500 group-hover:w-10" />
+          <p className="text-[9px] font-black uppercase tracking-[0.38em] text-white/35 transition-colors duration-500 group-hover:text-white/48 sm:text-[10px]">
             {item.subtitle}
           </p>
         </div>
-        <h3 className="max-w-[10ch] text-[1.9rem] font-black italic leading-[0.95] tracking-tighter text-white drop-shadow-[0_0_18px_rgba(213,161,255,0.35)] transition-all duration-500 group-hover:translate-x-2 group-hover:text-violet-100 sm:max-w-none sm:text-3xl md:text-4xl">
+        <h3 className="max-w-[10ch] text-[2.05rem] font-black italic leading-[0.92] tracking-[-0.05em] text-white/55 drop-shadow-[0_0_18px_rgba(213,161,255,0.22)] transition-all duration-500 group-hover:translate-x-1 group-hover:text-white/75 sm:max-w-none sm:text-[2.55rem] md:text-[2.9rem]">
           {item.title}
         </h3>
       </div>
 
-      <div className="relative z-10 mt-auto w-full pt-4 sm:pt-6">
-        <div className="relative mb-4 h-[1px] w-full overflow-hidden bg-white/14 sm:mb-6">
-          <div className="absolute inset-y-0 left-0 w-1/2 -translate-x-[150%] bg-gradient-to-r from-transparent via-white/90 to-transparent transition-all duration-1000 ease-in-out group-hover:translate-x-[200%]" />
+      <div className="relative z-10 mt-auto w-full pt-5 sm:pt-7">
+        <div className="relative mb-4 h-px w-full overflow-hidden bg-white/10 sm:mb-6">
+          <div className="absolute inset-y-0 left-0 w-1/2 -translate-x-[150%] bg-gradient-to-r from-transparent via-white/55 to-transparent transition-all duration-1000 ease-in-out group-hover:translate-x-[200%]" />
         </div>
         
         <button
@@ -564,21 +564,28 @@ function GlassCard({ item, onNavigate }) {
             e.stopPropagation();
             handleNavigate();
           }}
-          className="group/btn relative flex w-full items-center justify-between overflow-hidden rounded-2xl border border-white/18 bg-white/08 px-4 py-3 transition-all duration-500 hover:border-white/55 hover:bg-white hover:shadow-[0_0_34px_rgba(213,161,255,0.28)] sm:px-5 sm:py-3.5"
+          className="group/btn relative flex w-full items-center justify-between overflow-hidden rounded-[1.1rem] border border-white/10 bg-white/[0.04] px-4 py-3 transition-all duration-500 hover:border-white/22 hover:bg-white/[0.08]"
         >
-          <span className="relative z-10 text-[9px] font-black uppercase tracking-[0.18em] text-white/78 transition-colors group-hover/btn:text-black sm:text-[10px] sm:tracking-[0.2em]">
+          <span className="relative z-10 text-[9px] font-black uppercase tracking-[0.2em] text-white/28 transition-colors group-hover/btn:text-white/70 sm:text-[10px]">
             Initiate Access
           </span>
-          <div className="relative z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/14 transition-colors group-hover/btn:bg-black/10 sm:h-8 sm:w-8">
-            <ArrowRight size={12} className="text-white transition-transform duration-300 group-hover/btn:translate-x-1 group-hover/btn:text-black sm:size-[14px]" />
+          <div className="relative z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/8 transition-colors group-hover/btn:bg-white/12 sm:h-8 sm:w-8">
+            <ArrowRight size={12} className="text-white/55 transition-transform duration-300 group-hover/btn:translate-x-1 group-hover/btn:text-white/80 sm:size-[14px]" />
           </div>
         </button>
       </div>
 
-      <div className="absolute -bottom-10 -right-10 z-0 h-32 w-32 opacity-15 transition-all duration-700 group-hover:-translate-x-4 group-hover:-translate-y-4 group-hover:scale-110 group-hover:opacity-45 sm:-bottom-12 sm:-right-12 sm:h-40 sm:w-40 md:opacity-12">
-        <div className="grid h-full w-full grid-cols-5 grid-rows-5 gap-2">
-          {[...Array(25)].map((_, i) => (
-            <div key={i} className="rounded-full bg-white/95" />
+      <div className="absolute -bottom-4 -right-4 z-0 h-32 w-32 opacity-25 transition-all duration-700 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:opacity-55 sm:-bottom-8 sm:-right-8 sm:h-40 sm:w-40">
+        <div className="grid h-full w-full grid-cols-4 grid-rows-4 gap-3">
+          {[...Array(16)].map((_, i) => (
+            <div
+              key={i}
+              className="rounded-full bg-white/90"
+              style={{
+                opacity: 0.12 + ((i % 4) * 0.06),
+                transform: 'scale(0.95)',
+              }}
+            />
           ))}
         </div>
       </div>
@@ -936,21 +943,28 @@ function VisionVideoSection() {
             className="absolute inset-0 z-30 flex items-center justify-center p-4 sm:p-6 md:p-12"
           >
             <div className="w-full max-w-4xl px-2 text-center text-white">
-              <p
-                className="mx-auto max-w-3xl text-[0.95rem] font-medium leading-relaxed text-white/92 drop-shadow-[0_4px_18px_rgba(0,0,0,0.65)] sm:text-[1rem] md:text-[1.35rem] md:leading-[1.8]"
-                style={{
-                  textShadow: '0 3px 14px rgba(0,0,0,0.65), 0 0 28px rgba(213, 161, 255, 0.12)',
-                }}
-              >
-                StudyInBengaluru.com is Bengaluru&apos;s largest portal for admissions, with the vision of making the city the educational hub of Asia. The focus is on building trust and credibility, increasing brand awareness, and attracting students from across India and abroad, alongside strategic college tie-ups, franchise sales, and user engagement.
+              <p className="mx-auto mb-5 inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[9px] font-black uppercase tracking-[0.45em] text-white/70 backdrop-blur-md shadow-[0_0_30px_rgba(168,85,247,0.14)]">
+                Our Vision
               </p>
               <p
-                className="mx-auto mt-6 max-w-2xl text-[0.9rem] leading-relaxed text-[#f4d9e2] sm:mt-8 sm:text-[0.95rem] md:text-[1.15rem]"
+                className="mx-auto max-w-3xl text-[0.98rem] font-semibold leading-relaxed text-white drop-shadow-[0_4px_18px_rgba(0,0,0,0.65)] sm:text-[1.06rem] md:text-[1.38rem] md:leading-[1.85]"
                 style={{
-                  textShadow: '0 2px 10px rgba(0,0,0,0.6), 0 0 20px rgba(214, 90, 138, 0.18)',
+                  textShadow: '0 3px 14px rgba(0,0,0,0.68), 0 0 28px rgba(213, 161, 255, 0.16)',
                 }}
               >
-                &quot;Education is the passport to the future, and StudyInBengaluru is your first-class ticket.&quot;
+                <span className="font-black text-white">StudyInBengaluru.com</span> is Bengaluru&apos;s premier admissions platform,
+                connecting ambitious students with <span className="text-violet-300">trusted institutions</span>,
+                future-ready courses, and meaningful opportunities. We&apos;re shaping the city into a leading
+                education destination while strengthening credibility, partnerships, and student engagement across
+                India and beyond.
+              </p>
+              <p
+                className="mx-auto mt-6 max-w-2xl rounded-2xl border border-fuchsia-400/15 bg-black/20 px-4 py-3 text-[0.88rem] leading-relaxed text-[#ffd8e6] shadow-[0_0_40px_rgba(214,90,138,0.12)] sm:mt-8 sm:text-[0.98rem] md:text-[1.18rem]"
+                style={{
+                  textShadow: '0 2px 10px rgba(0,0,0,0.62), 0 0 20px rgba(214, 90, 138, 0.2)',
+                }}
+              >
+                &quot;Education opens the door. StudyInBengaluru helps you walk through it with confidence.&quot;
               </p>
             </div>
           </div>
