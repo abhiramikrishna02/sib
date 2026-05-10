@@ -166,13 +166,9 @@ export default function Services({ globalData, locationHash, onNavigate }) {
                           {item.name}
                         </h3>
                         <p className="mt-1 max-w-[34rem] text-sm leading-relaxed text-white/80">
-                          {item.about || item.location || 'University information not available.'}
+                          {item.about || 'University information not available.'}
                         </p>
                         <div className="mt-3 flex flex-wrap items-center gap-3 text-[10px] leading-none text-white/55">
-                          <span className="inline-flex items-center gap-2">
-                            <MapPin size={11} />
-                            <span className="truncate">{item.location || 'Location not set'}</span>
-                          </span>
                           {item.rating && (
                             <span className="rounded-full border border-white/10 bg-black/20 px-2 py-1 text-[9px] font-black uppercase tracking-[0.18em] text-violet-200">
                               {item.rating}
