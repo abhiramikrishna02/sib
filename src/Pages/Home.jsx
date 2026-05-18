@@ -11,7 +11,8 @@ import {
   Users, BadgeCheck, MessageCircle, UserCheck, Sparkles, ShieldCheck,
   ArrowUpRight, ArrowDown, ArrowRight, Target, Rocket, MoveRight, ChevronDown,
 } from 'lucide-react'
-import bangaloreVideo from '../assets/Bangalore.mp4'
+import FloatingLines from '../Components/FloatingLines'
+import TextPressure from '../Components/TextPressure'
 import graduateVideo from '../assets/graduate.mp4'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -89,167 +90,41 @@ function CyberGridTexture() {
 }
 
 function HeroSection() {
-  const containerRef = useRef(null)
-  const videoRef = useRef(null)
-  const contentRevealRef = useRef(null)
-  const apertureContainerRef = useRef(null)
-  
-  // Aperture Rings
-  const ring1Ref = useRef(null)
-  const ring2Ref = useRef(null)
-  const ring3Ref = useRef(null)
-  
-  const brokenThroughRef = useRef(false)
-  const [isBrokenThrough, setIsBrokenThrough] = useState(false)
-
-  useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      // Initial Setup
-      gsap.set(contentRevealRef.current, { opacity: 0, scale: 2, filter: 'blur(20px)' })
-      gsap.set(videoRef.current, { scale: 1.5, filter: 'brightness(0) saturate(0) blur(10px)' })
-
-      const tl = gsap.timeline({
-        onComplete: () => {
-          brokenThroughRef.current = true
-          setIsBrokenThrough(true)
-          gsap.set(apertureContainerRef.current, { display: 'none' })
-          ScrollTrigger.refresh()
-        },
-        scrollTrigger: { 
-          trigger: containerRef.current, 
-          start: 'top top', 
-          end: '+=1500', 
-          pin: true, 
-          pinSpacing: true, 
-          scrub: 1 
-        },
-      })
-
-      // 1. High-Energy Aperture Expansion (Rings spin opposite ways and scale massive)
-      tl.to(ring1Ref.current, { rotation: 180, scale: 80, duration: 2, ease: 'power3.inOut' }, 0)
-        .to(ring2Ref.current, { rotation: -270, scale: 80, duration: 2, ease: 'power3.inOut' }, 0.1)
-        .to(ring3Ref.current, { rotation: 360, scale: 80, duration: 2, ease: 'power3.inOut' }, 0.2)
-        .to(apertureContainerRef.current, { opacity: 0, duration: 0.5 }, 1.5)
-
-      // 2. Video Snaps into Reality
-      tl.to(videoRef.current, { 
-        scale: 1, 
-        filter: 'brightness(0.4) saturate(1.2) blur(0px)', 
-        duration: 1.5, 
-        ease: 'power4.out' 
-      }, 0.8)
-
-      // 3. Final Typography Slams In
-      tl.to(contentRevealRef.current, { 
-        opacity: 1, 
-        scale: 1, 
-        filter: 'blur(0px)',
-        duration: 1.2, 
-        ease: 'back.out(1.5)' 
-      }, 1)
-
-      // Idle Cyber-Node Pulsing
-      gsap.to('.cyber-node', { opacity: 0.2, stagger: { each: 0.05, repeat: -1, yoyo: true }, duration: 1.5, ease: 'power1.inOut' })
-
-      // Post-reveal Parallax
-      const moveHandler = (e) => {
-        if (!brokenThroughRef.current) return
-        const x = (e.clientX / window.innerWidth - 0.5) * 30
-        const y = (e.clientY / window.innerHeight - 0.5) * 30
-        gsap.to('.revealed-content', {
-          x: x, y: y, rotationY: x * 0.4, rotationX: -y * 0.4, duration: 1, ease: 'power2.out',
-        })
-      }
-      window.addEventListener('mousemove', moveHandler)
-      return () => window.removeEventListener('mousemove', moveHandler)
-    }, containerRef)
-    return () => ctx.revert()
-  }, [])
-
   return (
-    <section
-      ref={containerRef}
-      className="relative h-[100svh] w-full overflow-hidden bg-[#05010a] perspective-[1000px]"
-    >
-      {/* --- BACKGROUND LAYER: The Destination (Video) --- */}
-      <video 
-        ref={videoRef} 
-        src={bangaloreVideo} 
-        autoPlay 
-        muted 
-        loop 
-        playsInline 
-        className="absolute inset-0 z-0 h-full w-full object-cover transform-gpu" 
-      />
-
-      {/* --- MID LAYER: The Final Text (Revealed later) --- */}
-      <div ref={contentRevealRef} className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none px-4">
-        <div className="revealed-content text-center flex flex-col items-center transform-gpu">
-          <div className="mb-6 rounded-full border border-fuchsia-500/30 bg-fuchsia-500/10 px-6 py-2 backdrop-blur-md">
-            <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.5em] text-fuchsia-300">
-              Access Granted
-            </span>
-          </div>
-          <h2 className="text-[clamp(2.5rem,8vw,7rem)] font-black uppercase leading-[0.9] tracking-tighter text-white drop-shadow-[0_20px_40px_rgba(0,0,0,0.8)]">
-            Study In India's <br />
-            <span className="bg-gradient-to-r from-cyan-400 via-fuchsia-400 to-violet-500 bg-clip-text font-serif font-light italic text-transparent">
-              Silicon Valley
-            </span>
-          </h2>
-        </div>
-      </div>
-
-      {/* --- FOREGROUND LAYER: The Quantum Aperture Lock --- */}
-      <div ref={apertureContainerRef} className="absolute inset-0 z-20 flex items-center justify-center bg-[#0d0417]">
-        
-        {/* Background Grid for the Lock screen */}
-        <svg className="absolute inset-0 h-full w-full opacity-60">
-          <defs><CyberGridTexture /></defs>
-          <rect width="100%" height="100%" fill="url(#cyberGridPattern)" />
-        </svg>
-
-        {/* Ambient Center Glow */}
-        <div className="absolute h-[60vw] w-[60vw] rounded-full bg-[radial-gradient(circle_at_50%_50%,rgba(168,85,247,0.15),transparent_60%)] blur-2xl" />
-
-        {/* RING 1: Outer Hexagon */}
-        <div 
-          ref={ring1Ref}
-          className="absolute flex h-[45vw] w-[45vw] min-h-[300px] min-w-[300px] items-center justify-center border-[1px] border-violet-500/30 bg-[#0d0417]/80 backdrop-blur-sm shadow-[0_0_60px_rgba(139,92,246,0.3)] transform-gpu"
-          style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }}
-        >
-          {/* RING 2: Middle Octagon */}
-          <div 
-            ref={ring2Ref}
-            className="absolute flex h-[80%] w-[80%] items-center justify-center border-[2px] border-cyan-400/50 bg-[#160726]/90 shadow-[inset_0_0_40px_rgba(34,211,238,0.2)] transform-gpu"
-            style={{ clipPath: 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)' }}
-          >
-            {/* RING 3: Inner Diamond */}
-            <div 
-              ref={ring3Ref}
-              className="absolute flex h-[70%] w-[70%] flex-col items-center justify-center bg-gradient-to-br from-violet-900 to-[#0d0417] border border-fuchsia-500 shadow-[0_0_50px_rgba(217,70,239,0.5)] transform-gpu"
-              style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}
-            >
-              {/* Inner Lock Text */}
-              <div className="flex flex-col items-center justify-center -rotate-0 text-center scale-75 sm:scale-100">
-                <span className="mb-2 text-[8px] font-black uppercase tracking-[0.8em] text-cyan-300 animate-pulse">
-                  System Locked
-                </span>
-                <span className="text-3xl font-black uppercase tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/50">
-                  BENGALURU
-                </span>
-              </div>
+    <section className="relative min-h-[95vh] overflow-hidden bg-[#05010a]">
+      <div style={{ width: '100%', height: '95vh', position: 'relative' }}>
+        <FloatingLines
+          enabledWaves={["top", "middle", "bottom"]}
+          lineCount={8}
+          lineDistance={8}
+          bendRadius={8}
+          bendStrength={-2}
+          interactive
+          parallax={true}
+          animationSpeed={1}
+          gradientStart="#e945f5"
+          gradientMid="#6f6f6f"
+          gradientEnd="#6a6a6a"
+        />
+        <div className="absolute inset-0 flex items-center justify-center px-4 pointer-events-none">
+          <div className="flex w-full items-center justify-center px-4" style={{ width: '100%', height: '42vh', minHeight: 260, maxHeight: 360 }}>
+            <div className="w-full max-w-4xl">
+              <TextPressure
+                text="Study In Bengaluru"
+                flex={false}
+                alpha={false}
+                stroke={true}
+                width={false}
+                weight={true}
+                italic={true}
+                textColor="#ffffff"
+                strokeColor="#ffffff"
+                minFontSize={72}
+                className="drop-shadow-[0_0_40px_rgba(255,255,255,0.85)]"
+              />
             </div>
           </div>
         </div>
-
-        {/* Scroll Prompt */}
-        <div className="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-3">
-          <span className="text-[0.65rem] font-bold uppercase tracking-[0.6em] text-white/50">Initiate Sequence</span>
-          <div className="flex h-12 w-7 items-center justify-center rounded-full border border-violet-500/40 bg-violet-950/30 backdrop-blur-md">
-            <ArrowDown className="h-4 w-4 animate-bounce text-violet-400" />
-          </div>
-        </div>
-        
       </div>
     </section>
   )
