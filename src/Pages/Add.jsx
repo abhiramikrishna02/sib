@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from '../lib/supabase.js';
+import { isSupabaseConfigured, supabase, supabaseConfigMessage } from '../lib/supabase.js';
 import {
   Plus, ArrowLeft, GraduationCap, School, BookOpen, X, Trash2, 
   Send, MapPin, Star, Banknote, Info, Phone, Mail, Globe, ArrowRight,
@@ -158,6 +158,12 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isSupabaseConfigured) {
+      alert(supabaseConfigMessage);
+      return;
+    }
+
     const tableName = getTableName(activeCategory);
     const payload = buildTablePayload(formData, activeCategory);
     const fallbackPayload = buildTablePayload(formData, activeCategory, { includeMedia: false });
@@ -258,6 +264,12 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    if (!isSupabaseConfigured) {
+      alert(supabaseConfigMessage);
+      event.target.value = '';
+      return;
+    }
+
     const allowedTypes = [
       'application/pdf',
       'application/msword',
@@ -323,6 +335,12 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
 
   const removeItem = async (category, id) => {
     if (!window.confirm("Permanent Delete? This cannot be undone.")) return;
+
+    if (!isSupabaseConfigured) {
+      alert(supabaseConfigMessage);
+      return;
+    }
+
     const tableName = getTableName(category);
 
     const { error } = await supabase
@@ -507,6 +525,12 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
             <ArrowLeft size={16} /> Exit Admin
           </button>
         </header>
+
+        {!isSupabaseConfigured && (
+          <div className="mb-10 rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-100">
+            {supabaseConfigMessage}
+          </div>
+        )}
 
         {renderSection("Universities", GraduationCap)}
         {renderSection("Colleges", School)}

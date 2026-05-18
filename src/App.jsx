@@ -14,7 +14,7 @@ import Services from './Pages/Services.jsx'
 import Details from './Pages/Details.jsx'
 import Login from './Components/Login.jsx'; // Add this line
 import Add from './Pages/Add.jsx';
-import { supabase } from './lib/supabase.js'
+import { isSupabaseConfigured, supabase, supabaseConfigMessage } from './lib/supabase.js'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -70,6 +70,14 @@ function App() {
 
     const loadGlobalData = async () => {
       setDataLoading(true)
+
+      if (!isSupabaseConfigured) {
+        console.warn(supabaseConfigMessage)
+        setGlobalData({ Universities: [], Colleges: [], Courses: [] })
+        setDataLoading(false)
+        return
+      }
+
       const [universitiesResult, collegesResult, coursesResult] = await Promise.all([
         supabase.from('universities').select('*').order('created_at', { ascending: true }),
         supabase.from('colleges').select('*').order('created_at', { ascending: true }),
