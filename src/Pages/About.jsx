@@ -388,12 +388,12 @@ function WhyBengaluruSection() {
             <div className="relative z-10 flex h-full w-full items-center px-5 py-6 sm:px-8 md:px-16 md:py-8 lg:px-20">
               <span className="bg-number pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none text-[22vw] font-black leading-none text-white/[0.03]">0{index + 1}</span>
               {/* Mobile: single column, image on top, text below; md+: two columns side by side (original) */}
-              <div className="relative z-10 grid w-full max-w-7xl grid-cols-1 items-center gap-6 md:grid-cols-[minmax(0,0.9fr)_minmax(320px,0.8fr)] md:gap-10 lg:gap-14">
+              <div className="relative z-10 grid w-full max-w-7xl grid-cols-1 items-center gap-6 md:grid-cols-[minmax(0,0.82fr)_minmax(320px,0.86fr)] md:gap-10 lg:gap-14">
                 {/* Text content — order-2 on mobile so image shows first */}
                 <div className="order-2 min-w-0 space-y-4 md:order-1 md:space-y-6">
                   <div className="space-y-3 md:space-y-4">
                     <div className="flex items-center gap-4"><span className="h-px w-10 bg-gradient-to-r from-violet-500 to-transparent" /><span className="font-mono text-[10px] uppercase tracking-[0.3em] text-violet-400">Feature 0{index + 1}</span></div>
-                    <h3 className="max-w-[11ch] text-[clamp(2.25rem,5.6vw,5.9rem)] font-black uppercase italic leading-[0.9] text-white drop-shadow-[0_18px_45px_rgba(168,85,247,0.18)] md:text-[clamp(3rem,5.1vw,5.7rem)]">
+                    <h3 className="max-w-[12ch] text-[clamp(2rem,4.4vw,4.7rem)] font-black uppercase italic leading-[0.92] text-white drop-shadow-[0_18px_45px_rgba(168,85,247,0.18)] md:text-[clamp(2.35rem,4vw,4.35rem)]">
                       <span className="bg-gradient-to-r from-white via-white to-violet-200 bg-clip-text text-transparent">{item.title}</span>
                     </h3>
                   </div>
@@ -495,7 +495,7 @@ function GlobalBackground() {
 
 function HeroCanvasSection() {
   return (
-    <div className="parallax-canvas absolute inset-0 z-10 hidden h-screen pointer-events-none lg:block">
+    <div className="parallax-canvas absolute inset-0 z-10 hidden h-screen pointer-events-none md:block">
       <div className="absolute inset-0 pointer-events-auto"><Scene3D /></div>
     </div>
   );
