@@ -1,13 +1,15 @@
 import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Canvas, useFrame } from '@react-three/fiber'
+import { Points, PointMaterial } from '@react-three/drei'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import * as THREE from 'three'
 import {
   GraduationCap, Landmark, BookOpen, School, Library, Globe, Clock, Briefcase,
   Laptop, TimerReset, BriefcaseBusiness, Home as HomeIcon, CalendarDays, Calendar,
   Users, BadgeCheck, MessageCircle, UserCheck, Sparkles, ShieldCheck,
-  ArrowUpRight, ArrowDown, ArrowRight, Target, Rocket, MoveRight,
+  ArrowUpRight, ArrowDown, ArrowRight, Target, Rocket, MoveRight, ChevronDown,
 } from 'lucide-react'
 import bangaloreVideo from '../assets/Bangalore.mp4'
 import graduateVideo from '../assets/graduate.mp4'
