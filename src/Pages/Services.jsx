@@ -233,7 +233,7 @@ export default function Services({ globalData, locationHash, onNavigate }) {
                       <h3 className="text-base font-black leading-snug sm:text-lg">{item.name}</h3>
                       <div className="mt-1 flex items-center gap-2 text-[10px] text-white/70"><MapPin size={10} /><span className="truncate">{item.location || 'Location not set'}</span></div>
                       <div className="mt-3 border-t border-white/10 pt-3">
-                        <div className="flex items-center justify-between text-[10px] text-white/55"><span>Annual Fees From</span>{item.feeRange && <span className="font-semibold text-white">{item.feeRange}</span>}</div>
+                        <div className="flex items-center justify-between text-[10px] text-white/55"><span>Annual Fees From</span>{item.feeRange && <span className="font-normal text-white">{item.feeRange}</span>}</div>
                         <div className="mt-3 flex items-center justify-between">
                           <button onClick={() => onNavigate?.(`/details#type=college&id=${item.id}`)} className="text-[10px] font-black uppercase tracking-widest text-white/85 hover:text-white">View Details</button>
                           <ArrowRight size={14} className="text-white/80" />
@@ -281,7 +281,7 @@ export default function Services({ globalData, locationHash, onNavigate }) {
                       <h3 className="text-base font-black leading-snug sm:text-lg">{item.name}</h3>
                       <div className="mt-1 flex items-center gap-2 text-[10px] text-white/70"><MapPin size={10} /><span className="truncate">{item.location || 'Location not set'}</span></div>
                       <div className="mt-3 border-t border-white/10 pt-3">
-                        <div className="flex items-center justify-between text-[10px] text-white/55"><span>Annual Fees From</span>{item.feeRange && <span className="font-semibold text-white">{item.feeRange}</span>}</div>
+                        <div className="flex items-center justify-between text-[10px] text-white/55"><span>Annual Fees From</span>{item.feeRange && <span className="font-normal text-white">{item.feeRange}</span>}</div>
                         <div className="mt-3 flex items-center justify-between">
                           <button onClick={() => onNavigate?.(`/details#type=college&id=${item.id}`)} className="text-[10px] font-black uppercase tracking-widest text-white/85 hover:text-white">View Details</button>
                           <ArrowRight size={14} className="text-white/80" />
