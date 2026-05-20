@@ -49,6 +49,9 @@ const aboutCards = [
     title: 'Diverse Programs',
     desc: 'Explore a wide range of undergraduate, postgraduate, and doctoral programs in various disciplines.',
     icon: BookOpen,
+    code: 'DP',
+    subtitle: 'PROGRAM DEPTH',
+    accent: '#e879f9',
     color: 'from-fuchsia-300 to-violet-500',
     shadow: 'shadow-fuchsia-500/20',
     panel: 'from-slate-900/88 via-fuchsia-950/78 to-violet-900/82',
@@ -58,6 +61,9 @@ const aboutCards = [
     title: 'Top Institutions',
     desc: 'Access to premier universities and colleges across Bengaluru with diverse program offerings.',
     icon: Landmark,
+    code: 'TI',
+    subtitle: 'TRUSTED ACCESS',
+    accent: '#22d3ee',
     color: 'from-cyan-300 to-violet-500',
     shadow: 'shadow-cyan-500/20',
     panel: 'from-slate-900/88 via-indigo-950/80 to-slate-950/92',
@@ -67,6 +73,9 @@ const aboutCards = [
     title: 'City Advantages',
     desc: "Benefit from Bengaluru's tech ecosystem, cultural diversity, and excellent career opportunities.",
     icon: Building2,
+    code: 'CA',
+    subtitle: 'CITY EDGE',
+    accent: '#fb7185',
     color: 'from-orange-300 to-rose-500',
     shadow: 'shadow-orange-500/20',
     panel: 'from-stone-900/88 via-rose-950/80 to-slate-950/92',
@@ -171,15 +180,33 @@ function AboutCardsSection() {
             key={card.title}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            className={`about-card group relative flex min-h-[360px] flex-col items-center justify-center rounded-[2rem] border bg-gradient-to-br ${card.panel} ${card.border} p-6 text-center shadow-2xl shadow-black/25 sm:p-8 md:min-h-[520px] md:rounded-[3rem] md:p-8 lg:min-h-[560px] lg:p-10 ${i === 1 ? 'z-20' : 'z-10'}`}
+            className={`about-card group relative flex min-h-[360px] flex-col overflow-hidden rounded-[2rem] border border-white/12 bg-[#170a24]/92 p-6 text-left shadow-2xl shadow-black/25 backdrop-blur-xl sm:p-8 md:min-h-[520px] md:rounded-[2.25rem] md:p-8 lg:min-h-[560px] lg:p-10 ${i === 1 ? 'z-20' : 'z-10'}`}
+            style={{
+              borderColor: `${card.accent}66`,
+              boxShadow: `0 28px 80px rgba(0,0,0,0.26), 0 0 42px ${card.accent}22`,
+            }}
           >
-            <div className="absolute inset-0 rounded-[inherit] bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.12),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(255,255,255,0.05),_transparent_34%)] opacity-80" />
-            <div className="absolute -right-10 -top-10 hidden h-32 w-32 rounded-full bg-white/8 blur-[30px] opacity-0 transition-opacity duration-500 group-hover:opacity-100 md:block" />
-            <div className={`mb-5 flex h-16 w-16 items-center justify-center rounded-[1.25rem] bg-gradient-to-br ${card.color} shadow-2xl ${card.shadow} transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6 sm:mb-8 sm:h-24 sm:w-24 sm:rounded-[2rem] md:h-20 md:w-20 lg:h-24 lg:w-24`}>
-              <card.icon className="h-8 w-8 text-white sm:h-12 sm:w-12 md:h-10 md:w-10 lg:h-12 lg:w-12" />
+            <div className="absolute inset-0 rounded-[inherit] bg-[linear-gradient(135deg,rgba(255,255,255,0.08),transparent_38%),radial-gradient(circle_at_22%_16%,rgba(255,255,255,0.12),transparent_22%),radial-gradient(circle_at_84%_84%,rgba(255,255,255,0.08),transparent_30%)] opacity-80" />
+            <div className="absolute inset-0 rounded-[inherit] opacity-[0.14] [background-image:repeating-linear-gradient(45deg,rgba(255,255,255,0.35)_0px,rgba(255,255,255,0.35)_1px,transparent_1px,transparent_28px)]" />
+            <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full border opacity-40 transition-transform duration-700 group-hover:scale-110" style={{ borderColor: card.accent }} />
+            <div className="absolute -right-6 -top-6 hidden h-32 w-32 rounded-full blur-[34px] opacity-0 transition-opacity duration-500 group-hover:opacity-100 md:block" style={{ backgroundColor: `${card.accent}28` }} />
+
+            <div className="relative z-10 mb-auto flex items-center justify-between">
+              <div className="flex h-16 w-16 items-center justify-center rounded-[1.15rem] border border-white/12 bg-white/8 shadow-2xl transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6 sm:h-20 sm:w-20 sm:rounded-[1.4rem]" style={{ color: card.accent, boxShadow: `0 0 32px ${card.accent}33` }}>
+                <span className="text-2xl font-black sm:text-3xl">{card.code}</span>
+              </div>
+              <card.icon className="h-7 w-7 opacity-75 sm:h-9 sm:w-9" style={{ color: card.accent }} />
             </div>
-            <h3 className="mb-3 text-lg font-black uppercase tracking-tight text-white sm:mb-6 sm:text-2xl md:text-[1.55rem] lg:text-3xl">{card.title}</h3>
-            <p className="max-w-[18rem] text-sm font-light leading-relaxed text-white/68 sm:text-lg md:text-base lg:text-lg">{card.desc}</p>
+
+            <div className="relative z-10 mt-12 sm:mt-16 md:mt-auto">
+              <p className="mb-4 text-[10px] font-black uppercase tracking-[0.42em] text-white/40">{card.subtitle}</p>
+              <h3 className="mb-5 text-[clamp(1.6rem,3vw,3.1rem)] font-black uppercase leading-[0.92] tracking-tight text-white">{card.title}</h3>
+              <p className="max-w-[22rem] text-sm font-light leading-relaxed text-white/64 sm:text-base lg:text-lg">{card.desc}</p>
+              <div className="mt-8 flex items-center justify-between border-t border-white/12 pt-5">
+                <span className="rounded-full border border-white/12 bg-white/8 px-4 py-2 text-[9px] font-black uppercase tracking-widest text-white/72">Explore</span>
+                <span className="text-3xl font-black" style={{ color: card.accent }}>-&gt;</span>
+              </div>
+            </div>
           </div>
         ))}
       </div>
@@ -193,24 +220,36 @@ const features = [
     title: 'Top Institutions',
     desc: 'Access to premier universities and colleges across Bengaluru with diverse program offerings.',
     icon: GraduationCap,
+    code: 'TI',
+    subtitle: 'ACADEMIC ACCESS',
+    accent: '#8b5cf6',
     color: 'from-violet-500 to-violet-400',
   },
   {
     title: 'Diverse Programs',
     desc: 'Explore a wide range of undergraduate, postgraduate, and doctoral disciplines.',
     icon: BookOpen,
+    code: 'DP',
+    subtitle: 'PROGRAM RANGE',
+    accent: '#22d3ee',
     color: 'from-violet-500 to-violet-400',
   },
   {
     title: 'City Advantages',
     desc: "Benefit from Bengaluru's tech ecosystem, cultural diversity, and career opportunities.",
     icon: MapPin,
+    code: 'CA',
+    subtitle: 'BENGALURU EDGE',
+    accent: '#34d399',
     color: 'from-violet-500 to-violet-400',
   },
   {
     title: 'Expert Guidance',
     desc: 'Get personalized consultations and end-to-end support from industry pros.',
     icon: BadgeCheck,
+    code: 'EG',
+    subtitle: 'MENTOR SUPPORT',
+    accent: '#fb7185',
     color: 'from-orange-500 to-violet-400',
   },
 ]
@@ -238,9 +277,9 @@ function WhyChooseSection() {
         return
       }
 
-      const baseScale = window.innerWidth >= 1024 ? 1 : 0.82
-      const readingScale = baseScale * 1.14
-      const diveScale = baseScale * 1.28
+      const baseScale = window.innerWidth >= 1280 ? 0.86 : 0.74
+      const readingScale = baseScale
+      const diveScale = baseScale * 1.12
 
       gsap.set(orbitalRef.current, { rotate: 0, scale: baseScale })
       gsap.set(coreRef.current, { scale: 1, opacity: 1, rotateY: 0, transformOrigin: 'center center' })
@@ -251,10 +290,11 @@ function WhyChooseSection() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top top',
-          end: '+=150%',
-          scrub: true,
+          end: '+=120%',
+          scrub: false,
           pin: true,
           anticipatePin: 1,
+          toggleActions: 'play none none none',
         },
       })
 
@@ -262,8 +302,8 @@ function WhyChooseSection() {
       tl.to(orbitalRef.current, { scale: baseScale, rotate: 0, duration: 0.35, ease: 'none' })
 
       // Scene 2: one full cinema-style orbit, zooming the cards enough to read them.
-      tl.to(orbitalRef.current, { rotate: 360, scale: readingScale, duration: 1.45, ease: 'power1.inOut' }, 'scene2')
-        .to(cardContents, { rotate: -360, duration: 1.45, ease: 'power1.inOut' }, 'scene2')
+      tl.to(orbitalRef.current, { rotate: 360, scale: readingScale, duration: 1.45, ease: 'none' }, 'scene2')
+        .to(cardContents, { rotate: -360, duration: 1.45, ease: 'none' }, 'scene2')
         .to(cards, { scale: 1.06, duration: 0.45, stagger: 0.03, ease: 'power2.out' }, 'scene2+=0.12')
         .to(cards, { scale: 1, duration: 0.45, stagger: 0.03, ease: 'power2.inOut' }, 'scene2+=0.86')
         .to(coreRef.current, { scale: 0.94, duration: 0.7, ease: 'power2.inOut' }, 'scene2+=0.2')
@@ -281,7 +321,7 @@ function WhyChooseSection() {
   return (
     <section
       ref={containerRef}
-      className="relative flex min-h-[92svh] w-full items-center justify-center overflow-hidden bg-[#08040f] perspective-1000 py-10 md:min-h-[96svh] md:py-0"
+      className="relative flex min-h-[100svh] w-full items-center justify-center overflow-hidden bg-[#08040f] perspective-1000 py-12 md:min-h-[100svh] md:py-8"
       style={{
         perspective: '1400px',
         background:
@@ -293,12 +333,12 @@ function WhyChooseSection() {
       <div className="bg-glow absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[70px]" />
       <div className="relative flex h-full w-full items-center justify-center">
         {/* Mobile scale: 0.38 → fits 4 orbital cards on small screens; sm: 0.52; md: 0.82; lg+: 1 */}
-        <div ref={orbitalRef} className="relative flex h-[560px] w-[560px] items-center justify-center preserve-3d" style={{ transform: `scale(${isMobile ? 0.38 : 0.65})` }}>
+        <div ref={orbitalRef} className="relative flex h-[760px] w-[760px] items-center justify-center preserve-3d" style={{ transform: `scale(${isMobile ? 0.34 : 0.62})` }}>
           {/* Use inline style for the initial scale so GSAP can animate from it */}
           <style>{`@media (min-width: 480px)  { .orbital-inner { transform: scale(0.52) !important; } }@media (min-width: 640px)  { .orbital-inner { transform: scale(0.65) !important; } }@media (min-width: 768px)  { .orbital-inner { transform: scale(0.82) !important; } }@media (min-width: 1024px) { .orbital-inner { transform: scale(1)    !important; } }`}</style>
-          <div ref={coreRef} className="relative z-50 preserve-3d h-64 w-64 md:h-80 md:w-80">
+          <div ref={coreRef} className="relative z-50 preserve-3d h-52 w-52 md:h-64 md:w-64">
             <div className="backface-hidden absolute inset-0 flex flex-col items-center justify-center rounded-full border border-white/35 bg-gradient-to-br from-[#2b133f]/92 via-[#1f1735]/88 to-[#120a1f]/94 shadow-[0_0_50px_rgba(88,28,135,0.18)]">
-              <h2 className="text-center text-xl font-black uppercase tracking-tighter text-white md:text-3xl">Why Choose <br /><span className="text-violet-400 underline decoration-violet-500/50 underline-offset-8">StudyIn</span><br />Bengaluru?</h2>
+              <h2 className="text-center text-lg font-black uppercase tracking-tighter text-white md:text-2xl">Why Choose <br /><span className="text-violet-400 underline decoration-violet-500/50 underline-offset-8">StudyIn</span><br />Bengaluru?</h2>
             </div>
             <div className="backface-hidden absolute inset-0 flex items-center justify-center rounded-full border-2 border-violet-300/70 bg-gradient-to-br from-[#1f1432] via-[#311a4b] to-[#130b22] shadow-[0_0_80px_rgba(168,85,247,0.28)]" style={{ transform: 'rotateY(180deg)' }}>
               <span className="animate-pulse text-2xl font-bold italic tracking-widest text-white">Why Bengaluru?</span>
@@ -306,10 +346,10 @@ function WhyChooseSection() {
           </div>
           {features.map((f, i) => {
             const positions = [
-              { top: '50%', left: '50%', transform: 'translate(-50%, -198%)' },
-              { top: '50%', left: '50%', transform: 'translate(88%, -50%)' },
-              { top: '50%', left: '50%', transform: 'translate(-50%, 108%)' },
-              { top: '50%', left: '50%', transform: 'translate(-188%, -50%)' },
+              { top: '50%', left: '50%', transform: 'translate(-50%, -154%)' },
+              { top: '50%', left: '50%', transform: 'translate(82%, -50%)' },
+              { top: '50%', left: '50%', transform: 'translate(-50%, 54%)' },
+              { top: '50%', left: '50%', transform: 'translate(-182%, -50%)' },
             ]
             const Icon = f.icon
             return (
@@ -317,18 +357,35 @@ function WhyChooseSection() {
                 key={f.title}
                 className="why-card absolute z-40"
                 style={{
-                  width: '300px',
+                  width: '245px',
                   ...positions[i],
                 }}
               >
                 <div className="why-card-content preserve-3d">
-                  <div className={`rounded-3xl bg-gradient-to-br ${f.color} p-[1.5px] shadow-2xl shadow-black/15`}>
-                    <div className="rounded-[calc(1.5rem-1px)] bg-[#140b1f]/94 p-6">
-                      <div className={`mb-3 inline-flex rounded-xl bg-gradient-to-br ${f.color} p-2.5`}>
-                        <Icon className="text-white" size={22} />
+                  <div
+                    className="group relative overflow-hidden rounded-[1.4rem] border bg-[#170a24]/94 p-4 shadow-2xl shadow-black/20 backdrop-blur-xl"
+                    style={{
+                      borderColor: `${f.accent}66`,
+                      boxShadow: `0 24px 70px rgba(0,0,0,0.22), 0 0 34px ${f.accent}22`,
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.08),transparent_42%),radial-gradient(circle_at_20%_18%,rgba(255,255,255,0.12),transparent_28%)]" />
+                    <div className="absolute inset-0 opacity-[0.12] [background-image:repeating-linear-gradient(45deg,rgba(255,255,255,0.34)_0px,rgba(255,255,255,0.34)_1px,transparent_1px,transparent_22px)]" />
+                    <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full border opacity-40 transition-transform duration-700 group-hover:scale-110" style={{ borderColor: f.accent }} />
+                    <div className="relative z-10">
+                      <div className="mb-3 flex items-center justify-between">
+                        <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/12 bg-white/8" style={{ color: f.accent, boxShadow: `0 0 28px ${f.accent}30` }}>
+                          <span className="text-base font-black">{f.code}</span>
+                        </div>
+                        <Icon size={18} style={{ color: f.accent }} />
                       </div>
-                      <h3 className="mb-2 text-lg font-bold uppercase text-white">{f.title}</h3>
-                      <p className="text-sm leading-relaxed text-white/66">{f.desc}</p>
+                      <p className="mb-2 text-[7px] font-black uppercase tracking-[0.32em] text-white/38">{f.subtitle}</p>
+                      <h3 className="mb-2 text-base font-black uppercase leading-tight text-white">{f.title}</h3>
+                      <p className="text-[12px] leading-relaxed text-white/66">{f.desc}</p>
+                      <div className="mt-3 flex items-center justify-between border-t border-white/12 pt-3">
+                        <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-[8px] font-black uppercase tracking-widest text-white/70">Explore</span>
+                        <span className="text-2xl font-black" style={{ color: f.accent }}>-&gt;</span>
+                      </div>
                     </div>
                   </div>
                 </div>

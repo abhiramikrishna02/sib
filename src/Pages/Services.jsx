@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { GraduationCap, School, BookOpen, Star, MapPin, ArrowRight, Layers, Search, Download } from 'lucide-react'
+import EtherealBeamsBackground from '../../components/ui/ethereal-beams-background'
 
 export default function Services({ globalData, locationHash, onNavigate }) {
   const { Universities = [], Colleges = [], Courses = [] } = globalData || {}
@@ -99,8 +100,8 @@ export default function Services({ globalData, locationHash, onNavigate }) {
             onClick={() => setPage(num)}
             className={`h-10 min-w-10 rounded-full px-3 text-[10px] font-black transition-colors ${
               page === num
-                ? 'bg-[#c48aff] text-black'
-                : 'bg-[#d3b1ff] text-[#4a216d] hover:bg-[#e0c5ff]'
+                ? 'bg-white text-black'
+                : 'border border-white/10 bg-white/10 text-white/70 hover:bg-white/20 hover:text-white'
             }`}
           >
             {num}
@@ -112,15 +113,29 @@ export default function Services({ globalData, locationHash, onNavigate }) {
 
   return (
 
-    <div className="min-h-screen bg-[#431f60] px-4 pb-16 pt-28 text-white sm:px-6 sm:pb-20 sm:pt-32 md:px-16">
-      <div className="mx-auto max-w-7xl">
+    <div className="relative min-h-screen overflow-hidden bg-black px-4 pb-16 pt-28 text-white sm:px-6 sm:pb-20 sm:pt-32 md:px-16">
+      <div className="pointer-events-none fixed inset-0 z-0">
+        <EtherealBeamsBackground
+          beamWidth={2.5}
+          beamHeight={18}
+          beamNumber={15}
+          lightColor="#ffffff"
+          speed={2.5}
+          noiseIntensity={2}
+          scale={0.15}
+          rotation={43}
+        />
+      </div>
+      <div className="pointer-events-none fixed inset-0 z-0 bg-gradient-to-t from-black/70 via-black/20 to-black/40" />
+      <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_42%)]" />
+      <div className="relative z-10 mx-auto max-w-7xl">
         <header className="mb-16 text-center sm:mb-20 md:mb-24">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <p className="mb-4 text-[10px] font-black uppercase tracking-[0.5em] text-violet-500">Browse Educational Options</p>
+            <p className="mb-4 text-[10px] font-black uppercase tracking-[0.5em] text-white/60">Browse Educational Options</p>
             <h1 className="mb-6 text-[clamp(2.8rem,12vw,4.8rem)] font-black italic uppercase tracking-tighter text-white md:text-8xl">
-              Study<span className="text-violet-500">.</span> Directory
+              Study<span className="text-white/45">.</span> Directory
             </h1>
-            <p className="mx-auto max-w-2xl text-sm leading-relaxed text-white/40 md:text-lg">
+            <p className="mx-auto max-w-2xl text-sm leading-relaxed text-white/70 md:text-lg">
               Explore trusted universities, colleges, and courses in one place.
             </p>
           </motion.div>
@@ -128,19 +143,19 @@ export default function Services({ globalData, locationHash, onNavigate }) {
 
         {!universityOnlyView && (
           <section className="mb-16 scroll-mt-32 sm:mb-20 md:mb-24" id="universities">
-          <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-[linear-gradient(180deg,rgba(40,14,61,0.98),rgba(94,57,132,0.82))] shadow-2xl">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(168,85,247,0.32),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.18),transparent_28%)]" />
+          <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/[0.045] shadow-2xl shadow-black/40 backdrop-blur-xl">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.08),transparent_28%)]" />
             <div className="relative px-4 py-10 sm:px-6 sm:py-12 md:px-10">
               <div className="mb-6 text-center">
-                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-violet-300/80">Featured Universities</p>
-                <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/55">
+                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/65">Featured Universities</p>
+                <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/60">
                   Compare universities and open the colleges linked to each institution.
                 </p>
               </div>
               <div className="mx-auto mb-8 max-w-xl">
-                <label className="flex items-center gap-3 rounded-full border border-white/15 bg-white/90 px-4 py-3 text-[#28103d] shadow-lg shadow-black/20">
-                  <Search size={18} className="shrink-0 text-[#4b2c73]" />
-                  <input value={universitySearch} onChange={(e) => setUniversitySearch(e.target.value)} placeholder="Search universities" className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-[#4b2c73]/60" />
+                <label className="flex items-center gap-3 rounded-full border border-white/15 bg-white/10 px-4 py-3 text-white shadow-lg shadow-black/20 backdrop-blur-xl">
+                  <Search size={18} className="shrink-0 text-white/70" />
+                  <input value={universitySearch} onChange={(e) => setUniversitySearch(e.target.value)} placeholder="Search universities" className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-white/45" />
                 </label>
               </div>
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -150,14 +165,14 @@ export default function Services({ globalData, locationHash, onNavigate }) {
                     initial={{ opacity: 0, y: 18 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="rounded-[1.7rem] bg-[rgba(76,40,108,0.92)] p-4 shadow-xl shadow-black/10 transition-transform duration-300 hover:-translate-y-1 sm:p-5"
+                    className="rounded-[1.7rem] border border-white/10 bg-white/[0.07] p-4 shadow-xl shadow-black/20 backdrop-blur-md transition-transform duration-300 hover:-translate-y-1 hover:bg-white/[0.1] sm:p-5"
                   >
                     <div className="grid grid-cols-1 gap-4 lg:grid-cols-[88px_minmax(0,1fr)] lg:gap-5">
                       <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white">
                         {getCardImage(item) ? (
                           <img src={getCardImage(item)} alt={item.name} className="h-full w-full object-cover" />
                         ) : (
-                          <GraduationCap className="text-violet-500" size={28} />
+                          <GraduationCap className="text-black" size={28} />
                         )}
                       </div>
 
@@ -170,7 +185,7 @@ export default function Services({ globalData, locationHash, onNavigate }) {
                         </p>
                         <div className="mt-3 flex flex-wrap items-center gap-3 text-[10px] leading-none text-white/55">
                           {item.rating && (
-                            <span className="rounded-full border border-white/10 bg-black/20 px-2 py-1 text-[9px] font-black uppercase tracking-[0.18em] text-violet-200">
+                            <span className="rounded-full border border-white/15 bg-white/10 px-2 py-1 text-[9px] font-black uppercase tracking-[0.18em] text-white/80">
                               {item.rating}
                             </span>
                           )}
@@ -179,7 +194,7 @@ export default function Services({ globalData, locationHash, onNavigate }) {
                         <div className="mt-4">
                           <button
                           onClick={() => onNavigate?.(`/services#colleges-${item.id}`)}
-                          className="inline-flex shrink-0 items-center justify-center rounded-full bg-violet-500 px-5 py-3 text-[11px] font-black uppercase tracking-widest text-white transition-colors hover:bg-white hover:text-black"
+                          className="inline-flex shrink-0 items-center justify-center rounded-full bg-white px-5 py-3 text-[11px] font-black uppercase tracking-widest text-black transition-colors hover:bg-white/80"
                         >
                             Explore Colleges
                           </button>
@@ -197,36 +212,36 @@ export default function Services({ globalData, locationHash, onNavigate }) {
 
         {universityOnlyView && (
           <section className="mb-16 scroll-mt-32 sm:mb-20 md:mb-24" id="college-view">
-          <div className="overflow-hidden rounded-[2.5rem] border border-white/10 bg-[linear-gradient(180deg,rgba(39,12,57,0.98),rgba(132,95,170,0.6))] shadow-2xl">
-            <div className="bg-[#22102f] px-4 py-6 text-center sm:px-6 sm:py-8">
-              <h2 className="text-[clamp(2.1rem,6vw,3.6rem)] font-black italic uppercase tracking-tighter text-[#b98cff]">Leading Colleges</h2>
+          <div className="overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/[0.045] shadow-2xl shadow-black/40 backdrop-blur-xl">
+            <div className="border-b border-white/10 bg-white/[0.055] px-4 py-6 text-center sm:px-6 sm:py-8">
+              <h2 className="text-[clamp(2.1rem,6vw,3.6rem)] font-black italic uppercase tracking-tighter text-white">Leading Colleges</h2>
               <p className="mt-2 text-[10px] font-medium text-white/60 sm:text-sm">Browse colleges, ratings, and fee ranges across Bengaluru.</p>
             </div>
             <div className="relative px-4 py-8 sm:px-6 md:px-10">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.16),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.1),transparent_20%)]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.1),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.06),transparent_20%)]" />
               <div className="relative flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                 <div className="flex flex-wrap gap-3">
                   {['All', 'Top Rated', 'Autonomous'].map((pill) => (
-                    <button key={pill} onClick={() => setCollegeFilter(pill)} className={`rounded-full px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-colors ${collegeFilter === pill ? 'bg-[#33154b] text-white' : 'bg-white/25 text-white/80 hover:bg-white/35'}`}>
+                    <button key={pill} onClick={() => setCollegeFilter(pill)} className={`rounded-full px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-colors ${collegeFilter === pill ? 'bg-white text-black' : 'border border-white/10 bg-white/10 text-white/80 hover:bg-white/20'}`}>
                       {pill}
                     </button>
                   ))}
                 </div>
-                <label className="flex w-full items-center gap-3 rounded-full border border-[#6e5b86] bg-[#f0edf7] px-4 py-3 text-[#2c1740] shadow-lg shadow-black/10 lg:max-w-md">
-                  <input value={collegeSearch} onChange={(e) => setCollegeSearch(e.target.value)} placeholder="Search colleges..." className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-[#2c1740]/55" />
-                  <Search size={18} className="shrink-0 text-[#2c1740]" />
+                <label className="flex w-full items-center gap-3 rounded-full border border-white/15 bg-white/10 px-4 py-3 text-white shadow-lg shadow-black/10 backdrop-blur-xl lg:max-w-md">
+                  <input value={collegeSearch} onChange={(e) => setCollegeSearch(e.target.value)} placeholder="Search colleges..." className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-white/45" />
+                  <Search size={18} className="shrink-0 text-white/70" />
                 </label>
               </div>
               {selectedUniversity && (
-                <div className="relative mt-5 rounded-2xl border border-white/10 bg-white/8 px-4 py-3 text-sm text-white/80 backdrop-blur-md">
+                <div className="relative mt-5 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm text-white/80 backdrop-blur-md">
                   Showing colleges under <span className="font-black text-white">{selectedUniversity.name}</span>
                 </div>
               )}
               <div className="relative mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
                 {collegePageItems.map((item) => (
-                  <motion.article key={item.id} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="overflow-hidden rounded-[1.4rem] bg-[#5b3c78] shadow-xl shadow-black/10 transition-transform duration-300 hover:-translate-y-1">
+                  <motion.article key={item.id} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="overflow-hidden rounded-[1.4rem] border border-white/10 bg-white/[0.07] shadow-xl shadow-black/20 backdrop-blur-md transition-transform duration-300 hover:-translate-y-1 hover:bg-white/[0.1]">
                     <div className="relative h-44 overflow-hidden">
-                      {getCardImage(item) ? <img src={getCardImage(item)} alt={item.name} className="h-full w-full object-cover" /> : <div className="h-full w-full bg-[linear-gradient(135deg,#7a5da0,#b58fdc)]" />}
+                      {getCardImage(item) ? <img src={getCardImage(item)} alt={item.name} className="h-full w-full object-cover" /> : <div className="h-full w-full bg-[linear-gradient(135deg,#111,#5a5a5a)]" />}
                       {item.rating && <div className="absolute right-2 top-2 rounded-full bg-black/35 px-3 py-1 text-[10px] font-black text-yellow-300 backdrop-blur-md">{'★'.repeat(Math.min(5, Math.round(Number(item.rating) || 0)))}</div>}
                     </div>
                     <div className="p-4 text-white">
@@ -250,31 +265,31 @@ export default function Services({ globalData, locationHash, onNavigate }) {
         )}
 
         <section className="mb-16 scroll-mt-32 sm:mb-20 md:mb-24" id="colleges">
-          <div className="overflow-hidden rounded-[2.5rem] border border-white/10 bg-[linear-gradient(180deg,rgba(39,12,57,0.98),rgba(132,95,170,0.6))] shadow-2xl">
-            <div className="bg-[#22102f] px-4 py-6 text-center sm:px-6 sm:py-8">
-              <h2 className="text-[clamp(2.1rem,6vw,3.6rem)] font-black italic uppercase tracking-tighter text-[#b98cff]">Leading Colleges</h2>
+          <div className="overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/[0.045] shadow-2xl shadow-black/40 backdrop-blur-xl">
+            <div className="border-b border-white/10 bg-white/[0.055] px-4 py-6 text-center sm:px-6 sm:py-8">
+              <h2 className="text-[clamp(2.1rem,6vw,3.6rem)] font-black italic uppercase tracking-tighter text-white">Leading Colleges</h2>
               <p className="mt-2 text-[10px] font-medium text-white/60 sm:text-sm">Browse colleges, ratings, and fee ranges across Bengaluru.</p>
             </div>
             <div className="relative px-4 py-8 sm:px-6 md:px-10">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.16),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.1),transparent_20%)]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.1),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.06),transparent_20%)]" />
               <div className="relative flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                 <div className="flex flex-wrap gap-3">
                   {['All', 'Top Rated', 'Autonomous'].map((pill) => (
-                    <button key={pill} onClick={() => setCollegeFilter(pill)} className={`rounded-full px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-colors ${collegeFilter === pill ? 'bg-[#33154b] text-white' : 'bg-white/25 text-white/80 hover:bg-white/35'}`}>
+                    <button key={pill} onClick={() => setCollegeFilter(pill)} className={`rounded-full px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-colors ${collegeFilter === pill ? 'bg-white text-black' : 'border border-white/10 bg-white/10 text-white/80 hover:bg-white/20'}`}>
                       {pill}
                     </button>
                   ))}
                 </div>
-                <label className="flex w-full items-center gap-3 rounded-full border border-[#6e5b86] bg-[#f0edf7] px-4 py-3 text-[#2c1740] shadow-lg shadow-black/10 lg:max-w-md">
-                  <input value={collegeSearch} onChange={(e) => setCollegeSearch(e.target.value)} placeholder="Search colleges..." className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-[#2c1740]/55" />
-                  <Search size={18} className="shrink-0 text-[#2c1740]" />
+                <label className="flex w-full items-center gap-3 rounded-full border border-white/15 bg-white/10 px-4 py-3 text-white shadow-lg shadow-black/10 backdrop-blur-xl lg:max-w-md">
+                  <input value={collegeSearch} onChange={(e) => setCollegeSearch(e.target.value)} placeholder="Search colleges..." className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-white/45" />
+                  <Search size={18} className="shrink-0 text-white/70" />
                 </label>
               </div>
               <div className="relative mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
                 {collegePageItems.map((item) => (
-                  <motion.article key={item.id} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="overflow-hidden rounded-[1.4rem] bg-[#5b3c78] shadow-xl shadow-black/10 transition-transform duration-300 hover:-translate-y-1">
+                  <motion.article key={item.id} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="overflow-hidden rounded-[1.4rem] border border-white/10 bg-white/[0.07] shadow-xl shadow-black/20 backdrop-blur-md transition-transform duration-300 hover:-translate-y-1 hover:bg-white/[0.1]">
                     <div className="relative h-44 overflow-hidden">
-                      {getCardImage(item) ? <img src={getCardImage(item)} alt={item.name} className="h-full w-full object-cover" /> : <div className="h-full w-full bg-[linear-gradient(135deg,#7a5da0,#b58fdc)]" />}
+                      {getCardImage(item) ? <img src={getCardImage(item)} alt={item.name} className="h-full w-full object-cover" /> : <div className="h-full w-full bg-[linear-gradient(135deg,#111,#5a5a5a)]" />}
                       {item.rating && <div className="absolute right-2 top-2 rounded-full bg-black/35 px-3 py-1 text-[10px] font-black text-yellow-300 backdrop-blur-md">{'★'.repeat(Math.min(5, Math.round(Number(item.rating) || 0)))}</div>}
                     </div>
                     <div className="p-4 text-white">
@@ -298,33 +313,33 @@ export default function Services({ globalData, locationHash, onNavigate }) {
 
         {!universityOnlyView && (
           <section className="mb-16 scroll-mt-32 sm:mb-20 md:mb-24" id="courses">
-          <div className="overflow-hidden rounded-[2.5rem] border border-white/10 bg-[linear-gradient(180deg,rgba(39,12,57,0.98),rgba(132,95,170,0.6))] shadow-2xl">
-            <div className="bg-[#22102f] px-4 py-6 text-center sm:px-6 sm:py-8">
-              <h2 className="text-[clamp(2.1rem,6vw,3.6rem)] font-black italic uppercase tracking-tighter text-[#b98cff]">Career Courses</h2>
+          <div className="overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/[0.045] shadow-2xl shadow-black/40 backdrop-blur-xl">
+            <div className="border-b border-white/10 bg-white/[0.055] px-4 py-6 text-center sm:px-6 sm:py-8">
+              <h2 className="text-[clamp(2.1rem,6vw,3.6rem)] font-black italic uppercase tracking-tighter text-white">Career Courses</h2>
               <p className="mt-2 text-[10px] font-medium text-white/60 sm:text-sm">Find undergraduate and postgraduate courses matched to your goals.</p>
             </div>
             <div className="relative px-4 py-8 sm:px-6 md:px-10">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.16),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.1),transparent_20%)]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.1),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.06),transparent_20%)]" />
               <div className="relative flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                 <div className="flex flex-wrap gap-3">
                   {['All', 'UG', 'PG'].map((pill) => (
-                    <button key={pill} onClick={() => setCourseFilter(pill)} className={`rounded-full px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-colors ${courseFilter === pill ? 'bg-[#33154b] text-white' : 'bg-white/25 text-white/80 hover:bg-white/35'}`}>
+                    <button key={pill} onClick={() => setCourseFilter(pill)} className={`rounded-full px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-colors ${courseFilter === pill ? 'bg-white text-black' : 'border border-white/10 bg-white/10 text-white/80 hover:bg-white/20'}`}>
                       {pill}
                     </button>
                   ))}
                 </div>
-                <label className="flex w-full items-center gap-3 rounded-full border border-[#6e5b86] bg-[#f0edf7] px-4 py-3 text-[#2c1740] shadow-lg shadow-black/10 lg:max-w-md">
-                  <input value={courseSearch} onChange={(e) => setCourseSearch(e.target.value)} placeholder="Search courses..." className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-[#2c1740]/55" />
-                  <Search size={18} className="shrink-0 text-[#2c1740]" />
+                <label className="flex w-full items-center gap-3 rounded-full border border-white/15 bg-white/10 px-4 py-3 text-white shadow-lg shadow-black/10 backdrop-blur-xl lg:max-w-md">
+                  <input value={courseSearch} onChange={(e) => setCourseSearch(e.target.value)} placeholder="Search courses..." className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-white/45" />
+                  <Search size={18} className="shrink-0 text-white/70" />
                 </label>
               </div>
               <div className="relative mt-8 grid grid-cols-1 items-start gap-5 md:grid-cols-2 xl:grid-cols-3">
                 {coursePageItems.length > 0 ? coursePageItems.map((item) => (
-                  <motion.article key={item.id} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="self-start overflow-hidden rounded-[1.25rem] bg-[#4e3072] shadow-xl shadow-black/10 transition-transform duration-300 hover:-translate-y-1">
+                  <motion.article key={item.id} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="self-start overflow-hidden rounded-[1.25rem] border border-white/10 bg-white/[0.07] shadow-xl shadow-black/20 backdrop-blur-md transition-transform duration-300 hover:-translate-y-1 hover:bg-white/[0.1]">
                     <div className="p-4 text-white sm:p-5">
                       <div className="flex items-start justify-between gap-3">
                         <h3 className="text-lg font-black uppercase leading-tight sm:text-xl">{item.name}</h3>
-                        <span className="shrink-0 rounded-full bg-[#dfffd8] px-2.5 py-1 text-[9px] font-black uppercase text-[#1b6b2a]">
+                        <span className="shrink-0 rounded-full bg-white px-2.5 py-1 text-[9px] font-black uppercase text-black">
                           {(String(item.level || item.levels || 'UG').toUpperCase().includes('PG') ? 'PG' : 'UG')}
                         </span>
                       </div>
@@ -385,4 +400,3 @@ export default function Services({ globalData, locationHash, onNavigate }) {
     </div>
   )
 }
-

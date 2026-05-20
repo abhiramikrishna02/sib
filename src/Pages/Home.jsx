@@ -10,6 +10,11 @@ import CircularGallery from '../Components/CircularGallery'
 import FlowArt, { FlowSection } from '../Components/StoryScroll'
 import FallingText from '../Components/FallingText'
 import { CanvasRevealEffect } from '../Components/CanvasRevealEffect'
+import VariableProximity from './VariableProximity'
+import { Liquid } from '../../components/ui/button-1'
+import EtherealBeamsBackground from '../../components/ui/ethereal-beams-background'
+import Shuffle from '../../components/ui/shuffle'
+import { AnimatedText } from '../../components/ui/animated-text'
 import graduateVideo from '../assets/graduate.mp4'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -33,7 +38,7 @@ function HeroSection() {
 
   useEffect(() => {
     if (!videoRef.current) return
-    videoRef.current.playbackRate = 0.65
+    videoRef.current.playbackRate = 0.5
   }, [])
 
   return (
@@ -51,9 +56,15 @@ function HeroSection() {
       />
       <div className="absolute inset-0 z-10 bg-black/30" />
       <div className="relative z-20 flex min-h-screen items-center justify-center px-6 py-24 text-center">
-        <h1 className="text-[clamp(3.2rem,10vw,9rem)] font-black uppercase leading-[0.9] tracking-tighter">
-          Study in Bengaluru
-        </h1>
+        <AnimatedText
+          text="Study in Bengaluru"
+          fontSize="clamp(3.2rem,10vw,9rem)"
+          minWeight={520}
+          maxWeight={900}
+          animationDuration={3.8}
+          delayMultiplier={0.13}
+          className="font-black uppercase leading-[0.9] tracking-tighter text-white drop-shadow-[0_0_34px_rgba(255,255,255,0.22)]"
+        />
       </div>
     </section>
   )
@@ -150,15 +161,28 @@ function Opportunities({ onNavigate }) {
       <div className="absolute left-1/2 top-1/2 z-0 h-[620px] w-[620px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[120px]" />
       <div className="relative z-10 mx-auto w-full max-w-[1620px] px-4 sm:px-6 lg:px-8">
         <div className="opportunity-heading mb-4 flex flex-col items-center justify-between gap-5 md:mb-0 md:flex-row md:items-end">
-          <div className="text-center md:text-left">
-            <h2 className="text-[clamp(2.4rem,4.6vw,4.7rem)] font-black uppercase leading-none tracking-tight text-white">
-              <span className="bg-gradient-to-r from-white via-violet-100 to-cyan-200 bg-clip-text text-transparent drop-shadow-[0_0_32px_rgba(168,85,247,0.28)]">Our</span>{' '}
-              <span className="relative inline-block text-violet-200">
-                Ecosystem
-                <span className="absolute -bottom-2 left-0 h-1 w-full rounded-full bg-gradient-to-r from-violet-400 via-cyan-300 to-transparent shadow-[0_0_20px_rgba(34,211,238,0.45)]" />
-              </span>
-            </h2>
-            <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.46em] text-violet-200/58">Drag the arc. Tap a card to open.</p>
+          <div className="relative text-center md:text-left">
+            <Shuffle
+              text="Explore Opportunities"
+              tag="h2"
+              shuffleDirection="right"
+              duration={0.42}
+              animationMode="evenodd"
+              shuffleTimes={2}
+              ease="power3.out"
+              stagger={0.025}
+              threshold={0.1}
+              triggerOnce={true}
+              triggerOnHover={true}
+              respectReducedMotion={true}
+              scrambleCharset="ExploreOpportunities"
+              colorFrom="rgba(103,232,249,0.45)"
+              colorTo="#ffffff"
+              textAlign="inherit"
+              className="whitespace-nowrap bg-gradient-to-r from-white via-violet-200 via-55% to-cyan-200 bg-clip-text text-[clamp(1.95rem,4.6vw,4.9rem)] font-black tracking-tight text-transparent drop-shadow-[0_0_22px_rgba(34,211,238,0.34)] [text-shadow:0_0_26px_rgba(168,85,247,0.26)]"
+            />
+            <span className="absolute -bottom-3 left-1/2 h-1 w-4/5 -translate-x-1/2 rounded-full bg-gradient-to-r from-violet-400 via-cyan-300 to-fuchsia-300 shadow-[0_0_24px_rgba(34,211,238,0.55)] md:left-0 md:w-full md:translate-x-0" />
+            <span className="pointer-events-none absolute -inset-x-4 -bottom-5 h-10 rounded-full bg-cyan-400/10 blur-2xl" />
           </div>
           <div className="hidden h-px flex-grow bg-gradient-to-r from-violet-400/50 via-cyan-300/30 to-transparent md:block" />
         </div>
@@ -199,10 +223,23 @@ function ImpactNumbersSection() {
 
   return (
     <section className="relative overflow-hidden border-y border-white/8 bg-[#090909] px-0 py-14 text-white sm:py-16 lg:py-20">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_42%)]" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/18 to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/18 to-transparent" />
-      <div className="relative mx-auto w-full overflow-hidden py-8 sm:py-10">
+      <div className="pointer-events-none absolute inset-0 z-0">
+        <EtherealBeamsBackground
+          beamWidth={2.5}
+          beamHeight={18}
+          beamNumber={15}
+          lightColor="#ffffff"
+          speed={2.5}
+          noiseIntensity={2}
+          scale={0.15}
+          rotation={43}
+        />
+      </div>
+      <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-t from-black/50 via-transparent to-black/30" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_42%)]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-px bg-gradient-to-r from-transparent via-white/18 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-px bg-gradient-to-r from-transparent via-white/18 to-transparent" />
+      <div className="relative z-10 mx-auto w-full overflow-hidden py-8 sm:py-10">
         <div className="impact-stat-loop flex w-max items-center gap-14 px-8 sm:gap-22 sm:px-12 lg:gap-28">
           {loopStats.map((stat, index) => (
             <div
@@ -249,15 +286,37 @@ function VisionVideoSection() {
   const textContentRef = useRef(null)
   const headerRef = useRef(null)
   const overlayRef = useRef(null)
-
+  const quoteContainerRef = useRef(null)
+  const visionLines = [
+    <>
+      <span className="bg-gradient-to-r from-white via-violet-100 to-cyan-100 bg-clip-text font-black text-transparent">StudyInBengaluru.com</span> opens Bengaluru&apos;s education network.
+    </>,
+    <>
+      We connect ambitious students with <span className="font-semibold text-violet-200">trusted institutions</span>,
+    </>,
+    <>
+      future-ready courses, and meaningful opportunities.
+    </>,
+    <>
+      Together, we&apos;re shaping a leading education destination
+    </>,
+    <>
+      built on credibility, partnerships, and student confidence across India and beyond.
+    </>,
+  ]
+  
   useEffect(() => {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ scrollTrigger: { trigger: outerRef.current, start: 'top top', end: '+=300%', scrub: 1, pin: true, anticipatePin: 1, invalidateOnRefresh: true } })
       tl.to(headerRef.current, { opacity: 0, scale: 0.8, filter: 'blur(20px)', y: -100, duration: 1 }, 0)
         .to(videoFrameRef.current, { scale: 1, width: '100vw', height: '100vh', maxWidth: '100%', maxHeight: '100%', borderRadius: '0px', ease: 'power2.inOut', duration: 2 }, 0.2)
         .to(videoRef.current, { scale: 1.4, duration: 3, ease: 'none' }, 0.2)
-        .to(overlayRef.current, { backgroundColor: 'rgba(0,0,0,0.6)', duration: 1 }, 1)
-        .fromTo(textContentRef.current, { y: 100, opacity: 0, scale: 0.9, filter: 'blur(15px)' }, { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out' }, 1.5)
+        .to(overlayRef.current, { backgroundColor: 'rgba(0,0,0,0.64)', duration: 1 }, 1)
+        .fromTo(textContentRef.current, { y: 80, opacity: 0, scale: 0.94, filter: 'blur(16px)' }, { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.8, ease: 'expo.out' }, 1.35)
+        .fromTo('.vision-kicker', { y: 18, opacity: 0, filter: 'blur(10px)' }, { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.6, ease: 'power3.out' }, 1.55)
+        .fromTo('.vision-copy-line', { yPercent: 120, opacity: 0, filter: 'blur(14px)' }, { yPercent: 0, opacity: 1, filter: 'blur(0px)', duration: 0.85, stagger: 0.18, ease: 'expo.out' }, 1.75)
+        .fromTo('.vision-quote-card', { y: 42, opacity: 0, scale: 0.95, filter: 'blur(14px)' }, { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.75, ease: 'expo.out' }, 2.65)
+        .fromTo('.vision-quote-line', { yPercent: 110, opacity: 0, filter: 'blur(10px)' }, { yPercent: 0, opacity: 1, filter: 'blur(0px)', duration: 0.65, stagger: 0.16, ease: 'power3.out' }, 2.85)
     }, outerRef)
     return () => ctx.revert()
   }, [])
@@ -289,16 +348,55 @@ function VisionVideoSection() {
       <div className="flex h-full w-full items-center justify-center px-3 sm:px-4">
         <div ref={videoFrameRef} className="relative h-[50vh] w-[92vw] max-w-[420px] overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_0_100px_rgba(168,85,247,0.2)] sm:w-[85vw] md:h-[300px] md:w-[500px] md:max-w-none">
           <video ref={videoRef} src={graduateVideo} autoPlay muted loop playsInline className="h-full w-full object-cover" />
-          <div ref={overlayRef} className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80" />
-          <div ref={textContentRef} className="absolute inset-0 z-30 flex items-center justify-center p-4 sm:p-6 md:p-12">
-            <div className="w-full max-w-4xl px-2 text-center text-white">
-              <p className="mx-auto mb-5 inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[9px] font-black uppercase tracking-[0.45em] text-white/70 backdrop-blur-md shadow-[0_0_30px_rgba(168,85,247,0.14)]">Our Vision</p>
-              <p className="mx-auto max-w-3xl text-[0.98rem] font-semibold leading-relaxed text-white drop-shadow-[0_4px_18px_rgba(0,0,0,0.65)] sm:text-[1.06rem] md:text-[1.38rem] md:leading-[1.85]" style={{ textShadow: '0 3px 14px rgba(0,0,0,0.68), 0 0 28px rgba(213, 161, 255, 0.16)' }}>
-                <span className="font-black text-white">StudyInBengaluru.com</span> is Bengaluru&apos;s premier admissions platform, connecting ambitious students with <span className="text-violet-300">trusted institutions</span>, future-ready courses, and meaningful opportunities. We&apos;re shaping the city into a leading education destination while strengthening credibility, partnerships, and student engagement across India and beyond.
-              </p>
-              <p className="mx-auto mt-6 max-w-2xl rounded-2xl border border-fuchsia-400/15 bg-black/20 px-4 py-3 text-[0.88rem] leading-relaxed text-[#ffd8e6] shadow-[0_0_40px_rgba(214,90,138,0.12)] sm:mt-8 sm:text-[0.98rem] md:text-[1.18rem]" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.62), 0 0 20px rgba(214, 90, 138, 0.2)' }}>
-                &quot;Education opens the door. StudyInBengaluru helps you walk through it with confidence.&quot;
-              </p>
+          <div ref={overlayRef} className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/90" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.25)_0%,transparent_65%)] mix-blend-screen" />
+
+          <div ref={textContentRef} className="absolute inset-0 z-30 flex items-center justify-center p-4 pt-24 sm:p-6 sm:pt-28 md:p-12 md:pt-32">
+            <div className="w-full max-w-5xl px-2 text-center text-white">
+              <p className="vision-kicker mx-auto mb-5 inline-flex rounded-full border border-white/18 bg-white/10 px-5 py-2 text-[10px] font-black uppercase tracking-[0.5em] text-white/75 backdrop-blur-md shadow-[0_0_34px_rgba(168,85,247,0.2)] sm:mb-6">Our Vision</p>
+
+              <div className="mx-auto max-w-4xl text-[clamp(1.08rem,2.05vw,2.28rem)] font-normal leading-[1.42] tracking-normal text-white drop-shadow-[0_5px_20px_rgba(0,0,0,0.72)] sm:leading-[1.34]" style={{ textShadow: '0 4px 18px rgba(0,0,0,0.82), 0 0 28px rgba(213, 161, 255, 0.22)' }}>
+                {visionLines.map((line, index) => (
+                  <div key={index} className="overflow-hidden pb-1.5">
+                    <p className="vision-copy-line opacity-0 will-change-transform">{line}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div 
+                ref={quoteContainerRef} 
+                className="vision-quote-card relative mx-auto mt-6 max-w-3xl cursor-crosshair overflow-hidden rounded-[1.35rem] border border-fuchsia-300/30 bg-black/28 px-5 py-4 opacity-0 backdrop-blur-md shadow-[0_0_44px_rgba(214,90,138,0.2)] sm:mt-8 sm:px-7 sm:py-5"
+              >
+                <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-fuchsia-200/70 to-transparent" />
+                <div className="pointer-events-none absolute -inset-x-10 -bottom-16 h-28 bg-fuchsia-500/16 blur-3xl" />
+                <div className="relative text-[clamp(0.94rem,1.35vw,1.28rem)] font-normal leading-relaxed text-[#ffe0ee]" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.82), 0 0 20px rgba(214, 90, 138, 0.3)' }}>
+                  <div className="overflow-hidden">
+                    <p className="vision-quote-line opacity-0 will-change-transform">
+                      &quot;<VariableProximity
+                        label="Education opens the door."
+                        fromFontVariationSettings="'wght' 390, 'opsz' 9"
+                        toFontVariationSettings="'wght' 760, 'opsz' 36"
+                        containerRef={quoteContainerRef}
+                        radius={120}
+                        falloff="gaussian"
+                      />
+                    </p>
+                  </div>
+                  <div className="overflow-hidden">
+                    <p className="vision-quote-line opacity-0 will-change-transform">
+                      <VariableProximity
+                        label="StudyInBengaluru helps you walk through it with confidence."
+                        fromFontVariationSettings="'wght' 390, 'opsz' 9"
+                        toFontVariationSettings="'wght' 760, 'opsz' 36"
+                        containerRef={quoteContainerRef}
+                        radius={120}
+                        falloff="gaussian"
+                      />&quot;
+                    </p>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
@@ -386,42 +484,62 @@ function FinalCTASection({ onNavigate }) {
   const lastScrollYRef = useRef(0)
   const readDelayRef = useRef(null)
   const [fallingTextActive, setFallingTextActive] = useState(false)
+  const [buttonHovered, setButtonHovered] = useState(false)
+
+  const CTA_BUTTON_COLORS = {
+    color1: '#FFFFFF',
+    color2: '#1E10C5',
+    color3: '#9089E2',
+    color4: '#FCFCFE',
+    color5: '#F9F9FD',
+    color6: '#B2B8E7',
+    color7: '#0E2DCB',
+    color8: '#0017E9',
+    color9: '#4743EF',
+    color10: '#7D7BF4',
+    color11: '#0B06FC',
+    color12: '#C5C1EA',
+    color13: '#1403DE',
+    color14: '#B6BAF6',
+    color15: '#C1BEEB',
+    color16: '#290ECB',
+    color17: '#3F4CC0',
+  }
 
   useEffect(() => {
     const node = sectionRef.current
-    if (!node || fallingTextActive) return undefined
+    if (!node) return undefined
 
-    lastScrollYRef.current = window.scrollY
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) {
+          if (readDelayRef.current) {
+            window.clearTimeout(readDelayRef.current)
+            readDelayRef.current = null
+          }
+          if (fallingTextActive) {
+            setFallingTextActive(false)
+          }
+          return
+        }
 
-    const checkFullyVisible = () => {
-      const currentScrollY = window.scrollY
-      const isScrollingDown = currentScrollY > lastScrollYRef.current
-      lastScrollYRef.current = currentScrollY
+        if (fallingTextActive || readDelayRef.current || entry.intersectionRatio < 0.55) return
 
-      if (!isScrollingDown || readDelayRef.current) return
-
-      const rect = node.getBoundingClientRect()
-      const fitsInViewport = rect.height <= window.innerHeight
-      const fullyVisible = fitsInViewport
-        ? rect.top >= 0 && rect.bottom <= window.innerHeight
-        : rect.top <= 0 && rect.bottom >= window.innerHeight
-
-      if (fullyVisible) {
         readDelayRef.current = window.setTimeout(() => {
           setFallingTextActive(true)
+          readDelayRef.current = null
         }, 650)
-      }
-    }
+      },
+      { threshold: [0, 0.25, 0.55, 0.75, 1] }
+    )
 
-    window.addEventListener('scroll', checkFullyVisible, { passive: true })
-    window.addEventListener('resize', checkFullyVisible)
-    checkFullyVisible()
+    observer.observe(node)
 
     return () => {
-      window.removeEventListener('scroll', checkFullyVisible)
-      window.removeEventListener('resize', checkFullyVisible)
+      observer.disconnect()
       if (readDelayRef.current) {
         window.clearTimeout(readDelayRef.current)
+        readDelayRef.current = null
       }
     }
   }, [fallingTextActive])
@@ -488,16 +606,41 @@ function FinalCTASection({ onNavigate }) {
           observerOptions={{ threshold: 0.65 }}
         />
         <div className="interactive-portal relative z-20 flex justify-center">
-          <button type="button" onClick={() => onNavigate?.('/contact')} className="group relative flex h-32 w-32 items-center justify-center transition-transform duration-500 hover:scale-105 sm:h-48 sm:w-48 md:h-64 md:w-64">
-            <div className="absolute -inset-3 rounded-full bg-white/30 opacity-40 blur-xl transition-all duration-500 group-hover:-inset-5 group-hover:opacity-65 group-hover:blur-2xl" />
-            <div className="absolute inset-0 rounded-full border border-white/20 bg-white/[0.03] backdrop-blur-[2px] animate-[spin_12s_linear_infinite]" />
-            <div className="absolute inset-4 rounded-full border border-white/10 bg-black/20 animate-[spin_8s_linear_infinite_reverse]" />
-            <div className="relative flex h-full w-full flex-col items-center justify-center rounded-full border border-white/70 bg-gradient-to-br from-white via-gray-100 to-gray-400 p-2 text-black shadow-[0_0_70px_rgba(255,255,255,0.26)] transition-all duration-500 group-hover:from-white group-hover:via-white group-hover:to-gray-200 group-hover:shadow-[0_0_95px_rgba(255,255,255,0.45)]">
-              <span className="text-[0.65rem] font-bold uppercase tracking-widest text-black/60">Start Now</span>
-              <span className="text-lg font-black uppercase md:text-2xl">Connect</span>
-              <ArrowUpRight className="mt-2 h-6 w-6 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
+          <div className="relative inline-block">
+            <div className="absolute w-[112.81%] h-[128.57%] top-[8.57%] left-1/2 -translate-x-1/2 filter blur-[19px] opacity-70">
+              <span className="absolute inset-0 rounded-[1rem] bg-[#d9d9d9] filter blur-[6.5px]" />
+              <div className="relative w-full h-full overflow-hidden rounded-[1rem]">
+                <Liquid isHovered={buttonHovered} colors={CTA_BUTTON_COLORS} />
+              </div>
             </div>
-          </button>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[40%] w-[92.23%] h-[112.85%] rounded-[1rem] bg-[#010128] filter blur-[7.3px]" />
+            <div className="relative w-[18rem] h-24 overflow-hidden rounded-[1rem] border border-white/20">
+              <span className="absolute inset-0 rounded-[1rem] bg-[#d9d9d9]" />
+              <span className="absolute inset-0 rounded-[1rem] bg-black" />
+              <Liquid isHovered={buttonHovered} colors={CTA_BUTTON_COLORS} />
+              {[1, 2, 3, 4, 5].map((i) => (
+                <span
+                  key={i}
+                  className={`absolute inset-0 rounded-[1rem] mix-blend-overlay border border-white/10 filter ${
+                    i <= 2 ? 'blur-[3px]' : i === 3 ? 'blur-[5px]' : 'blur-[4px]'
+                  }`}
+                />
+              ))}
+              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[40%] w-[70.8%] h-[42.85%] rounded-[1rem] filter blur-[15px] bg-[#006]" />
+              <button
+                type="button"
+                onClick={() => onNavigate?.('/contact')}
+                onMouseEnter={() => setButtonHovered(true)}
+                onMouseLeave={() => setButtonHovered(false)}
+                className="absolute inset-0 rounded-[1rem] bg-transparent"
+              >
+                <span className="relative flex h-full w-full items-center justify-center gap-3 rounded-[1rem] px-6 text-xl font-semibold uppercase tracking-wide text-white">
+                  <ArrowUpRight className="h-6 w-6" />
+                  <span>Connect</span>
+                </span>
+              </button>
+            </div>
+          </div>
         </div>
         <div className="mt-6 flex justify-center opacity-20 sm:mt-8">
           <div className="flex flex-col items-center gap-4">

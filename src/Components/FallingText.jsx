@@ -27,13 +27,20 @@ const FallingText = ({
   const words = useMemo(() => text.trim().split(/\s+/).filter(Boolean), [text])
 
   useEffect(() => {
-    if (effectStarted || (trigger !== 'auto' && !play)) return undefined
+    if (trigger === 'auto') return undefined
 
-    const frameId = requestAnimationFrame(() => {
-      setEffectStarted(true)
-    })
+    if (play && !effectStarted) {
+      const frameId = requestAnimationFrame(() => {
+        setEffectStarted(true)
+      })
+      return () => cancelAnimationFrame(frameId)
+    }
 
-    return () => cancelAnimationFrame(frameId)
+    if (!play && effectStarted) {
+      setEffectStarted(false)
+    }
+
+    return undefined
   }, [effectStarted, play, trigger])
 
   useEffect(() => {
