@@ -8,9 +8,10 @@ import {
   Sparkles, ShieldCheck, ArrowUpRight,
 } from 'lucide-react'
 import CircularGallery from '../Components/CircularGallery'
+import DotField from '../Components/DotField'
 import PixelCard from '../Components/PixelCard'
-import ScrollReveal from '../Components/ScrollReveal'
 import FlowArt, { FlowSection } from '../Components/StoryScroll'
+import graduateVideo from '../assets/graduate.mp4'
 
 gsap.registerPlugin(ScrollTrigger)
 ScrollTrigger.config({ ignoreMobileResize: true, autoRefreshEvents: 'visibilitychange,DOMContentLoaded,load' })
@@ -30,12 +31,24 @@ const HomeGridOverlay = ({ opacity = 'opacity-[0.14]' }) => (
 
 function HeroSection() {
   return (
-    <section className="relative grid min-h-[100svh] w-full place-items-center overflow-hidden bg-[#08040f] px-4 text-center text-white" style={{ background: 'radial-gradient(circle at 18% 20%, rgba(34, 211, 238, 0.13), transparent 28%), radial-gradient(circle at 82% 22%, rgba(232, 121, 249, 0.18), transparent 30%), linear-gradient(180deg, #090412 0%, #1a0828 48%, #07020d 100%)' }}>
-      <HomeGridOverlay opacity="opacity-[0.16]" />
-      <div className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-[680px] w-[680px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/14 blur-[140px]" />
-      <h1 className="relative z-10 text-[clamp(3.2rem,10vw,9rem)] font-black uppercase leading-[0.9] tracking-tighter text-white">
-        Study in Bengaluru
-      </h1>
+    <section className="relative min-h-screen w-full overflow-hidden bg-gradient-to-b from-[#120B21] via-[#0B0714] to-[#05030A] text-white">
+      <DotField
+        className="absolute inset-0 z-0"
+        dotRadius={1.5}
+        dotSpacing={14}
+        bulgeStrength={67}
+        glowRadius={160}
+        sparkle={false}
+        waveAmplitude={0}
+        gradientFrom="rgba(168, 85, 247, 0.28)"
+        gradientTo="rgba(34, 211, 238, 0.14)"
+        glowColor="#8b5cf6"
+      />
+      <div className="relative z-10 flex min-h-screen items-center justify-center px-6 py-24 text-center">
+        <h1 className="text-[clamp(3.2rem,10vw,9rem)] font-black uppercase leading-[0.9] tracking-tighter">
+          Study in Bengaluru
+        </h1>
+      </div>
     </section>
   )
 }
@@ -295,30 +308,53 @@ function ImpactNumbersSection() {
   )
 }
 
-function VisionTextSection() {
+function VisionVideoSection() {
+  const outerRef = useRef(null)
+  const videoFrameRef = useRef(null)
+  const videoRef = useRef(null)
+  const textContentRef = useRef(null)
+  const headerRef = useRef(null)
+  const overlayRef = useRef(null)
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ scrollTrigger: { trigger: outerRef.current, start: 'top top', end: '+=300%', scrub: 1, pin: true, anticipatePin: 1, invalidateOnRefresh: true } })
+      tl.to(headerRef.current, { opacity: 0, scale: 0.8, filter: 'blur(20px)', y: -100, duration: 1 }, 0)
+        .to(videoFrameRef.current, { scale: 1, width: '100vw', height: '100vh', maxWidth: '100%', maxHeight: '100%', borderRadius: '0px', ease: 'power2.inOut', duration: 2 }, 0.2)
+        .to(videoRef.current, { scale: 1.4, duration: 3, ease: 'none' }, 0.2)
+        .to(overlayRef.current, { backgroundColor: 'rgba(0,0,0,0.6)', duration: 1 }, 1)
+        .fromTo(textContentRef.current, { y: 100, opacity: 0, scale: 0.9, filter: 'blur(15px)' }, { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.5, ease: 'expo.out' }, 1.5)
+    }, outerRef)
+    return () => ctx.revert()
+  }, [])
+
   return (
-    <section className="relative flex min-h-[86svh] w-full items-center justify-center overflow-hidden border-y border-white/6 px-4 py-20 sm:px-6 lg:px-8" style={{ background: 'radial-gradient(circle at center, rgba(123, 44, 191, 0.16), transparent 44%), linear-gradient(180deg, #220A36 0%, #1B0A21 100%)' }}>
+    <section ref={outerRef} className="relative min-h-[100svh] h-screen w-full overflow-hidden border-y border-white/6" style={{ background: 'radial-gradient(circle at center, rgba(123, 44, 191, 0.16), transparent 44%), linear-gradient(180deg, #220A36 0%, #1B0A21 100%)' }}>
       <HomeGridOverlay opacity="opacity-[0.13]" />
-      <div className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-[780px] w-[780px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/14 blur-[150px]" />
-      <div className="pointer-events-none absolute bottom-[-14rem] left-1/2 z-0 h-[520px] w-[920px] -translate-x-1/2 rounded-full bg-fuchsia-500/10 blur-[150px]" />
-      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center text-center text-white">
-        <p className="mx-auto mb-8 inline-flex rounded-full border border-white/15 bg-white/10 px-5 py-2 text-[9px] font-black uppercase tracking-[0.45em] text-white/70 shadow-[0_0_30px_rgba(168,85,247,0.14)] backdrop-blur-md">Our Vision</p>
-        <ScrollReveal
-          baseOpacity={0.08}
-          enableBlur
-          baseRotation={4}
-          blurStrength={8}
-          rotationEnd="center center"
-          wordAnimationEnd="center center"
-          containerClassName="mx-auto !my-0 max-w-5xl"
-          textClassName="font-black leading-[1.55] tracking-[-0.02em] text-white drop-shadow-[0_4px_18px_rgba(0,0,0,0.65)]"
-        >
-          StudyInBengaluru.com is Bengaluru&apos;s premier admissions platform, connecting ambitious students with trusted institutions, future-ready courses, and meaningful opportunities. We&apos;re shaping the city into a leading education destination while strengthening credibility, partnerships, and student engagement across India and beyond.
-        </ScrollReveal>
-        <p className="mx-auto mt-8 max-w-2xl rounded-2xl border border-fuchsia-400/15 bg-black/20 px-4 py-3 text-[0.88rem] leading-relaxed text-[#ffd8e6] shadow-[0_0_40px_rgba(214,90,138,0.12)] backdrop-blur-md sm:text-[0.98rem] md:text-[1.18rem]" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.62), 0 0 20px rgba(214, 90, 138, 0.2)' }}>
-          &quot;Education opens the door. StudyInBengaluru helps you walk through it with confidence.&quot;
-        </p>
+      <div ref={headerRef} className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-center">
+        <div className="mb-4 flex items-center gap-2 text-violet-500">
+          <Sparkles size={16} className="animate-pulse" />
+          <span className="text-[10px] font-black uppercase tracking-[0.8em]">The Vision</span>
+        </div>
       </div>
+      <div className="flex h-full w-full items-center justify-center px-3 sm:px-4">
+        <div ref={videoFrameRef} className="relative h-[50vh] w-[92vw] max-w-[420px] overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_0_100px_rgba(168,85,247,0.2)] sm:w-[85vw] md:h-[300px] md:w-[500px] md:max-w-none">
+          <video ref={videoRef} src={graduateVideo} autoPlay muted loop playsInline className="h-full w-full object-cover" />
+          <div ref={overlayRef} className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80" />
+          <div ref={textContentRef} className="absolute inset-0 z-30 flex items-center justify-center p-4 sm:p-6 md:p-12">
+            <div className="w-full max-w-4xl px-2 text-center text-white">
+              <p className="mx-auto mb-5 inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[9px] font-black uppercase tracking-[0.45em] text-white/70 backdrop-blur-md shadow-[0_0_30px_rgba(168,85,247,0.14)]">Our Vision</p>
+              <p className="mx-auto max-w-3xl text-[0.98rem] font-semibold leading-relaxed text-white drop-shadow-[0_4px_18px_rgba(0,0,0,0.65)] sm:text-[1.06rem] md:text-[1.38rem] md:leading-[1.85]" style={{ textShadow: '0 3px 14px rgba(0,0,0,0.68), 0 0 28px rgba(213, 161, 255, 0.16)' }}>
+                <span className="font-black text-white">StudyInBengaluru.com</span> is Bengaluru&apos;s premier admissions platform, connecting ambitious students with <span className="text-violet-300">trusted institutions</span>, future-ready courses, and meaningful opportunities. We&apos;re shaping the city into a leading education destination while strengthening credibility, partnerships, and student engagement across India and beyond.
+              </p>
+              <p className="mx-auto mt-6 max-w-2xl rounded-2xl border border-fuchsia-400/15 bg-black/20 px-4 py-3 text-[0.88rem] leading-relaxed text-[#ffd8e6] shadow-[0_0_40px_rgba(214,90,138,0.12)] sm:mt-8 sm:text-[0.98rem] md:text-[1.18rem]" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.62), 0 0 20px rgba(214, 90, 138, 0.2)' }}>
+                &quot;Education opens the door. StudyInBengaluru helps you walk through it with confidence.&quot;
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="absolute -bottom-20 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-violet-600/10 blur-[120px]" />
     </section>
   )
 }
@@ -464,10 +500,15 @@ function FinalCTASection({ onNavigate }) {
 
 function Home({ onNavigate }) {
   useEffect(() => {
+    document.body.classList.add('home-transparent-bg')
+    return () => document.body.classList.remove('home-transparent-bg')
+  }, [])
+
+  useEffect(() => {
     window.scrollTo(0, 0)
     return () => {
       ScrollTrigger.getAll().forEach((t) => t.kill())
-      gsap.set(document.body, { clearProps: 'all' })``
+      gsap.set(document.body, { clearProps: 'all' })
       gsap.set(document.documentElement, { clearProps: 'all' })
     }
   }, [])
@@ -476,8 +517,8 @@ function Home({ onNavigate }) {
       <HeroSection />
       <Opportunities onNavigate={onNavigate} />
       <ImpactNumbersSection />
-      <VisionTextSection />
-;l      <VisionMissionSection />
+      <VisionVideoSection />
+      <VisionMissionSection />
       <FinalCTASection onNavigate={onNavigate} />
     </>
   )

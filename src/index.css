@@ -254,3 +254,9 @@ button {
     @apply font-sans;
   }
 }
+
+/* Make page background transparent when Home needs it */
+.home-transparent-bg {
+  background: transparent !important;
+  background-image: none !important;
+}
