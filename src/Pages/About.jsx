@@ -21,6 +21,19 @@ function isMobileViewport() {
   return typeof window !== 'undefined' && window.matchMedia(MOBILE_QUERY).matches;
 }
 
+const PageGridOverlay = ({ opacity = 'opacity-[0.14]' }) => (
+  <div
+    aria-hidden="true"
+    className={`pointer-events-none absolute inset-0 z-0 ${opacity}`}
+    style={{
+      backgroundImage: 'linear-gradient(rgba(255,255,255,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.18) 1px, transparent 1px)',
+      backgroundSize: '72px 72px',
+      maskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
+      WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
+    }}
+  />
+)
+
 /* ── ERROR BOUNDARY ─────────────────────────────────────────────── */
 class CanvasErrorBoundary extends Component {
   state = { hasError: false };
@@ -82,23 +95,23 @@ function AboutCardsSection() {
       }
 
       gsap.set(cards, { transformOrigin: 'center bottom' })
-      gsap.set(cards[1], { y: 24, scale: 1.02, opacity: 1, rotationX: 0 })
-      gsap.set([cards[0], cards[2]], { y: 120, scale: 0.82, opacity: 0, rotationX: 12 })
+      gsap.set(cards[1], { y: 12, scale: 0.94, opacity: 1, rotationX: 0 })
+      gsap.set([cards[0], cards[2]], { y: 86, scale: 0.78, opacity: 0, rotationX: 12 })
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 24%',
-          end: '+=42%',
+          start: 'top 18%',
+          end: '+=36%',
           scrub: true,
           pin: true,
           anticipatePin: 1,
         },
       })
 
-      tl.to(cards[1], { y: 0, scale: 1.1, opacity: 1, rotationX: 0, duration: 0.45, ease: 'power2.out' }, 0)
-        .to(cards[0], { y: 40, scale: 0.95, opacity: 1, rotationX: 0, rotationZ: -6, duration: 0.65, ease: 'power2.out' }, 0.28)
-        .to(cards[2], { y: 40, scale: 0.95, opacity: 1, rotationX: 0, rotationZ: 6, duration: 0.65, ease: 'power2.out' }, 0.38)
+      tl.to(cards[1], { y: 0, scale: 1, opacity: 1, rotationX: 0, duration: 0.45, ease: 'power2.out' }, 0)
+        .to(cards[0], { y: 22, scale: 0.9, opacity: 1, rotationX: 0, rotationZ: -5, duration: 0.65, ease: 'power2.out' }, 0.28)
+        .to(cards[2], { y: 22, scale: 0.9, opacity: 1, rotationX: 0, rotationZ: 5, duration: 0.65, ease: 'power2.out' }, 0.38)
     }, sectionRef)
 
     return () => ctx.revert()
@@ -137,36 +150,36 @@ function AboutCardsSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative -mt-4 flex min-h-[84svh] w-full items-center justify-center overflow-hidden py-4 md:-mt-6 md:min-h-[92svh] md:py-0"
+      className="relative mx-auto -mt-4 flex min-h-[78svh] w-full max-w-[1780px] items-center justify-center overflow-hidden py-6 md:-mt-4 md:min-h-[86svh] md:py-8"
       style={{
         perspective: '1400px',
         background:
-          'radial-gradient(circle at 50% 20%, rgba(168, 85, 247, 0.18), transparent 28%), radial-gradient(circle at 15% 35%, rgba(34, 211, 238, 0.08), transparent 22%), linear-gradient(180deg, #431f60 0%, #38194f 52%, #241034 100%)',
+          'radial-gradient(circle at 14% 20%, rgba(34, 211, 238, 0.13) 0%, transparent 26%), radial-gradient(circle at 84% 18%, rgba(232, 121, 249, 0.14) 0%, transparent 28%), radial-gradient(circle at 50% 100%, rgba(245, 158, 11, 0.08) 0%, transparent 34%), linear-gradient(180deg, #08040f 0%, #14091d 48%, #0c0614 100%)',
       }}
     >
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute left-1/2 top-1/2 h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-400/10 blur-[90px]" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:84px_84px] opacity-[0.16]" />
       </div>
+      <PageGridOverlay opacity="opacity-[0.14]" />
       {/* 
         Mobile: single column stacked cards, each full-width
         Tablet+: 3-column grid (original layout)
       */}
-      <div className="relative z-10 flex w-full max-w-6xl flex-col gap-4 px-4 sm:px-6 md:grid md:grid-cols-3 md:gap-2">
+      <div className="relative z-10 flex w-full max-w-[1320px] flex-col gap-4 px-4 sm:px-6 md:grid md:grid-cols-3 md:items-center md:gap-6 lg:gap-8">
         {aboutCards.map((card, i) => (
           <div
             key={card.title}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            className={`about-card group relative flex flex-col items-center rounded-[2rem] border bg-gradient-to-br ${card.panel} ${card.border} p-6 text-center shadow-2xl shadow-black/25 sm:p-8 md:rounded-[3.5rem] md:p-12 ${i === 1 ? 'z-20' : 'z-10'}`}
+            className={`about-card group relative flex min-h-[360px] flex-col items-center justify-center rounded-[2rem] border bg-gradient-to-br ${card.panel} ${card.border} p-6 text-center shadow-2xl shadow-black/25 sm:p-8 md:min-h-[520px] md:rounded-[3rem] md:p-8 lg:min-h-[560px] lg:p-10 ${i === 1 ? 'z-20' : 'z-10'}`}
           >
             <div className="absolute inset-0 rounded-[inherit] bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.12),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(255,255,255,0.05),_transparent_34%)] opacity-80" />
             <div className="absolute -right-10 -top-10 hidden h-32 w-32 rounded-full bg-white/8 blur-[30px] opacity-0 transition-opacity duration-500 group-hover:opacity-100 md:block" />
-            <div className={`mb-5 flex h-16 w-16 items-center justify-center rounded-[1.25rem] bg-gradient-to-br ${card.color} shadow-2xl ${card.shadow} transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6 sm:mb-8 sm:h-24 sm:w-24 sm:rounded-[2rem]`}>
-              <card.icon className="h-8 w-8 text-white sm:h-12 sm:w-12" />
+            <div className={`mb-5 flex h-16 w-16 items-center justify-center rounded-[1.25rem] bg-gradient-to-br ${card.color} shadow-2xl ${card.shadow} transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6 sm:mb-8 sm:h-24 sm:w-24 sm:rounded-[2rem] md:h-20 md:w-20 lg:h-24 lg:w-24`}>
+              <card.icon className="h-8 w-8 text-white sm:h-12 sm:w-12 md:h-10 md:w-10 lg:h-12 lg:w-12" />
             </div>
-            <h3 className="mb-3 text-lg font-black uppercase tracking-tight text-white sm:mb-6 sm:text-2xl md:text-3xl">{card.title}</h3>
-            <p className="text-sm font-light leading-relaxed text-white/68 sm:text-lg">{card.desc}</p>
+            <h3 className="mb-3 text-lg font-black uppercase tracking-tight text-white sm:mb-6 sm:text-2xl md:text-[1.55rem] lg:text-3xl">{card.title}</h3>
+            <p className="max-w-[18rem] text-sm font-light leading-relaxed text-white/68 sm:text-lg md:text-base lg:text-lg">{card.desc}</p>
           </div>
         ))}
       </div>
@@ -268,9 +281,14 @@ function WhyChooseSection() {
   return (
     <section
       ref={containerRef}
-      className="relative flex min-h-[92svh] w-full items-center justify-center overflow-hidden bg-[#431f60] perspective-1000 py-10 md:min-h-[96svh] md:py-0"
-      style={{ perspective: '1400px' }}
+      className="relative flex min-h-[92svh] w-full items-center justify-center overflow-hidden bg-[#08040f] perspective-1000 py-10 md:min-h-[96svh] md:py-0"
+      style={{
+        perspective: '1400px',
+        background:
+          'radial-gradient(circle at 14% 20%, rgba(34, 211, 238, 0.13) 0%, transparent 26%), radial-gradient(circle at 84% 18%, rgba(232, 121, 249, 0.14) 0%, transparent 28%), radial-gradient(circle at 50% 100%, rgba(245, 158, 11, 0.08) 0%, transparent 34%), linear-gradient(180deg, #08040f 0%, #14091d 48%, #0c0614 100%)',
+      }}
     >
+      <PageGridOverlay opacity="opacity-[0.12]" />
       <div ref={portalFlashRef} className="absolute inset-0 z-[100] opacity-0 pointer-events-none" />
       <div className="bg-glow absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[70px]" />
       <div className="relative flex h-full w-full items-center justify-center">
@@ -377,8 +395,9 @@ function WhyBengaluruSection() {
   }, []);
 
   return (
-    <section ref={triggerRef} className="relative overflow-hidden bg-[#1a0b2e]">
-      <div className="absolute inset-0 opacity-20" style={{ background: 'radial-gradient(circle at 50% 50%, #431f60 0%, transparent 70%)' }} />
+    <section ref={triggerRef} className="relative overflow-hidden bg-[#0c0614]">
+      <div className="absolute inset-0 opacity-80" style={{ background: 'radial-gradient(circle at 14% 20%, rgba(34, 211, 238, 0.13) 0%, transparent 26%), radial-gradient(circle at 84% 18%, rgba(232, 121, 249, 0.14) 0%, transparent 28%), radial-gradient(circle at 50% 100%, rgba(245, 158, 11, 0.08) 0%, transparent 34%), linear-gradient(180deg, #08040f 0%, #14091d 48%, #0c0614 100%)' }} />
+      <PageGridOverlay opacity="opacity-[0.12]" />
       <div ref={contentRef} className={`${isMobile ? 'flex-col py-10' : 'h-screen w-fit flex-row flex-nowrap'} flex`}>
         {slides.map((item, index) => (
           <div key={item.title} className={`${isMobile ? 'min-h-[auto] py-8' : 'h-screen flex-shrink-0'} bengaluru-slide relative flex items-center justify-center`} style={{ width: isMobile ? '100%' : '78vw' }}>
@@ -475,7 +494,7 @@ function Scene3D() {
           <EducationParticles />
           <EducationModel />
           <Environment preset="city" />
-          <ContactShadows position={[1.38, -1.72, 0]} opacity={0.24} scale={4.4} blur={1.6} color="#431f60" />
+          <ContactShadows position={[1.38, -1.72, 0]} opacity={0.24} scale={4.4} blur={1.6} color="#14091d" />
         </Suspense>
         <OrbitControls enableZoom={false} enablePan={false} makeDefault rotateSpeed={0.4} minPolarAngle={Math.PI / 2.5} maxPolarAngle={Math.PI / 1.5} />
       </Canvas>
@@ -486,8 +505,10 @@ function Scene3D() {
 function GlobalBackground() {
   return (
     <div className="fixed inset-0 pointer-events-none z-0">
-      <div className="absolute top-[-10%] left-[-10%] h-[420px] w-[420px] rounded-full bg-violet-600/12 blur-[90px]" />
-      <div className="absolute bottom-[-10%] right-[-10%] h-[420px] w-[420px] rounded-full bg-violet-600/8 blur-[90px]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,#08040f_0%,#14091d_48%,#0c0614_100%)]" />
+      <div className="absolute left-[-10%] top-[-10%] h-[520px] w-[520px] rounded-full bg-cyan-500/10 blur-[110px]" />
+      <div className="absolute right-[-8%] top-[-8%] h-[520px] w-[520px] rounded-full bg-fuchsia-400/12 blur-[120px]" />
+      <div className="absolute bottom-[-12%] left-1/2 h-[520px] w-[720px] -translate-x-1/2 rounded-full bg-amber-500/8 blur-[130px]" />
       <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_1px,transparent_1px)] bg-[size:24px_24px]" />
     </div>
   );
@@ -504,6 +525,7 @@ function HeroCanvasSection() {
 function HeroSection() {
   return (
     <section className="relative z-20 flex min-h-[92svh] items-center px-0 py-10 pointer-events-auto lg:min-h-[96vh] lg:px-24 lg:py-0 lg:pointer-events-none">
+      <PageGridOverlay opacity="opacity-[0.1]" />
       <div className="container mx-auto grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-10">
         <div className="relative max-w-2xl text-center pointer-events-auto lg:text-left">
           <div className="reveal absolute -top-12 -left-8 hidden items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 shadow-[0_10px_30px_rgba(217,70,239,0.15)] backdrop-blur-md animate-[bounce_4s_infinite] md:flex">
@@ -549,7 +571,7 @@ const About = () => {
   }, []);
 
   return (
-    <main ref={containerRef} className="relative min-h-screen overflow-hidden bg-[#431f60] px-4 sm:px-6">
+    <main ref={containerRef} className="relative min-h-screen overflow-hidden bg-[#08040f] px-4 sm:px-6">
       <GlobalBackground />
       <HeroCanvasSection />
       <HeroSection />

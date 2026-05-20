@@ -168,7 +168,7 @@ const TextPressure = ({
             font-style: normal;
           }
 
-          .flex {
+          .text-pressure-flex {
             display: flex;
             justify-content: space-between;
           }
@@ -195,7 +195,7 @@ const TextPressure = ({
     );
   }, [fontFamily, fontUrl, textColor, strokeColor]);
 
-  const dynamicClassName = [className, flex ? 'flex' : '', stroke ? 'stroke' : ''].filter(Boolean).join(' ');
+  const dynamicClassName = [className, flex ? 'text-pressure-flex' : '', stroke ? 'stroke' : ''].filter(Boolean).join(' ');
 
   return (
     <div
@@ -204,7 +204,11 @@ const TextPressure = ({
         position: 'relative',
         width: '100%',
         height: '100%',
-        background: 'transparent'
+        background: 'transparent',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center'
       }}>
       {styleElement}
       <h1
@@ -216,13 +220,18 @@ const TextPressure = ({
           fontSize: fontSize,
           lineHeight,
           transform: `scale(1, ${scaleY})`,
-          transformOrigin: 'center top',
-          margin: 0,
+          transformOrigin: 'center center',
+          margin: '0 auto',
+          padding: 0,
           textAlign: 'center',
           userSelect: 'none',
           whiteSpace: 'nowrap',
           fontWeight: 100,
-          width: '100%'
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: 'fit-content'
         }}>
         {chars.map((char, i) => (
           <span
