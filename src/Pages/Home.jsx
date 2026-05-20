@@ -1,16 +1,15 @@
-import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
   GraduationCap, BookOpen, School, Library, Globe, Clock, Briefcase,
-  Calendar, Users, BadgeCheck, MessageCircle, UserCheck,
-  Sparkles, ShieldCheck, ArrowUpRight,
+  Calendar, MessageCircle, UserCheck,
+  Sparkles, ArrowUpRight,
 } from 'lucide-react'
 import CircularGallery from '../Components/CircularGallery'
-import DotField from '../Components/DotField'
-import PixelCard from '../Components/PixelCard'
 import FlowArt, { FlowSection } from '../Components/StoryScroll'
+import FallingText from '../Components/FallingText'
+import { CanvasRevealEffect } from '../Components/CanvasRevealEffect'
 import graduateVideo from '../assets/graduate.mp4'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -30,21 +29,28 @@ const HomeGridOverlay = ({ opacity = 'opacity-[0.14]' }) => (
 )
 
 function HeroSection() {
+  const videoRef = useRef(null)
+
+  useEffect(() => {
+    if (!videoRef.current) return
+    videoRef.current.playbackRate = 0.65
+  }, [])
+
   return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-gradient-to-b from-[#120B21] via-[#0B0714] to-[#05030A] text-white">
-      <DotField
-        className="absolute inset-0 z-0"
-        dotRadius={1.5}
-        dotSpacing={14}
-        bulgeStrength={67}
-        glowRadius={160}
-        sparkle={false}
-        waveAmplitude={0}
-        gradientFrom="rgba(168, 85, 247, 0.28)"
-        gradientTo="rgba(34, 211, 238, 0.14)"
-        glowColor="#8b5cf6"
+    <section className="relative min-h-screen w-full overflow-hidden bg-black text-white">
+      <video
+        ref={videoRef}
+        className="absolute inset-0 z-0 h-full w-full object-cover"
+        style={{ transform: 'scale(1.15)' }}
+        src="/hero.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
       />
-      <div className="relative z-10 flex min-h-screen items-center justify-center px-6 py-24 text-center">
+      <div className="absolute inset-0 z-10 bg-black/30" />
+      <div className="relative z-20 flex min-h-screen items-center justify-center px-6 py-24 text-center">
         <h1 className="text-[clamp(3.2rem,10vw,9rem)] font-black uppercase leading-[0.9] tracking-tighter">
           Study in Bengaluru
         </h1>
@@ -52,29 +58,6 @@ function HeroSection() {
     </section>
   )
 }
-
-/* ==========================================================================
-   Section: Hero (Redesigned: Quantum Aperture Overdrive)
-   ========================================================================= */
-
-const CountUp = memo(function CountUp({ start, value, suffix }) {
-  const [count, setCount] = useState(0)
-  useEffect(() => {
-    if (!start) return
-    let frameId
-    const begin = performance.now()
-    const animate = (now) => {
-      const progress = Math.min((now - begin) / 1400, 1)
-      const eased = 1 - Math.pow(1 - progress, 3)
-      setCount(Math.floor(value * eased))
-      if (progress < 1) frameId = requestAnimationFrame(animate)
-      else setCount(value)
-    }
-    frameId = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(frameId)
-  }, [start, value])
-  return <span>{count}{suffix}</span>
-})
 
 /* ==========================================================================
    Section: Opportunities (Circular Card Gallery)
@@ -204,106 +187,57 @@ function Opportunities({ onNavigate }) {
   )
 }
 const stats = [
-  { value: 100, suffix: '+', label: 'Partner Colleges', note: 'A wide academic network with strong institutional reach.', icon: GraduationCap, accent: 'from-violet-500/35 via-violet-500/15 to-transparent' },
-  { value: 1000, suffix: '+', label: 'Students Enrolled', note: 'A growing student base with real admissions momentum.', icon: Users, accent: 'from-violet-500/35 via-violet-500/15 to-transparent' },
-  { value: 95, suffix: '%', label: 'Admission Success', note: 'Guidance that improves clarity, confidence, and outcomes.', icon: BadgeCheck, accent: 'from-violet-500/35 via-violet-500/15 to-transparent' },
-  { value: 50, suffix: '+', label: 'Franchises', note: 'A strong expansion footprint across key locations.', icon: Sparkles, accent: 'from-violet-500/35 via-violet-500/15 to-transparent' },
-  { value: 24, suffix: '/7', label: 'Student Support', note: 'Always-on support for parents and students at every step.', icon: ShieldCheck, accent: 'from-violet-500/35 via-violet-500/15 to-transparent' },
+  { value: 100, suffix: '+', label: 'Partner Colleges' },
+  { value: 1000, suffix: '+', label: 'Students Enrolled' },
+  { value: 95, suffix: '%', label: 'Admission Success' },
+  { value: 50, suffix: '+', label: 'Franchises' },
+  { value: 24, suffix: '/7', label: 'Student Support' },
 ]
 
-const StatCard = memo(function StatCard({ stat, index, start }) {
-  const Icon = stat.icon
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30, scale: 0.96 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, amount: 0.25 }}
-      transition={{ duration: 0.7, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ y: -12, scale: 1.035, zIndex: 20, transition: { type: 'spring', stiffness: 240, damping: 18 } }}
-      className="group relative w-full"
-      style={{ willChange: 'transform, opacity' }}
-    >
-      <PixelCard
-        variant="violet"
-        gap={9}
-        speed={38}
-        colors="#c4b5fd,#8b5cf6,#5b21b6"
-        className="h-[270px] w-full rounded-[2rem] border-white/12 bg-white/[0.045] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_55px_rgba(0,0,0,0.32)] backdrop-blur-xl transition-colors duration-300 group-hover:border-violet-200/24 group-hover:bg-violet-400/14 group-hover:shadow-[0_0_0_1px_rgba(221,214,254,0.12),0_24px_80px_rgba(124,58,237,0.26)] sm:h-[290px] xl:h-[300px]"
-      >
-        <div aria-hidden="true" className={`absolute inset-0 z-[1] bg-gradient-to-br ${stat.accent} opacity-40 transition-opacity duration-500 group-hover:opacity-75`} />
-        <div aria-hidden="true" className="absolute inset-0 z-[1] opacity-70" style={{ background: 'radial-gradient(circle at 24% 18%, rgba(255,255,255,0.13), transparent 28%), radial-gradient(circle at 82% 82%, rgba(167,139,250,0.18), transparent 36%)' }} />
-        <div aria-hidden="true" className="absolute inset-x-10 top-8 z-[2] h-px bg-gradient-to-r from-transparent via-violet-200/45 to-transparent" />
-        <div className="relative z-10 flex h-full flex-col p-5 sm:p-7">
-          <div className="flex items-start justify-between">
-            <div className="grid h-14 w-14 place-items-center rounded-2xl border border-white/14 bg-white/10 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_0_28px_rgba(168,85,247,0.18)] backdrop-blur-md">
-              <Icon className="h-7 w-7 text-violet-100" />
-            </div>
-            <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/18 px-4 py-2 text-[0.62rem] font-black uppercase tracking-[0.34em] text-white/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-              <span>Live</span>
-              <span className="h-1.5 w-1.5 rounded-full bg-violet-200 shadow-[0_0_14px_rgba(196,181,253,0.95)]" />
-            </div>
-          </div>
-
-          <div className="mt-auto text-center">
-            <div className="text-[clamp(3.2rem,4.8vw,4.9rem)] font-black leading-none tracking-[-0.07em] text-white">
-              {start ? <CountUp start={start} value={stat.value} suffix={stat.suffix} /> : <span>0{stat.suffix}</span>}
-            </div>
-            <h3 className="mt-5 text-[0.78rem] font-black uppercase tracking-[0.32em] text-white/86 sm:text-[0.84rem]">{stat.label}</h3>
-            <p className="mx-auto mt-4 max-w-[14rem] text-xs font-medium leading-6 text-white/58 sm:text-sm">{stat.note}</p>
-          </div>
-
-          <div className="mt-7 h-px w-full bg-gradient-to-r from-transparent via-white/12 to-transparent" />
-        </div>
-      </PixelCard>
-    </motion.div>
-  )
-})
-
 function ImpactNumbersSection() {
-  const sectionRef = useRef(null)
-  const [start, setStart] = useState(false)
-  useEffect(() => {
-    const node = sectionRef.current
-    if (!node) return
-    const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { setStart(true); observer.disconnect() } }, { threshold: 0.25 })
-    observer.observe(node)
-    return () => observer.disconnect()
-  }, [])
+  const loopStats = [...stats, ...stats]
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden border-y border-white/6 px-4 py-6 text-white sm:px-6 lg:px-8 sm:py-10" style={{ background: 'radial-gradient(circle at top right, rgba(213, 161, 255, 0.14), transparent 32%), linear-gradient(180deg, #1B0A21 0%, #220A36 100%)' }}>
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_left,rgba(168,85,247,0.28),transparent_26%),radial-gradient(circle_at_right,rgba(59,130,246,0.16),transparent_30%),radial-gradient(circle_at_top,rgba(236,72,153,0.12),transparent_28%)]" />
-        <div className="absolute left-[-8rem] top-[-6rem] h-72 w-72 rounded-full bg-violet-500/20 blur-3xl" style={{ animation: 'blobA 10s ease-in-out infinite' }} />
-        <div className="absolute bottom-[-7rem] right-[-6rem] h-80 w-80 rounded-full bg-violet-500/15 blur-3xl" style={{ animation: 'blobB 12s ease-in-out infinite' }} />
-      </div>
-      <HomeGridOverlay />
-      <style>{`
-        @keyframes blobA { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(40px,30px) scale(1.08)} }
-        @keyframes blobB { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-35px,-20px) scale(1.1)} }
-        @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-      `}</style>
-      <div className="relative mx-auto max-w-[1800px]">
-        <motion.div initial={{ opacity: 0, y: 26 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ duration: 0.75, ease: 'easeOut' }} className="relative overflow-hidden rounded-[3.5rem] border border-white/10 bg-white/[0.035] shadow-[0_24px_90px_rgba(0,0,0,0.45)] backdrop-blur-sm" style={{ willChange: 'transform, opacity' }}>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.18),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:72px_72px] opacity-70" />
-          <div className="relative z-10 px-5 py-10 sm:px-10 sm:py-14 lg:px-16 lg:py-20">
-            <div className="overflow-hidden rounded-full border border-white/10 bg-white/[0.055] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-              <div className="flex items-center gap-8 py-3 text-[0.7rem] font-semibold uppercase tracking-[0.5em] text-white/55 sm:text-xs" style={{ width: 'max-content', animation: 'ticker 18s linear infinite' }}>
-                {[...stats, ...stats].map((item, index) => (
-                  <span key={`${item.label}-${index}`} className="flex items-center gap-3 whitespace-nowrap">
-                    <span className="h-1.5 w-1.5 rounded-full bg-violet-300 shadow-[0_0_18px_rgba(168,85,247,0.9)]" />
-                    {item.label}
-                  </span>
-                ))}
+    <section className="relative overflow-hidden border-y border-white/8 bg-[#090909] px-0 py-14 text-white sm:py-16 lg:py-20">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_42%)]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/18 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/18 to-transparent" />
+      <div className="relative mx-auto w-full overflow-hidden py-8 sm:py-10">
+        <div className="impact-stat-loop flex w-max items-center gap-14 px-8 sm:gap-22 sm:px-12 lg:gap-28">
+          {loopStats.map((stat, index) => (
+            <div
+              key={`${stat.label}-${index}`}
+              className="impact-stat-item min-w-[12rem] text-center sm:min-w-[15rem] lg:min-w-[18rem]"
+              style={{ '--curve-y': `${Math.sin(index * 0.9) * 22}px`, '--curve-rotate': `${Math.sin(index * 0.9) * -2.2}deg` }}
+            >
+              <div className="text-[clamp(2.8rem,5.4vw,5.2rem)] font-bold leading-none tracking-[-0.045em] text-white">
+                {stat.value}{stat.suffix}
               </div>
+              <h3 className="mt-4 text-[clamp(0.86rem,1.25vw,1.2rem)] font-semibold uppercase leading-tight tracking-[0.12em] text-white/58">
+                {stat.label}
+              </h3>
             </div>
-            <div className="mt-10 grid items-center gap-5 md:grid-cols-2 xl:grid-cols-5 xl:gap-6">
-              {stats.map((stat, index) => <StatCard key={stat.label} stat={stat} index={index} start={start} />)}
-            </div>
-          </div>
-        </motion.div>
+          ))}
+        </div>
       </div>
+      <style>{`
+        .impact-stat-loop {
+          animation: impactStatLoop 28s linear infinite;
+        }
+
+        .impact-stat-loop:hover {
+          animation-play-state: paused;
+        }
+
+        .impact-stat-item {
+          transform: translateY(var(--curve-y)) rotate(var(--curve-rotate));
+        }
+
+        @keyframes impactStatLoop {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+      `}</style>
     </section>
   )
 }
@@ -329,8 +263,23 @@ function VisionVideoSection() {
   }, [])
 
   return (
-    <section ref={outerRef} className="relative min-h-[100svh] h-screen w-full overflow-hidden border-y border-white/6" style={{ background: 'radial-gradient(circle at center, rgba(123, 44, 191, 0.16), transparent 44%), linear-gradient(180deg, #220A36 0%, #1B0A21 100%)' }}>
-      <HomeGridOverlay opacity="opacity-[0.13]" />
+    <section ref={outerRef} className="relative min-h-[100svh] h-screen w-full overflow-hidden border-y border-white/10 bg-black">
+      <div className="pointer-events-none absolute inset-0 z-0">
+        <CanvasRevealEffect
+          containerClassName="bg-black"
+          colors={[
+            [255, 255, 255],
+            [168, 85, 247],
+            [34, 211, 238],
+          ]}
+          dotSize={5}
+          opacities={[0.14, 0.16, 0.2, 0.24, 0.3, 0.38, 0.48, 0.6, 0.74, 0.9]}
+          showGradient={false}
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.06)_0%,rgba(0,0,0,0.34)_64%,rgba(0,0,0,0.82)_100%)]" />
+        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/85 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/85 to-transparent" />
+      </div>
       <div ref={headerRef} className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-center">
         <div className="mb-4 flex items-center gap-2 text-violet-500">
           <Sparkles size={16} className="animate-pulse" />
@@ -434,13 +383,51 @@ function FinalCTASection({ onNavigate }) {
   const sectionRef = useRef(null)
   const contentRef = useRef(null)
   const titleRef = useRef(null)
-  const marqueeRef = useRef(null)
-  const bgShapeRef = useRef(null)
+  const lastScrollYRef = useRef(0)
+  const readDelayRef = useRef(null)
+  const [fallingTextActive, setFallingTextActive] = useState(false)
+
+  useEffect(() => {
+    const node = sectionRef.current
+    if (!node || fallingTextActive) return undefined
+
+    lastScrollYRef.current = window.scrollY
+
+    const checkFullyVisible = () => {
+      const currentScrollY = window.scrollY
+      const isScrollingDown = currentScrollY > lastScrollYRef.current
+      lastScrollYRef.current = currentScrollY
+
+      if (!isScrollingDown || readDelayRef.current) return
+
+      const rect = node.getBoundingClientRect()
+      const fitsInViewport = rect.height <= window.innerHeight
+      const fullyVisible = fitsInViewport
+        ? rect.top >= 0 && rect.bottom <= window.innerHeight
+        : rect.top <= 0 && rect.bottom >= window.innerHeight
+
+      if (fullyVisible) {
+        readDelayRef.current = window.setTimeout(() => {
+          setFallingTextActive(true)
+        }, 650)
+      }
+    }
+
+    window.addEventListener('scroll', checkFullyVisible, { passive: true })
+    window.addEventListener('resize', checkFullyVisible)
+    checkFullyVisible()
+
+    return () => {
+      window.removeEventListener('scroll', checkFullyVisible)
+      window.removeEventListener('resize', checkFullyVisible)
+      if (readDelayRef.current) {
+        window.clearTimeout(readDelayRef.current)
+      }
+    }
+  }, [fallingTextActive])
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.to(marqueeRef.current, { xPercent: -20, ease: 'none', scrollTrigger: { trigger: sectionRef.current, start: 'top bottom', end: 'bottom top', scrub: 0.5 } })
-      gsap.to('.floating-shape', { y: -100, rotation: 360, ease: 'none', scrollTrigger: { trigger: sectionRef.current, scrub: 1 } })
       gsap.timeline({ scrollTrigger: { trigger: contentRef.current, start: 'top 80%' } })
         .from(titleRef.current, { y: 100, opacity: 0, skewY: 7, duration: 1.2, ease: 'power4.out' })
         .from('.cta-description', { opacity: 0, y: 20, duration: 0.8 }, '-=0.8')
@@ -450,50 +437,87 @@ function FinalCTASection({ onNavigate }) {
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden border-t border-white/6 py-20 sm:py-24 lg:py-48" style={{ background: 'radial-gradient(circle at 50% 0%, rgba(213, 161, 255, 0.1), transparent 30%), linear-gradient(180deg, #170F1F 0%, #220A36 100%)' }}>
-      <HomeGridOverlay opacity="opacity-[0.14]" />
-      <div className="pointer-events-none absolute top-1/2 left-0 z-0 -translate-y-1/2 select-none opacity-10">
-        <div ref={marqueeRef} className="flex whitespace-nowrap text-[5rem] font-black uppercase tracking-tighter text-violet-500 sm:text-[8rem] lg:text-[15rem]">
-          <span className="mx-10">Your Future Awaits</span>
-          <span className="mx-10 text-transparent outline-text">Your Future Awaits</span>
-          <span className="mx-10">Your Future Awaits</span>
-        </div>
-      </div>
-      <div ref={bgShapeRef} className="pointer-events-none absolute inset-0 z-0">
-        <div className="floating-shape absolute top-20 left-[10%] h-10 w-10 rounded-xl border border-violet-500/30 bg-violet-500/5 backdrop-blur-sm" />
-        <div className="floating-shape absolute bottom-20 right-[15%] h-14 w-14 rounded-full border border-violet-500/20 bg-violet-500/5 backdrop-blur-sm" />
-        <div className="absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[140px]" />
+    <section ref={sectionRef} className="relative overflow-hidden border-t border-white/10 bg-black py-12 sm:py-14 lg:py-20">
+      <div className="pointer-events-none absolute inset-0 z-0">
+        <CanvasRevealEffect
+          containerClassName="bg-black"
+          colors={[
+            [255, 255, 255],
+            [168, 85, 247],
+            [34, 211, 238],
+          ]}
+          dotSize={5}
+          opacities={[0.14, 0.16, 0.2, 0.24, 0.3, 0.38, 0.48, 0.6, 0.74, 0.9]}
+          showGradient={false}
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.06)_0%,rgba(0,0,0,0.34)_64%,rgba(0,0,0,0.82)_100%)]" />
+        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/85 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/85 to-transparent" />
       </div>
       <div ref={contentRef} className="relative z-10 mx-auto max-w-5xl px-4 text-center sm:px-6">
-        <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2 backdrop-blur-md sm:mb-10 sm:px-6">
+        <div className="mb-5 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2 backdrop-blur-md sm:mb-6 sm:px-6">
           <Sparkles className="h-4 w-4 text-violet-400 animate-pulse" />
           <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-white/70">The Final Chapter</span>
         </div>
-        <h2 ref={titleRef} className="mb-6 text-[clamp(1.8rem,7vw,4.5rem)] font-black leading-[0.95] tracking-tighter text-white sm:text-[clamp(2rem,6vw,4.5rem)]">
-          Start Your Educational Journey Today!
-        </h2>
-        <p className="cta-description mx-auto mb-12 max-w-2xl text-sm font-light text-white/70 sm:mb-16 sm:text-lg md:text-2xl">
-          Get personalized guidance from our admission experts.
-        </p>
-        <div className="interactive-portal flex justify-center">
-          <button type="button" onClick={() => onNavigate?.('/contact')} className="group relative flex h-32 w-32 items-center justify-center transition-transform duration-500 hover:scale-110 sm:h-48 sm:w-48 md:h-64 md:w-64">
-            <div className="absolute inset-0 rounded-full border border-dashed border-white/20 animate-[spin_10s_linear_infinite]" />
-            <div className="absolute inset-4 rounded-full border border-violet-500/30 animate-[spin_6s_linear_infinite_reverse]" />
-            <div className="relative flex h-full w-full flex-col items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-violet-700 p-2 text-white shadow-[0_0_50px_rgba(168,85,247,0.4)] transition-all group-hover:shadow-[0_0_80px_rgba(168,85,247,0.7)]">
-              <span className="text-[0.65rem] font-bold uppercase tracking-widest opacity-70">Start Now</span>
+        <div ref={titleRef} className="mb-2">
+          <FallingText
+            text="Start Your Educational Journey Today!"
+            trigger="manual"
+            play={fallingTextActive}
+            gravity={0.82}
+            mouseConstraintStiffness={0.8}
+            fontSize="clamp(1.8rem, 7vw, 4.5rem)"
+            lineHeight={0.95}
+            wordSpacing="6px"
+            className="pointer-events-none mx-auto h-[22rem] -mb-[15rem] sm:h-[26rem] sm:-mb-[18rem] md:h-[31rem] md:-mb-[22rem]"
+            textClassName="font-black tracking-tighter text-white"
+            observerOptions={{ threshold: 0.35 }}
+          />
+        </div>
+        <FallingText
+          text="Get personalized guidance from our admission experts."
+          trigger="manual"
+          play={fallingTextActive}
+          gravity={0.7}
+          mouseConstraintStiffness={0.78}
+          fontSize="clamp(0.875rem, 2.1vw, 1.5rem)"
+          lineHeight={1.45}
+          wordSpacing="4px"
+          className="cta-description pointer-events-none mx-auto h-[18rem] -mb-[14.5rem] max-w-2xl sm:h-[22rem] sm:-mb-[17.5rem] md:h-[25rem] md:-mb-[19.5rem]"
+          textClassName="font-light text-white/70"
+          observerOptions={{ threshold: 0.65 }}
+        />
+        <div className="interactive-portal relative z-20 flex justify-center">
+          <button type="button" onClick={() => onNavigate?.('/contact')} className="group relative flex h-32 w-32 items-center justify-center transition-transform duration-500 hover:scale-105 sm:h-48 sm:w-48 md:h-64 md:w-64">
+            <div className="absolute -inset-3 rounded-full bg-white/30 opacity-40 blur-xl transition-all duration-500 group-hover:-inset-5 group-hover:opacity-65 group-hover:blur-2xl" />
+            <div className="absolute inset-0 rounded-full border border-white/20 bg-white/[0.03] backdrop-blur-[2px] animate-[spin_12s_linear_infinite]" />
+            <div className="absolute inset-4 rounded-full border border-white/10 bg-black/20 animate-[spin_8s_linear_infinite_reverse]" />
+            <div className="relative flex h-full w-full flex-col items-center justify-center rounded-full border border-white/70 bg-gradient-to-br from-white via-gray-100 to-gray-400 p-2 text-black shadow-[0_0_70px_rgba(255,255,255,0.26)] transition-all duration-500 group-hover:from-white group-hover:via-white group-hover:to-gray-200 group-hover:shadow-[0_0_95px_rgba(255,255,255,0.45)]">
+              <span className="text-[0.65rem] font-bold uppercase tracking-widest text-black/60">Start Now</span>
               <span className="text-lg font-black uppercase md:text-2xl">Connect</span>
-              <ArrowUpRight className="mt-2 h-6 w-6 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+              <ArrowUpRight className="mt-2 h-6 w-6 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
             </div>
           </button>
         </div>
-        <div className="mt-12 flex justify-center opacity-20 sm:mt-24">
+        <div className="mt-6 flex justify-center opacity-20 sm:mt-8">
           <div className="flex flex-col items-center gap-4">
-            <div className="h-16 w-px bg-gradient-to-b from-white to-transparent" />
-            <span className="text-[10px] font-bold uppercase tracking-[1em]">Scroll Up to Revisit</span>
+            <div className="h-8 w-px bg-gradient-to-b from-white to-transparent sm:h-10" />
+            <FallingText
+              text="Scroll Up to Revisit"
+              trigger="manual"
+              play={fallingTextActive}
+              gravity={0.56}
+              mouseConstraintStiffness={0.7}
+              fontSize="0.625rem"
+              lineHeight={1}
+              wordSpacing="5px"
+              className="min-h-5 w-[17rem]"
+              textClassName="font-bold uppercase tracking-[1em]"
+              observerOptions={{ threshold: 1 }}
+            />
           </div>
         </div>
       </div>
-      <style>{`.outline-text { -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2); }`}</style>
     </section>
   )
 }
