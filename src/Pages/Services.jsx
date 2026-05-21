@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { GraduationCap, School, BookOpen, Star, MapPin, ArrowRight, Layers, Search, Download } from 'lucide-react'
 import EtherealBeamsBackground from '../../components/ui/ethereal-beams-background'
 
-export default function Services({ globalData, locationHash, onNavigate }) {
+export default function Services({ globalData, locationHash, onNavigate, dataLoading }) {
   const { Universities = [], Colleges = [], Courses = [] } = globalData || {}
   const [universitySearch, setUniversitySearch] = useState('')
   const [collegeSearch, setCollegeSearch] = useState('')
@@ -17,6 +17,21 @@ export default function Services({ globalData, locationHash, onNavigate }) {
 
   const getCardImage = (item) => item.image_url || item.images?.[0] || ''
   const getDocumentUrl = (item) => item.document_url || ''
+  const splitFeeRange = (value) => {
+    const text = String(value || '').trim()
+    if (!text) return ['', '']
+    const parts = text.split(/\s*(?:-|–|—|to)\s*/i).map((part) => part.trim()).filter(Boolean)
+    return parts.length >= 2 ? [parts[0], parts.slice(1).join(' - ')] : [text, '']
+  }
+  const getFeeFrom = (item) => {
+    const [from] = splitFeeRange(item.feeRange || item.fee_range)
+    return item.feeFrom || item.fee_from || from || 'N/A'
+  }
+  const getFeeTo = (item) => {
+    const [, to] = splitFeeRange(item.feeRange || item.fee_range)
+    return item.feeTo || item.fee_to || to || 'N/A'
+  }
+  const getCourseCollege = (item) => Colleges.find((college) => String(college.id) === String(item.college_id))
 
   const selectedUniversityId = useMemo(() => {
     const hash = (locationHash || window.location.hash || '').replace(/^#/, '')
@@ -78,13 +93,14 @@ export default function Services({ globalData, locationHash, onNavigate }) {
   useEffect(() => {
     const hash = locationHash || window.location.hash
     if (!hash) return
-    const element = document.querySelector(hash)
+    const hashId = hash.replace(/^#/, '')
+    const element = document.getElementById(hashId) || (hashId.startsWith('colleges-') ? document.getElementById('college-view') : null)
     if (!element) return
     const timer = window.setTimeout(() => {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 100)
     return () => window.clearTimeout(timer)
-  }, [locationHash])
+  }, [dataLoading, locationHash])
 
   useEffect(() => setUniversityPage(1), [universitySearch])
   useEffect(() => setCollegePage(1), [collegeSearch, collegeFilter, selectedUniversityId])
@@ -159,6 +175,16 @@ export default function Services({ globalData, locationHash, onNavigate }) {
                 </label>
               </div>
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {dataLoading && universityPageItems.length === 0 && (
+                  <div className="col-span-full rounded-3xl border border-white/10 bg-white/5 p-8 text-center text-white/55">
+                    Loading universities...
+                  </div>
+                )}
+                {!dataLoading && universityPageItems.length === 0 && (
+                  <div className="col-span-full rounded-3xl border border-white/10 bg-white/5 p-8 text-center text-white/55">
+                    No universities found.
+                  </div>
+                )}
                 {universityPageItems.map((item) => (
                   <motion.article
                     key={item.id}
@@ -238,6 +264,16 @@ export default function Services({ globalData, locationHash, onNavigate }) {
                 </div>
               )}
               <div className="relative mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {dataLoading && collegePageItems.length === 0 && (
+                  <div className="col-span-full rounded-3xl border border-white/10 bg-white/5 p-8 text-center text-white/55">
+                    Loading colleges...
+                  </div>
+                )}
+                {!dataLoading && collegePageItems.length === 0 && (
+                  <div className="col-span-full rounded-3xl border border-white/10 bg-white/5 p-8 text-center text-white/55">
+                    No colleges found.
+                  </div>
+                )}
                 {collegePageItems.map((item) => (
                   <motion.article key={item.id} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="overflow-hidden rounded-[1.4rem] border border-white/10 bg-white/[0.07] shadow-xl shadow-black/20 backdrop-blur-md transition-transform duration-300 hover:-translate-y-1 hover:bg-white/[0.1]">
                     <div className="relative h-44 overflow-hidden">
@@ -248,10 +284,17 @@ export default function Services({ globalData, locationHash, onNavigate }) {
                       <h3 className="text-base font-black leading-snug sm:text-lg">{item.name}</h3>
                       <div className="mt-1 flex items-center gap-2 text-[10px] text-white/70"><MapPin size={10} /><span className="truncate">{item.location || 'Location not set'}</span></div>
                       <div className="mt-3 border-t border-white/10 pt-3">
-                        <div className="flex items-center justify-between text-[10px] text-white/55"><span>Annual Fees From</span>{item.feeRange && <span className="font-normal text-white">{item.feeRange}</span>}</div>
+                        <div className="grid grid-cols-2 gap-3 text-[10px] text-white/55">
+                          <div><span>Annual Fees From</span><div className="mt-1 font-normal text-white">{getFeeFrom(item)}</div></div>
+                          <div><span>Up To</span><div className="mt-1 font-normal text-white">{getFeeTo(item)}</div></div>
+                        </div>
                         <div className="mt-3 flex items-center justify-between">
                           <button onClick={() => onNavigate?.(`/details#type=college&id=${item.id}`)} className="text-[10px] font-black uppercase tracking-widest text-white/85 hover:text-white">View Details</button>
-                          <ArrowRight size={14} className="text-white/80" />
+                          {getDocumentUrl(item) ? (
+                            <a href={getDocumentUrl(item)} download target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/10 px-2.5 py-1.5 text-[9px] font-black uppercase tracking-widest text-white/80 hover:bg-white hover:text-black">
+                              <Download size={11} /> Doc
+                            </a>
+                          ) : <ArrowRight size={14} className="text-white/80" />}
                         </div>
                       </div>
                     </div>
@@ -286,6 +329,16 @@ export default function Services({ globalData, locationHash, onNavigate }) {
                 </label>
               </div>
               <div className="relative mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {dataLoading && collegePageItems.length === 0 && (
+                  <div className="col-span-full rounded-3xl border border-white/10 bg-white/5 p-8 text-center text-white/55">
+                    Loading colleges...
+                  </div>
+                )}
+                {!dataLoading && collegePageItems.length === 0 && (
+                  <div className="col-span-full rounded-3xl border border-white/10 bg-white/5 p-8 text-center text-white/55">
+                    No colleges found.
+                  </div>
+                )}
                 {collegePageItems.map((item) => (
                   <motion.article key={item.id} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="overflow-hidden rounded-[1.4rem] border border-white/10 bg-white/[0.07] shadow-xl shadow-black/20 backdrop-blur-md transition-transform duration-300 hover:-translate-y-1 hover:bg-white/[0.1]">
                     <div className="relative h-44 overflow-hidden">
@@ -296,10 +349,17 @@ export default function Services({ globalData, locationHash, onNavigate }) {
                       <h3 className="text-base font-black leading-snug sm:text-lg">{item.name}</h3>
                       <div className="mt-1 flex items-center gap-2 text-[10px] text-white/70"><MapPin size={10} /><span className="truncate">{item.location || 'Location not set'}</span></div>
                       <div className="mt-3 border-t border-white/10 pt-3">
-                        <div className="flex items-center justify-between text-[10px] text-white/55"><span>Annual Fees From</span>{item.feeRange && <span className="font-normal text-white">{item.feeRange}</span>}</div>
+                        <div className="grid grid-cols-2 gap-3 text-[10px] text-white/55">
+                          <div><span>Annual Fees From</span><div className="mt-1 font-normal text-white">{getFeeFrom(item)}</div></div>
+                          <div><span>Up To</span><div className="mt-1 font-normal text-white">{getFeeTo(item)}</div></div>
+                        </div>
                         <div className="mt-3 flex items-center justify-between">
                           <button onClick={() => onNavigate?.(`/details#type=college&id=${item.id}`)} className="text-[10px] font-black uppercase tracking-widest text-white/85 hover:text-white">View Details</button>
-                          <ArrowRight size={14} className="text-white/80" />
+                          {getDocumentUrl(item) ? (
+                            <a href={getDocumentUrl(item)} download target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/10 px-2.5 py-1.5 text-[9px] font-black uppercase tracking-widest text-white/80 hover:bg-white hover:text-black">
+                              <Download size={11} /> Doc
+                            </a>
+                          ) : <ArrowRight size={14} className="text-white/80" />}
                         </div>
                       </div>
                     </div>
@@ -334,7 +394,17 @@ export default function Services({ globalData, locationHash, onNavigate }) {
                 </label>
               </div>
               <div className="relative mt-8 grid grid-cols-1 items-start gap-5 md:grid-cols-2 xl:grid-cols-3">
-                {coursePageItems.length > 0 ? coursePageItems.map((item) => (
+                {dataLoading && coursePageItems.length === 0 && (
+                  <div className="col-span-full rounded-3xl border border-white/10 bg-white/5 p-8 text-center text-white/55">
+                    Loading courses...
+                  </div>
+                )}
+                {!dataLoading && coursePageItems.length === 0 && (
+                  <div className="col-span-full rounded-3xl border border-white/10 bg-white/5 p-8 text-center text-white/55">
+                    No courses found.
+                  </div>
+                )}
+                {coursePageItems.map((item) => (
                   <motion.article key={item.id} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="self-start overflow-hidden rounded-[1.25rem] border border-white/10 bg-white/[0.07] shadow-xl shadow-black/20 backdrop-blur-md transition-transform duration-300 hover:-translate-y-1 hover:bg-white/[0.1]">
                     <div className="p-4 text-white sm:p-5">
                       <div className="flex items-start justify-between gap-3">
@@ -343,12 +413,14 @@ export default function Services({ globalData, locationHash, onNavigate }) {
                           {(String(item.level || item.levels || 'UG').toUpperCase().includes('PG') ? 'PG' : 'UG')}
                         </span>
                       </div>
-                      <p className="mt-2 text-[11px] leading-relaxed text-white/75">Provided by: {selectedUniversity?.name || item.affiliation || "Study in Bengaluru"}</p>
+                      <p className="mt-2 text-[11px] leading-relaxed text-white/75">
+                        Provided by: <span className="font-black text-white">{getCourseCollege(item)?.name || item.affiliation || "Study in Bengaluru"}</span>
+                      </p>
                       <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-white/10 pt-3 text-sm">
-                        <div><div className="text-[10px] uppercase tracking-[0.16em] text-white/45">Fees</div><div className="mt-1 text-sm font-black text-white">{item.feeRange || item.fee_range || "N/A"}</div></div>
+                        <div><div className="text-[10px] uppercase tracking-[0.16em] text-white/45">From</div><div className="mt-1 text-sm font-black text-white">{getFeeFrom(item)}</div></div>
+                        <div><div className="text-[10px] uppercase tracking-[0.16em] text-white/45">Up To</div><div className="mt-1 text-sm font-black text-white">{getFeeTo(item)}</div></div>
                         <div><div className="text-[10px] uppercase tracking-[0.16em] text-white/45">Duration</div><div className="mt-1 text-sm font-black text-white">{item.duration || "N/A"}</div></div>
-                        <div><div className="text-[10px] uppercase tracking-[0.16em] text-white/45">Median LPA</div><div className="mt-1 text-sm font-black text-white">{item.rating ? "Rs. " + item.rating : "N/A"}</div></div>
-                        <div><div className="text-[10px] uppercase tracking-[0.16em] text-white/45">Affiliation</div><div className="mt-1 text-sm font-black text-white">{selectedUniversity?.name ? "University" : (item.type || "University")}</div></div>
+                        <div><div className="text-[10px] uppercase tracking-[0.16em] text-white/45">Affiliation</div><div className="mt-1 text-sm font-black text-white">{item.affiliation || getCourseCollege(item)?.name || item.type || "N/A"}</div></div>
                       </div>
                       <div className="mt-4 flex items-center justify-end">
                         <button
@@ -371,7 +443,7 @@ export default function Services({ globalData, locationHash, onNavigate }) {
                       </div>
                     </div>
                   </motion.article>
-                )) : <div className="col-span-full rounded-3xl border border-white/10 bg-white/5 p-8 text-center text-white/60">No courses found.</div>}
+                ))}
               </div>
               {renderPagination(coursePage, coursePages, setCoursePage)}
             </div>

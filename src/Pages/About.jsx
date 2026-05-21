@@ -278,42 +278,45 @@ function WhyChooseSection() {
       }
 
       const baseScale = window.innerWidth >= 1280 ? 0.86 : 0.74
-      const readingScale = baseScale
-      const diveScale = baseScale * 1.12
+      const readingScale = window.innerWidth >= 1280 ? 1.08 : 0.96
+      const diveScale = readingScale * 1.14
 
       gsap.set(orbitalRef.current, { rotate: 0, scale: baseScale })
       gsap.set(coreRef.current, { scale: 1, opacity: 1, rotateY: 0, transformOrigin: 'center center' })
       gsap.set(cards, { opacity: 1, scale: 1, transformOrigin: 'center center' })
       gsap.set(cardContents, { rotate: 0, y: 0, transformOrigin: 'center center' })
+      gsap.set(portalFlashRef.current, { opacity: 0, backgroundColor: 'transparent' })
+      gsap.set('.bg-glow', { opacity: 1, scale: 1 })
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top top',
-          end: '+=120%',
-          scrub: false,
+          end: '+=240%',
+          scrub: 1,
           pin: true,
           anticipatePin: 1,
-          toggleActions: 'play none none none',
+          invalidateOnRefresh: true,
         },
       })
 
       // Scene 1: hold the current orbit so the user can understand the layout.
-      tl.to(orbitalRef.current, { scale: baseScale, rotate: 0, duration: 0.35, ease: 'none' })
+      tl.to(orbitalRef.current, { scale: baseScale, rotate: 0, duration: 0.5, ease: 'none' })
 
       // Scene 2: one full cinema-style orbit, zooming the cards enough to read them.
-      tl.to(orbitalRef.current, { rotate: 360, scale: readingScale, duration: 1.45, ease: 'none' }, 'scene2')
-        .to(cardContents, { rotate: -360, duration: 1.45, ease: 'none' }, 'scene2')
-        .to(cards, { scale: 1.06, duration: 0.45, stagger: 0.03, ease: 'power2.out' }, 'scene2+=0.12')
-        .to(cards, { scale: 1, duration: 0.45, stagger: 0.03, ease: 'power2.inOut' }, 'scene2+=0.86')
-        .to(coreRef.current, { scale: 0.94, duration: 0.7, ease: 'power2.inOut' }, 'scene2+=0.2')
+      tl.to(orbitalRef.current, { rotate: 360, scale: baseScale, duration: 1.25, ease: 'none' }, 'scene2')
+        .to(cardContents, { rotate: -360, duration: 1.25, ease: 'none' }, 'scene2')
+        .to(orbitalRef.current, { scale: readingScale, duration: 0.9, ease: 'power2.out' }, 'read')
+        .to(cards, { scale: 1.1, duration: 0.9, stagger: 0.03, ease: 'power2.out' }, 'read')
+        .to(coreRef.current, { scale: 0.9, duration: 0.9, ease: 'power2.out' }, 'read')
+        .to({}, { duration: 0.45 })
 
       // Scene 3: dive through the center circle into the next section.
-      tl.to(cards, { opacity: 0, scale: 0.76, duration: 0.36, stagger: 0.02, ease: 'power2.in' }, 'scene3')
-        .to(orbitalRef.current, { scale: diveScale, duration: 0.42, ease: 'power2.in' }, 'scene3')
-        .to(coreRef.current, { scale: 9, opacity: 1, duration: 0.7, ease: 'power3.in' }, 'scene3+=0.14')
-        .to('.bg-glow', { opacity: 0, scale: 0.45, duration: 0.5, ease: 'power2.in' }, 'scene3+=0.2')
-        .to(portalFlashRef.current, { opacity: 1, duration: 0.22, backgroundColor: '#1b1028' }, 'scene3+=0.62')
+      tl.to(cards, { opacity: 0, scale: 0.76, duration: 0.45, stagger: 0.02, ease: 'power2.in' }, 'scene3')
+        .to(orbitalRef.current, { scale: diveScale, duration: 0.5, ease: 'power2.in' }, 'scene3')
+        .to(coreRef.current, { scale: 9, opacity: 1, duration: 0.85, ease: 'power3.in' }, 'scene3+=0.18')
+        .to('.bg-glow', { opacity: 0, scale: 0.45, duration: 0.6, ease: 'power2.in' }, 'scene3+=0.2')
+        .to(portalFlashRef.current, { opacity: 1, duration: 0.28, backgroundColor: '#1b1028' }, 'scene3+=0.78')
     }, containerRef)
     return () => ctx.revert()
   }, [])
@@ -533,9 +536,9 @@ function EducationModel() {
     const t = state.clock.elapsedTime;
     ref.current.rotation.y = -0.12 + Math.sin(t / 3) * 0.08;
     ref.current.rotation.z = Math.cos(t / 4) * 0.025;
-    ref.current.position.y = -0.44 + Math.sin(t * 1.2) * 0.045;
+    ref.current.position.y = -0.08 + Math.sin(t * 1.2) * 0.045;
   });
-  return <primitive ref={ref} object={scene} scale={0.78} position={[1.38, -0.44, 0]} />;
+  return <primitive ref={ref} object={scene} scale={0.78} position={[1.38, -0.08, 0]} />;
 }
 
 function Scene3D() {
@@ -551,7 +554,7 @@ function Scene3D() {
           <EducationParticles />
           <EducationModel />
           <Environment preset="city" />
-          <ContactShadows position={[1.38, -1.72, 0]} opacity={0.24} scale={4.4} blur={1.6} color="#14091d" />
+          <ContactShadows position={[1.38, -1.36, 0]} opacity={0.24} scale={4.4} blur={1.6} color="#14091d" />
         </Suspense>
         <OrbitControls enableZoom={false} enablePan={false} makeDefault rotateSpeed={0.4} minPolarAngle={Math.PI / 2.5} maxPolarAngle={Math.PI / 1.5} />
       </Canvas>

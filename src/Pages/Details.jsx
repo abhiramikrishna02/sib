@@ -12,6 +12,27 @@ function splitText(value) {
     .filter(Boolean)
 }
 
+function splitFeeRange(value) {
+  const text = String(value || '').trim()
+  if (!text) return ['', '']
+  const parts = text.split(/\s*(?:-|–|—|to)\s*/i).map((part) => part.trim()).filter(Boolean)
+  return parts.length >= 2 ? [parts[0], parts.slice(1).join(' - ')] : [text, '']
+}
+
+function getFeeFrom(item) {
+  const [from] = splitFeeRange(item?.feeRange || item?.fee_range)
+  return item?.feeFrom || item?.fee_from || from || 'N/A'
+}
+
+function getFeeTo(item) {
+  const [, to] = splitFeeRange(item?.feeRange || item?.fee_range)
+  return item?.feeTo || item?.fee_to || to || 'N/A'
+}
+
+function getFeeRange(item) {
+  return item?.feeRange || item?.fee_range || [item?.feeFrom || item?.fee_from, item?.feeTo || item?.fee_to].filter(Boolean).join(' - ') || 'N/A'
+}
+
 function DetailRow({ icon: Icon, label, value }) {
   return (
     <div className="flex items-start gap-3">
@@ -26,7 +47,7 @@ function DetailRow({ icon: Icon, label, value }) {
   )
 }
 
-export default function Details({ onNavigate, globalData, locationHash }) {
+export default function Details({ onNavigate, globalData, locationHash, dataLoading }) {
   const params = new URLSearchParams(locationHash.replace(/^#/, ''))
   const type = params.get('type')
   const id = params.get('id')
@@ -34,8 +55,21 @@ export default function Details({ onNavigate, globalData, locationHash }) {
   const university = (globalData?.Universities || []).find((row) => String(row.id) === String(id))
   const college = (globalData?.Colleges || []).find((row) => String(row.id) === String(id))
   const course = (globalData?.Courses || []).find((row) => String(row.id) === String(id))
-  const linkedUniversity = (globalData?.Universities || []).find((row) => String(row.id) === String(college?.university_id))
   const item = type === 'university' ? university : type === 'course' ? course : college
+  const courseCollege = type === 'course'
+    ? (globalData?.Colleges || []).find((row) => String(row.id) === String(course?.college_id))
+    : null
+  const linkedUniversity = (globalData?.Universities || []).find((row) => String(row.id) === String((courseCollege || college)?.university_id))
+
+  if (!item && dataLoading) {
+    return (
+      <div className="min-h-screen bg-[#431f60] px-6 py-32 text-white">
+        <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/5 p-8 text-center">
+          <h1 className="text-3xl font-black">Loading details...</h1>
+        </div>
+      </div>
+    )
+  }
 
   if (!item) {
     return (
@@ -54,7 +88,6 @@ export default function Details({ onNavigate, globalData, locationHash }) {
   }
 
   const heroTitle = type === 'course' ? item.name : item.name
-  const feeValue = item.feeRange || item.fee_range || 'N/A'
   const about =
     item.about ||
     (type === 'course'
@@ -74,6 +107,12 @@ export default function Details({ onNavigate, globalData, locationHash }) {
   const typeLabel = type === 'course' ? 'Course' : type === 'university' ? 'University' : 'Affiliated'
   const showHeroMedia = type !== 'course'
   const showGallery = gallery.length > 0 && type !== 'course'
+  const providerName = type === 'course'
+    ? courseCollege?.name || item.affiliation || 'Study in Bengaluru'
+    : linkedUniversity?.name || item.affiliation || 'Study in Bengaluru'
+  const displayLocation = type === 'course'
+    ? courseCollege?.location || item.location || 'Location not set'
+    : item.location || 'Location not set'
 
   return (
     <div className="min-h-screen bg-[#431f60] px-4 pb-16 pt-44 text-white sm:px-6 md:px-16 md:pt-48">
@@ -188,8 +227,14 @@ export default function Details({ onNavigate, globalData, locationHash }) {
 
                 <div className="mt-4 flex items-start gap-2 text-white/85">
                   <MapPin size={16} className="mt-0.5 shrink-0 text-white/70" />
-                  <p className="text-sm font-semibold leading-relaxed">{item.location || 'Location not set'}</p>
+                  <p className="text-sm font-semibold leading-relaxed">{displayLocation}</p>
                 </div>
+                {type === 'course' && (
+                  <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80">
+                    Offered by <span className="font-black text-white">{providerName}</span>
+                    {linkedUniversity?.name && <span className="text-white/55"> under {linkedUniversity.name}</span>}
+                  </div>
+                )}
 
                 {type !== 'course' && (
                   <div className="mt-4 flex flex-wrap gap-2">
@@ -207,12 +252,12 @@ export default function Details({ onNavigate, globalData, locationHash }) {
                 <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-[1fr_auto_1fr] sm:items-end">
                   <div>
                     <div className="text-[11px] font-medium text-white/65">Starting from</div>
-                    <div className="mt-1 text-2xl font-black text-white">{feeValue}</div>
+                    <div className="mt-1 text-2xl font-black text-white">{getFeeFrom(item)}</div>
                   </div>
                   <div className="hidden h-10 w-px bg-white/15 sm:block" />
                   <div>
                     <div className="text-[11px] font-medium text-white/65">Up to</div>
-                    <div className="mt-1 text-2xl font-black text-white">{feeValue}</div>
+                    <div className="mt-1 text-2xl font-black text-white">{getFeeTo(item)}</div>
                   </div>
                 </div>
               </div>
@@ -223,7 +268,7 @@ export default function Details({ onNavigate, globalData, locationHash }) {
                   rel="noreferrer"
                   className="inline-flex w-fit items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-widest text-white/80 transition-colors hover:bg-white hover:text-black"
                 >
-                  <Download size={14} /> Download Document
+                    <Download size={14} /> Download {item.document_name || 'Document'}
                 </a>
               )}
             </div>
@@ -234,7 +279,7 @@ export default function Details({ onNavigate, globalData, locationHash }) {
           <div className="space-y-6">
             <section className="rounded-[1.5rem] border border-white/10 bg-[#1a0b2e] p-5 sm:p-6">
               <h2 className="text-2xl font-black text-white">
-                {type === 'university' ? 'About the University' : 'About the College'}
+                {type === 'university' ? 'About the University' : type === 'course' ? 'About the Course' : 'About the College'}
               </h2>
               <div className="mt-3 h-px bg-white/10" />
               <p className="mt-4 text-sm leading-relaxed text-white/75">
@@ -284,7 +329,7 @@ export default function Details({ onNavigate, globalData, locationHash }) {
                       </span>
                     </div>
                     <div className="mt-3 text-sm text-white/70">
-                      Fees: <span className="font-black text-white">{row.feeRange || row.fee_range || 'N/A'}</span>
+                      Fees: <span className="font-black text-white">{getFeeRange(row)}</span>
                     </div>
                   </div>
                 )) : (
@@ -303,8 +348,8 @@ export default function Details({ onNavigate, globalData, locationHash }) {
               <div className="mt-5 space-y-4">
                 <DetailRow
                   icon={Building2}
-                  label={type === 'university' ? 'University Type' : 'Institution Type'}
-                  value={item.type || linkedUniversity?.name || 'Affiliated College'}
+                  label={type === 'course' ? 'College' : type === 'university' ? 'University Type' : 'Institution Type'}
+                  value={type === 'course' ? providerName : item.type || linkedUniversity?.name || 'Affiliated College'}
                 />
                 <DetailRow
                   icon={BookOpen}

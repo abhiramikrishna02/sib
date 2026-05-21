@@ -105,7 +105,10 @@ function Opportunities({ onNavigate }) {
       ScrollTrigger.create({
         trigger: containerRef.current,
         start: 'top top',
-        end: () => `+=${Math.max(window.innerHeight * 2.4, galleryItems.length * 260)}`,
+        end: () => {
+          const mobile = window.innerWidth < 768
+          return `+=${mobile ? window.innerHeight * 1.15 : Math.max(window.innerHeight * 2.4, galleryItems.length * 260)}`
+        },
         pin: true,
         scrub: 1,
         anticipatePin: 1,
@@ -152,16 +155,16 @@ function Opportunities({ onNavigate }) {
   return (
     <div 
       ref={containerRef} 
-      className="relative flex min-h-[100svh] w-full items-center overflow-hidden border-y border-white/6 bg-[#0f0816] py-10 sm:py-12 lg:py-14"
+      className="relative flex min-h-[88svh] w-full items-center overflow-hidden border-y border-white/6 bg-[#0f0816] py-7 sm:min-h-[92svh] sm:py-10 lg:min-h-[100svh] lg:py-14"
       style={{ 
         background: 'radial-gradient(circle at 14% 20%, rgba(34, 211, 238, 0.13) 0%, transparent 26%), radial-gradient(circle at 84% 18%, rgba(232, 121, 249, 0.14) 0%, transparent 28%), radial-gradient(circle at 50% 100%, rgba(245, 158, 11, 0.08) 0%, transparent 34%), linear-gradient(180deg, #08040f 0%, #14091d 48%, #0c0614 100%)' 
       }}
     >
       <HomeGridOverlay opacity="opacity-[0.16]" />
-      <div className="absolute left-1/2 top-1/2 z-0 h-[620px] w-[620px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[120px]" />
-      <div className="relative z-10 mx-auto w-full max-w-[1620px] px-4 sm:px-6 lg:px-8">
-        <div className="opportunity-heading mb-4 flex flex-col items-center justify-between gap-5 md:mb-0 md:flex-row md:items-end">
-          <div className="relative text-center md:text-left">
+      <div className="absolute left-1/2 top-1/2 z-0 h-[360px] w-[360px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[90px] sm:h-[520px] sm:w-[520px] lg:h-[620px] lg:w-[620px] lg:blur-[120px]" />
+      <div className="relative z-10 mx-auto w-full max-w-[1620px] px-3 sm:px-6 lg:px-8">
+        <div className="opportunity-heading mb-3 flex flex-col items-center justify-between gap-4 sm:mb-4 md:mb-0 md:flex-row md:items-end">
+          <div className="relative w-full text-center md:w-auto md:text-left">
             <Shuffle
               text="Explore Opportunities"
               tag="h2"
@@ -179,7 +182,7 @@ function Opportunities({ onNavigate }) {
               colorFrom="rgba(103,232,249,0.45)"
               colorTo="#ffffff"
               textAlign="inherit"
-              className="whitespace-nowrap bg-gradient-to-r from-white via-violet-200 via-55% to-cyan-200 bg-clip-text text-[clamp(1.95rem,4.6vw,4.9rem)] font-black tracking-tight text-transparent drop-shadow-[0_0_22px_rgba(34,211,238,0.34)] [text-shadow:0_0_26px_rgba(168,85,247,0.26)]"
+              className="mx-auto max-w-[min(92vw,44rem)] whitespace-normal break-words bg-gradient-to-r from-white via-violet-200 via-55% to-cyan-200 bg-clip-text text-[clamp(2rem,11vw,4.9rem)] font-black leading-[0.92] tracking-tight text-transparent drop-shadow-[0_0_22px_rgba(34,211,238,0.34)] [text-shadow:0_0_26px_rgba(168,85,247,0.26)] md:mx-0 md:max-w-none md:whitespace-nowrap md:text-[clamp(1.95rem,4.6vw,4.9rem)]"
             />
             <span className="absolute -bottom-3 left-1/2 h-1 w-4/5 -translate-x-1/2 rounded-full bg-gradient-to-r from-violet-400 via-cyan-300 to-fuchsia-300 shadow-[0_0_24px_rgba(34,211,238,0.55)] md:left-0 md:w-full md:translate-x-0" />
             <span className="pointer-events-none absolute -inset-x-4 -bottom-5 h-10 rounded-full bg-cyan-400/10 blur-2xl" />
@@ -187,7 +190,7 @@ function Opportunities({ onNavigate }) {
           <div className="hidden h-px flex-grow bg-gradient-to-r from-violet-400/50 via-cyan-300/30 to-transparent md:block" />
         </div>
 
-        <div className="opportunity-gallery-shell relative mx-auto h-[clamp(430px,58svh,620px)] w-full">
+        <div className="opportunity-gallery-shell relative mx-auto h-[min(58svh,470px)] w-full sm:h-[clamp(430px,58svh,620px)]">
           <CircularGallery
             ref={galleryRef}
             items={galleryItems}
@@ -201,10 +204,10 @@ function Opportunities({ onNavigate }) {
           <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#090411] to-transparent sm:w-40" />
         </div>
 
-        <div className="-mt-2 flex items-center justify-center gap-4 opacity-25 sm:-mt-4">
-            <div className="h-px w-12 bg-white" />
-            <span className="text-[9px] font-bold uppercase tracking-[1em]">Opportunities 2026</span>
-            <div className="h-px w-12 bg-white" />
+        <div className="mt-0 flex items-center justify-center gap-3 opacity-25 sm:-mt-4 sm:gap-4">
+            <div className="h-px w-10 bg-white sm:w-12" />
+            <span className="max-w-[54vw] text-center text-[8px] font-bold uppercase tracking-[0.32em] sm:max-w-none sm:text-[9px] sm:tracking-[1em]">Opportunities 2026</span>
+            <div className="h-px w-10 bg-white sm:w-12" />
         </div>
       </div>
     </div>
@@ -222,7 +225,7 @@ function ImpactNumbersSection() {
   const loopStats = [...stats, ...stats]
 
   return (
-    <section className="relative overflow-hidden border-y border-white/8 bg-[#090909] px-0 py-14 text-white sm:py-16 lg:py-20">
+    <section className="relative overflow-hidden border-y border-white/8 bg-[#090909] px-0 py-8 text-white sm:py-12 lg:py-16">
       <div className="pointer-events-none absolute inset-0 z-0">
         <EtherealBeamsBackground
           beamWidth={2.5}
@@ -239,18 +242,18 @@ function ImpactNumbersSection() {
       <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_42%)]" />
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-px bg-gradient-to-r from-transparent via-white/18 to-transparent" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-px bg-gradient-to-r from-transparent via-white/18 to-transparent" />
-      <div className="relative z-10 mx-auto w-full overflow-hidden py-8 sm:py-10">
-        <div className="impact-stat-loop flex w-max items-center gap-14 px-8 sm:gap-22 sm:px-12 lg:gap-28">
+      <div className="relative z-10 mx-auto w-full overflow-hidden py-6 sm:py-8">
+        <div className="impact-stat-loop flex w-max items-center gap-10 px-6 sm:gap-18 sm:px-10 lg:gap-24">
           {loopStats.map((stat, index) => (
             <div
               key={`${stat.label}-${index}`}
-              className="impact-stat-item min-w-[12rem] text-center sm:min-w-[15rem] lg:min-w-[18rem]"
+              className="impact-stat-item min-w-[9.5rem] text-center sm:min-w-[13rem] lg:min-w-[17rem]"
               style={{ '--curve-y': `${Math.sin(index * 0.9) * 22}px`, '--curve-rotate': `${Math.sin(index * 0.9) * -2.2}deg` }}
             >
-              <div className="text-[clamp(2.8rem,5.4vw,5.2rem)] font-bold leading-none tracking-[-0.045em] text-white">
+              <div className="text-[clamp(2.2rem,5.4vw,5.2rem)] font-bold leading-none tracking-[-0.045em] text-white">
                 {stat.value}{stat.suffix}
               </div>
-              <h3 className="mt-4 text-[clamp(0.86rem,1.25vw,1.2rem)] font-semibold uppercase leading-tight tracking-[0.12em] text-white/58">
+              <h3 className="mt-3 text-[clamp(0.72rem,1.25vw,1.2rem)] font-semibold uppercase leading-tight tracking-[0.12em] text-white/58 sm:mt-4">
                 {stat.label}
               </h3>
             </div>
@@ -307,7 +310,7 @@ function VisionVideoSection() {
   
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ scrollTrigger: { trigger: outerRef.current, start: 'top top', end: '+=300%', scrub: 1, pin: true, anticipatePin: 1, invalidateOnRefresh: true } })
+      const tl = gsap.timeline({ scrollTrigger: { trigger: outerRef.current, start: 'top top', end: () => `+=${window.innerWidth < 768 ? window.innerHeight * 1.45 : window.innerHeight * 3}`, scrub: 1, pin: true, anticipatePin: 1, invalidateOnRefresh: true } })
       tl.to(headerRef.current, { opacity: 0, scale: 0.8, filter: 'blur(20px)', y: -100, duration: 1 }, 0)
         .to(videoFrameRef.current, { scale: 1, width: '100vw', height: '100vh', maxWidth: '100%', maxHeight: '100%', borderRadius: '0px', ease: 'power2.inOut', duration: 2 }, 0.2)
         .to(videoRef.current, { scale: 1.4, duration: 3, ease: 'none' }, 0.2)
@@ -322,7 +325,7 @@ function VisionVideoSection() {
   }, [])
 
   return (
-    <section ref={outerRef} className="relative min-h-[100svh] h-screen w-full overflow-hidden border-y border-white/10 bg-black">
+    <section ref={outerRef} className="relative h-[100svh] min-h-[100svh] w-full overflow-hidden border-y border-white/10 bg-black">
       <div className="pointer-events-none absolute inset-0 z-0">
         <CanvasRevealEffect
           containerClassName="bg-black"
@@ -342,7 +345,7 @@ function VisionVideoSection() {
       <div ref={headerRef} className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-center">
         <div className="mb-4 flex items-center gap-2 text-violet-500">
           <Sparkles size={16} className="animate-pulse" />
-          <span className="text-[10px] font-black uppercase tracking-[0.8em]">The Vision</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.45em] sm:tracking-[0.8em]">The Vision</span>
         </div>
       </div>
       <div className="flex h-full w-full items-center justify-center px-3 sm:px-4">
@@ -351,11 +354,11 @@ function VisionVideoSection() {
           <div ref={overlayRef} className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/90" />
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.25)_0%,transparent_65%)] mix-blend-screen" />
 
-          <div ref={textContentRef} className="absolute inset-0 z-30 flex items-center justify-center p-4 pt-24 sm:p-6 sm:pt-28 md:p-12 md:pt-32">
+          <div ref={textContentRef} className="absolute inset-0 z-30 flex items-center justify-center p-4 pt-16 sm:p-6 sm:pt-24 md:p-12 md:pt-32">
             <div className="w-full max-w-5xl px-2 text-center text-white">
-              <p className="vision-kicker mx-auto mb-5 inline-flex rounded-full border border-white/18 bg-white/10 px-5 py-2 text-[10px] font-black uppercase tracking-[0.5em] text-white/75 backdrop-blur-md shadow-[0_0_34px_rgba(168,85,247,0.2)] sm:mb-6">Our Vision</p>
+              <p className="vision-kicker mx-auto mb-4 inline-flex rounded-full border border-white/18 bg-white/10 px-4 py-2 text-[9px] font-black uppercase tracking-[0.34em] text-white/75 backdrop-blur-md shadow-[0_0_34px_rgba(168,85,247,0.2)] sm:mb-6 sm:px-5 sm:text-[10px] sm:tracking-[0.5em]">Our Vision</p>
 
-              <div className="mx-auto max-w-4xl text-[clamp(1.08rem,2.05vw,2.28rem)] font-normal leading-[1.42] tracking-normal text-white drop-shadow-[0_5px_20px_rgba(0,0,0,0.72)] sm:leading-[1.34]" style={{ textShadow: '0 4px 18px rgba(0,0,0,0.82), 0 0 28px rgba(213, 161, 255, 0.22)' }}>
+              <div className="mx-auto max-w-4xl text-[clamp(0.98rem,4.3vw,2.28rem)] font-normal leading-[1.34] tracking-normal text-white drop-shadow-[0_5px_20px_rgba(0,0,0,0.72)] sm:leading-[1.34]" style={{ textShadow: '0 4px 18px rgba(0,0,0,0.82), 0 0 28px rgba(213, 161, 255, 0.22)' }}>
                 {visionLines.map((line, index) => (
                   <div key={index} className="overflow-hidden pb-1.5">
                     <p className="vision-copy-line opacity-0 will-change-transform">{line}</p>
@@ -365,11 +368,11 @@ function VisionVideoSection() {
 
               <div 
                 ref={quoteContainerRef} 
-                className="vision-quote-card relative mx-auto mt-6 max-w-3xl cursor-crosshair overflow-hidden rounded-[1.35rem] border border-fuchsia-300/30 bg-black/28 px-5 py-4 opacity-0 backdrop-blur-md shadow-[0_0_44px_rgba(214,90,138,0.2)] sm:mt-8 sm:px-7 sm:py-5"
+                className="vision-quote-card relative mx-auto mt-4 max-w-3xl cursor-crosshair overflow-hidden rounded-[1.1rem] border border-fuchsia-300/30 bg-black/28 px-4 py-3 opacity-0 backdrop-blur-md shadow-[0_0_44px_rgba(214,90,138,0.2)] sm:mt-8 sm:rounded-[1.35rem] sm:px-7 sm:py-5"
               >
                 <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-fuchsia-200/70 to-transparent" />
                 <div className="pointer-events-none absolute -inset-x-10 -bottom-16 h-28 bg-fuchsia-500/16 blur-3xl" />
-                <div className="relative text-[clamp(0.94rem,1.35vw,1.28rem)] font-normal leading-relaxed text-[#ffe0ee]" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.82), 0 0 20px rgba(214, 90, 138, 0.3)' }}>
+                <div className="relative text-[clamp(0.82rem,3.4vw,1.28rem)] font-normal leading-relaxed text-[#ffe0ee]" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.82), 0 0 20px rgba(214, 90, 138, 0.3)' }}>
                   <div className="overflow-hidden">
                     <p className="vision-quote-line opacity-0 will-change-transform">
                       &quot;<VariableProximity
@@ -419,21 +422,21 @@ function VisionMissionSection() {
       >
         <HomeGridOverlay opacity="opacity-[0.16]" />
         <div className="relative z-10">
-          <p className="text-xs font-black uppercase tracking-[0.32em] text-cyan-100/80">01 - Our Vision</p>
-          <hr className="my-[2vw] border-none border-t border-white/45" />
-          <h2 className="text-[clamp(4rem,13vw,13rem)] font-black uppercase leading-[0.82] tracking-tight text-white">
+          <p className="text-[10px] font-black uppercase tracking-[0.28em] text-cyan-100/80 sm:text-xs sm:tracking-[0.32em]">01 - Our Vision</p>
+          <hr className="my-4 border-none border-t border-white/45 sm:my-[2vw]" />
+          <h2 className="text-[clamp(3.6rem,18vw,13rem)] font-black uppercase leading-[0.82] tracking-tight text-white">
             Our
             <br />
             Vision
           </h2>
         </div>
-        <div className="relative z-10 mt-auto">
-          <hr className="my-[2vw] border-none border-t border-white/45" />
-          <p className="max-w-[58ch] text-[clamp(1rem,2.2vw,1.85rem)] font-medium leading-relaxed text-white/82">
+        <div className="relative z-10 lg:mt-auto">
+          <hr className="my-4 border-none border-t border-white/45 sm:my-[2vw]" />
+          <p className="max-w-[58ch] text-[clamp(1rem,4.3vw,1.85rem)] font-medium leading-relaxed text-white/82">
             To transform Bengaluru into Asia&apos;s premier educational destination by revolutionizing admission processes, offering unparalleled career guidance, and fostering collaborative partnerships with top-tier institutions and industry leaders.
           </p>
-          <hr className="my-[2vw] border-none border-t border-white/35" />
-          <div className="flex items-center gap-4 text-xs font-black uppercase tracking-[0.34em] text-cyan-200">
+          <hr className="my-4 border-none border-t border-white/35 sm:my-[2vw]" />
+          <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.24em] text-cyan-200 sm:gap-4 sm:text-xs sm:tracking-[0.34em]">
             <span>View Roadmap</span>
             <ArrowUpRight size={18} />
           </div>
@@ -450,23 +453,23 @@ function VisionMissionSection() {
       >
         <HomeGridOverlay opacity="opacity-[0.14]" />
         <div className="relative z-10">
-          <p className="text-xs font-black uppercase tracking-[0.32em] text-orange-100/80">02 - Our Mission</p>
-          <hr className="my-[2vw] border-none border-t border-white/45" />
-          <h2 className="text-[clamp(4rem,13vw,13rem)] font-black uppercase leading-[0.82] tracking-tight text-white">
+          <p className="text-[10px] font-black uppercase tracking-[0.28em] text-orange-100/80 sm:text-xs sm:tracking-[0.32em]">02 - Our Mission</p>
+          <hr className="my-4 border-none border-t border-white/45 sm:my-[2vw]" />
+          <h2 className="text-[clamp(3.6rem,18vw,13rem)] font-black uppercase leading-[0.82] tracking-tight text-white">
             Our
             <br />
             Mission
           </h2>
         </div>
         <div className="relative z-10">
-          <hr className="my-[2vw] border-none border-t border-white/45" />
-          <p className="max-w-[58ch] text-[clamp(1rem,2.2vw,1.85rem)] font-medium leading-relaxed text-white/82">
+          <hr className="my-4 border-none border-t border-white/45 sm:my-[2vw]" />
+          <p className="max-w-[58ch] text-[clamp(1rem,4.3vw,1.85rem)] font-medium leading-relaxed text-white/82">
             To attract and empower students worldwide by providing access to world-class education in India, nurturing global talent, and creating a network of future leaders who drive innovation and positive change.
           </p>
-          <hr className="my-[2vw] border-none border-t border-white/35" />
-          <div className="flex flex-wrap gap-4">
+          <hr className="my-4 border-none border-t border-white/35 sm:my-[2vw]" />
+          <div className="flex flex-wrap gap-3 sm:gap-4">
             {['Empower', 'Nurture', 'Lead'].map((tag) => (
-              <span key={tag} className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/8 px-4 py-2 text-[10px] font-black uppercase tracking-[0.28em] text-orange-200/80">
+              <span key={tag} className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/8 px-3 py-2 text-[9px] font-black uppercase tracking-[0.18em] text-orange-200/80 sm:px-4 sm:text-[10px] sm:tracking-[0.28em]">
                 <Sparkles size={12} /> {tag}
               </span>
             ))}
@@ -555,7 +558,7 @@ function FinalCTASection({ onNavigate }) {
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden border-t border-white/10 bg-black py-12 sm:py-14 lg:py-20">
+    <section ref={sectionRef} className="relative overflow-hidden border-t border-white/10 bg-black py-8 sm:py-12 lg:py-16">
       <div className="pointer-events-none absolute inset-0 z-0">
         <CanvasRevealEffect
           containerClassName="bg-black"
@@ -573,9 +576,9 @@ function FinalCTASection({ onNavigate }) {
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/85 to-transparent" />
       </div>
       <div ref={contentRef} className="relative z-10 mx-auto max-w-5xl px-4 text-center sm:px-6">
-        <div className="mb-5 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2 backdrop-blur-md sm:mb-6 sm:px-6">
+        <div className="mb-3 inline-flex max-w-full items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur-md sm:mb-5 sm:gap-3 sm:px-6">
           <Sparkles className="h-4 w-4 text-violet-400 animate-pulse" />
-          <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-white/70">The Final Chapter</span>
+          <span className="text-[9px] font-bold uppercase tracking-[0.24em] text-white/70 sm:text-[10px] sm:tracking-[0.4em]">The Final Chapter</span>
         </div>
         <div ref={titleRef} className="mb-2">
           <FallingText
@@ -587,7 +590,7 @@ function FinalCTASection({ onNavigate }) {
             fontSize="clamp(1.8rem, 7vw, 4.5rem)"
             lineHeight={0.95}
             wordSpacing="6px"
-            className="pointer-events-none mx-auto h-[22rem] -mb-[15rem] sm:h-[26rem] sm:-mb-[18rem] md:h-[31rem] md:-mb-[22rem]"
+            className="pointer-events-none mx-auto h-[16rem] -mb-[11rem] sm:h-[24rem] sm:-mb-[16.5rem] md:h-[31rem] md:-mb-[22rem]"
             textClassName="font-black tracking-tighter text-white"
             observerOptions={{ threshold: 0.35 }}
           />
@@ -601,7 +604,7 @@ function FinalCTASection({ onNavigate }) {
           fontSize="clamp(0.875rem, 2.1vw, 1.5rem)"
           lineHeight={1.45}
           wordSpacing="4px"
-          className="cta-description pointer-events-none mx-auto h-[18rem] -mb-[14.5rem] max-w-2xl sm:h-[22rem] sm:-mb-[17.5rem] md:h-[25rem] md:-mb-[19.5rem]"
+          className="cta-description pointer-events-none mx-auto h-[12rem] -mb-[9.5rem] max-w-2xl sm:h-[20rem] sm:-mb-[16rem] md:h-[25rem] md:-mb-[19.5rem]"
           textClassName="font-light text-white/70"
           observerOptions={{ threshold: 0.65 }}
         />
@@ -614,7 +617,7 @@ function FinalCTASection({ onNavigate }) {
               </div>
             </div>
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[40%] w-[92.23%] h-[112.85%] rounded-[1rem] bg-[#010128] filter blur-[7.3px]" />
-            <div className="relative w-[18rem] h-24 overflow-hidden rounded-[1rem] border border-white/20">
+            <div className="relative h-20 w-[min(18rem,88vw)] overflow-hidden rounded-[1rem] border border-white/20 sm:h-24 sm:w-[18rem]">
               <span className="absolute inset-0 rounded-[1rem] bg-[#d9d9d9]" />
               <span className="absolute inset-0 rounded-[1rem] bg-black" />
               <Liquid isHovered={buttonHovered} colors={CTA_BUTTON_COLORS} />
@@ -634,15 +637,15 @@ function FinalCTASection({ onNavigate }) {
                 onMouseLeave={() => setButtonHovered(false)}
                 className="absolute inset-0 rounded-[1rem] bg-transparent"
               >
-                <span className="relative flex h-full w-full items-center justify-center gap-3 rounded-[1rem] px-6 text-xl font-semibold uppercase tracking-wide text-white">
-                  <ArrowUpRight className="h-6 w-6" />
+                <span className="relative flex h-full w-full items-center justify-center gap-3 rounded-[1rem] px-5 text-lg font-semibold uppercase tracking-wide text-white sm:px-6 sm:text-xl">
+                  <ArrowUpRight className="h-5 w-5 sm:h-6 sm:w-6" />
                   <span>Connect</span>
                 </span>
               </button>
             </div>
           </div>
         </div>
-        <div className="mt-6 flex justify-center opacity-20 sm:mt-8">
+        <div className="mt-5 flex justify-center opacity-20 sm:mt-8">
           <div className="flex flex-col items-center gap-4">
             <div className="h-8 w-px bg-gradient-to-b from-white to-transparent sm:h-10" />
             <FallingText
@@ -654,7 +657,7 @@ function FinalCTASection({ onNavigate }) {
               fontSize="0.625rem"
               lineHeight={1}
               wordSpacing="5px"
-              className="min-h-5 w-[17rem]"
+              className="min-h-5 w-[min(17rem,86vw)]"
               textClassName="font-bold uppercase tracking-[1em]"
               observerOptions={{ threshold: 1 }}
             />

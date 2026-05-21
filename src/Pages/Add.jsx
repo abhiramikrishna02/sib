@@ -41,7 +41,9 @@ function buildOpportunityPayload(formData, category) {
     rating: formData.rating || null,
     affiliation: formData.affiliation || null,
     location: formData.location || null,
-    fee_range: formData.feeRange || null,
+    fee_range: formData.feeRange || buildFeeRange(formData) || null,
+    fee_from: formData.feeFrom || null,
+    fee_to: formData.feeTo || null,
     type: formData.type || null,
     levels: formData.levels || null,
     phone: formData.phone || null,
@@ -54,6 +56,19 @@ function buildOpportunityPayload(formData, category) {
     document_name: formData.document_name || null,
     document_type: formData.document_type || null,
   };
+}
+
+function buildFeeRange(formData) {
+  if (formData.feeRange) return formData.feeRange;
+  if (formData.feeFrom && formData.feeTo) return `${formData.feeFrom} - ${formData.feeTo}`;
+  return formData.feeFrom || formData.feeTo || '';
+}
+
+function splitFeeRange(value) {
+  const text = String(value || '').trim();
+  if (!text) return ['', ''];
+  const parts = text.split(/\s*(?:-|–|—|to)\s*/i).map((part) => part.trim()).filter(Boolean);
+  return parts.length >= 2 ? [parts[0], parts.slice(1).join(' - ')] : [text, ''];
 }
 
 function getTableName(category) {
@@ -84,7 +99,9 @@ function buildTablePayload(formData, category, { includeMedia = true } = {}) {
   } else {
     payload.image_url = formData.image_url || null;
     if (includeMedia) payload.images = parseImageList(formData.images);
-    payload.fee_range = formData.feeRange || null;
+    payload.fee_range = buildFeeRange(formData) || null;
+    payload.fee_from = formData.feeFrom || null;
+    payload.fee_to = formData.feeTo || null;
     payload.type = formData.type || null;
     payload.levels = formData.levels || null;
     payload.duration = formData.duration || null;
@@ -99,6 +116,8 @@ function buildTablePayload(formData, category, { includeMedia = true } = {}) {
     payload.college_id = formData.college_id || null;
     payload.degree = formData.degree || formData.type || null;
     payload.level = formData.levels || null;
+    payload.affiliation = formData.affiliation || null;
+    payload.category = formData.category || null;
     delete payload.address;
   }
 
@@ -106,11 +125,16 @@ function buildTablePayload(formData, category, { includeMedia = true } = {}) {
 }
 
 function normalizeOpportunity(row) {
+  const feeRange = row.fee_range || row.feeRange || '';
+  const [rangeFrom, rangeTo] = splitFeeRange(feeRange);
+
   return {
     ...row,
-    image_url: row.image_url || '',
+    image_url: row.image_url || row.logo_url || '',
     images: Array.isArray(row.images) ? row.images : parseImageList(row.images),
-    feeRange: row.fee_range || '',
+    feeRange,
+    feeFrom: row.fee_from || row.feeFrom || rangeFrom,
+    feeTo: row.fee_to || row.feeTo || rangeTo,
     document_url: row.document_url || '',
     document_name: row.document_name || '',
     document_type: row.document_type || '',
@@ -121,7 +145,11 @@ function getCardImage(item) {
   return item.image_url || item.images?.[0] || '';
 }
 
-export default function Add({ onNavigate, globalData, setGlobalData }) {
+function getFeeRange(item) {
+  return item.feeRange || item.fee_range || [item.feeFrom || item.fee_from, item.feeTo || item.fee_to].filter(Boolean).join(' - ');
+}
+
+export default function Add({ onNavigate, globalData, setGlobalData, refreshGlobalData, dataLoading }) {
   const [activeCategory, setActiveCategory] = useState(null);
   const [showAll, setShowAll] = useState({ Universities: false, Colleges: false, Courses: false });
   const [isEditing, setIsEditing] = useState(false);
@@ -130,7 +158,7 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
   const initialFormState = {
     name: '', image_url: '', images: [], rating: '',
     university_id: '', college_id: '',
-    location: '', feeRange: '', about: '', type: '', levels: '', degree: '', category: '',
+    location: '', feeRange: '', feeFrom: '', feeTo: '', about: '', type: '', levels: '', degree: '', category: '',
     phone: '', email: '', address: '', duration: '', mode: 'Offline',
     document_url: '', document_name: '', document_type: '',
   };
@@ -164,9 +192,18 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
       return;
     }
 
+    if (activeCategory !== 'Universities' && !formData.document_url) {
+      alert('Please upload a document before publishing.');
+      return;
+    }
+
+    if (activeCategory !== 'Courses' && !formData.image_url) {
+      alert('Please upload or paste an image before publishing.');
+      return;
+    }
+
     const tableName = getTableName(activeCategory);
     const payload = buildTablePayload(formData, activeCategory);
-    const fallbackPayload = buildTablePayload(formData, activeCategory, { includeMedia: false });
 
     const saveWithRetry = async (mode) => {
       if (isEditing) {
@@ -183,8 +220,12 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
         .select();
     };
 
+    const getErrorText = (error) => {
+      return `${error?.message || ''} ${error?.details || ''} ${error?.hint || ''}`.toLowerCase();
+    };
+
     const isMissingColumnError = (error) => {
-      const message = `${error?.message || ''} ${error?.details || ''} ${error?.hint || ''}`.toLowerCase();
+      const message = getErrorText(error);
       return (
         message.includes('column') &&
         (message.includes('does not exist') ||
@@ -193,11 +234,52 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
       );
     };
 
-    let result = await saveWithRetry(payload);
+    const removeUnsupportedColumns = (error, sourcePayload) => {
+      const message = getErrorText(error);
+      const nextPayload = { ...sourcePayload };
+      const optionalColumns = [
+        'images',
+        'image_url',
+        'logo_url',
+        'document_url',
+        'document_name',
+        'document_type',
+        'affiliation',
+        'category',
+        'degree',
+        'level',
+        'levels',
+        'duration',
+        'mode',
+        'fee_range',
+        'fee_from',
+        'fee_to',
+        'type',
+        'phone',
+        'email',
+        'address',
+      ];
 
-    if (result.error && isMissingColumnError(result.error)) {
-      console.warn('Media columns are missing in the database, retrying without image fields.');
-      result = await saveWithRetry(fallbackPayload);
+      optionalColumns.forEach((column) => {
+        if (message.includes(column)) delete nextPayload[column];
+      });
+
+      if (Object.keys(nextPayload).length === Object.keys(sourcePayload).length) {
+        delete nextPayload.images;
+      }
+
+      return nextPayload;
+    };
+
+    let activePayload = payload;
+    let result = await saveWithRetry(activePayload);
+    let retries = 0;
+
+    while (result.error && isMissingColumnError(result.error) && retries < 6) {
+      console.warn('Some optional columns are missing in the database, retrying without unsupported fields.');
+      activePayload = removeUnsupportedColumns(result.error, activePayload);
+      result = await saveWithRetry(activePayload);
+      retries += 1;
     }
 
     if (result.error) {
@@ -207,13 +289,19 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
 
     const savedRow = Array.isArray(result.data) ? result.data[0] : result.data;
     const savedItem = normalizeOpportunity(savedRow || {
-      ...payload,
+      ...activePayload,
       id: editId || crypto.randomUUID(),
     });
     const visibleItem = {
       ...savedItem,
       image_url: savedItem.image_url || formData.image_url || '',
       images: savedItem.images?.length ? savedItem.images : parseImageList(formData.images),
+      feeRange: savedItem.feeRange || buildFeeRange(formData),
+      feeFrom: savedItem.feeFrom || formData.feeFrom || buildFeeRange(formData),
+      feeTo: savedItem.feeTo || formData.feeTo || buildFeeRange(formData),
+      document_url: savedItem.document_url || formData.document_url || '',
+      document_name: savedItem.document_name || formData.document_name || '',
+      document_type: savedItem.document_type || formData.document_type || '',
     };
 
     if (isEditing) {
@@ -230,6 +318,7 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
       }));
     }
 
+    refreshGlobalData?.();
     closeModal();
   };
 
@@ -358,6 +447,7 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
       [category]: prev[category].filter((item) => item.id !== id),
     }));
 
+    refreshGlobalData?.();
     if (isEditing) closeModal();
   };
 
@@ -386,6 +476,16 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
         </div>
 
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:gap-4">
+          {dataLoading && displayItems.length === 0 && (
+            <div className="col-span-full rounded-3xl border border-white/10 bg-white/[0.03] p-8 text-center text-sm font-semibold text-white/45">
+              Loading saved {title.toLowerCase()}...
+            </div>
+          )}
+          {!dataLoading && displayItems.length === 0 && (
+            <div className="col-span-full rounded-3xl border border-white/10 bg-white/[0.03] p-8 text-center text-sm font-semibold text-white/45">
+              No {title.toLowerCase()} saved yet.
+            </div>
+          )}
           {displayItems.map((item) => (
             <motion.div 
               layout 
@@ -450,10 +550,18 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
 
                 <div className="mt-auto space-y-2 border-t border-white/10 pt-3">
                   <div className="grid grid-cols-1 gap-1.5 text-[10px] text-white/65">
-                    {item.feeRange && (
+                    {getFeeRange(item) && (
                       <div className="flex items-center justify-between gap-4">
                         <span className="uppercase tracking-[0.2em] text-white/25">Fees</span>
-                        <span className="font-semibold text-white">{item.feeRange}</span>
+                        <span className="font-semibold text-white">{getFeeRange(item)}</span>
+                      </div>
+                    )}
+                    {item.document_url && (
+                      <div className="flex items-center justify-between gap-4">
+                        <span className="uppercase tracking-[0.2em] text-white/25">Document</span>
+                        <a href={item.document_url} target="_blank" rel="noreferrer" className="font-semibold text-fuchsia-200 hover:text-white">
+                          Download
+                        </a>
                       </div>
                     )}
                     {item.duration && (
@@ -540,16 +648,16 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
       <AnimatePresence>
         {activeCategory && (
           <div
-            className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto p-2 md:p-4"
+            className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden p-1.5 md:p-3"
             style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}
           >
             <motion.div initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 0}} onClick={closeModal} className="absolute inset-0 bg-black/90 backdrop-blur-xl" />
             
-            <motion.div initial={{y: 50, opacity: 0}} animate={{y: 0, opacity: 1}} className="relative z-10 flex w-[98vw] max-w-[96rem] flex-col overflow-hidden rounded-[2rem] border border-white/10 bg-[#12081d] shadow-2xl sm:rounded-[3rem]" style={{ maxHeight: 'calc(100dvh - 1.5rem)' }}>
+            <motion.div initial={{y: 50, opacity: 0}} animate={{y: 0, opacity: 1}} className="relative z-10 flex h-[calc(100dvh-0.75rem)] w-[99vw] max-w-[96rem] flex-col overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#12081d] shadow-2xl sm:rounded-[2rem] md:h-[calc(100dvh-1.5rem)]">
               
-              <div className="shrink-0 flex items-center justify-between border-b border-white/5 bg-white/[0.02] p-4 sm:p-5 lg:p-6">
+              <div className="shrink-0 flex items-center justify-between border-b border-white/5 bg-white/[0.02] px-4 py-3 sm:px-5 lg:px-6">
                 <div>
-                    <h2 className="text-2xl font-black italic tracking-tighter uppercase sm:text-[2rem]">
+                    <h2 className="text-xl font-black italic tracking-tighter uppercase sm:text-2xl lg:text-[1.8rem]">
                         {isEditing ? `Edit ${activeCategory.slice(0,-1)}` : `New ${activeCategory.slice(0,-1)}`}
                     </h2>
                     {isEditing && <p className="text-[10px] font-bold text-fuchsia-400 uppercase tracking-widest mt-1">Modifying existing record ID: {editId}</p>}
@@ -560,8 +668,8 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
               <form
                 id="add-opportunity-form"
                 onSubmit={handleSubmit}
-                className="custom-scrollbar min-h-0 overflow-y-auto overscroll-contain p-3 sm:p-4 lg:p-5"
-                style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y', maxHeight: 'calc(100dvh - 14rem)' }}
+                className="custom-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-4"
+                style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}
               >
                 {activeCategory === 'Universities' && (
                   <div className="grid gap-5 xl:grid-cols-[1.15fr_0.85fr] xl:gap-6">
@@ -624,6 +732,7 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
                           onChange={(e) => setFormData({...formData, image_url: e.target.value})}
                           placeholder="Paste logo image URL if needed"
                           className="mt-3 w-full rounded-xl border border-white/10 bg-white/5 p-3 text-[11px] outline-none focus:border-fuchsia-500"
+                          required
                         />
                       </div>
                     </div>
@@ -631,25 +740,29 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
                 )}
 
                 {activeCategory === 'Colleges' && (
-                  <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1fr_1fr] xl:gap-5">
-                    <div className="space-y-3.5 sm:space-y-4">
-                      <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3.5 sm:p-4">
+                  <div className="grid grid-cols-1 gap-3 xl:grid-cols-[1fr_1fr] xl:gap-4">
+                    <div className="space-y-3">
+                      <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3">
                         <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><Info size={14}/> Basic Information</h4>
                         <input placeholder="College Name" className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required/>
-                        <div className="grid grid-cols-2 gap-3.5">
-                          <input placeholder="Rating" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.rating} onChange={e => setFormData({...formData, rating: e.target.value})} />
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                          <input placeholder="Rating" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.rating} onChange={e => setFormData({...formData, rating: e.target.value})} required/>
                           <input placeholder="Location" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} required/>
                         </div>
-                        <select className="w-full rounded-xl border border-white/10 bg-[#1e0f2d] p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.university_id} onChange={e => setFormData({...formData, university_id: e.target.value})}>
+                        <select className="w-full rounded-xl border border-white/10 bg-[#1e0f2d] p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.university_id} onChange={e => setFormData({...formData, university_id: e.target.value})} required>
                           <option value="">Select University</option>
                           {globalData.Universities?.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
                         </select>
                       </div>
 
-                      <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3.5 sm:p-4">
+                      <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3">
                         <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><Banknote size={14}/> Fee / Upload</h4>
-                        <input placeholder="Annual Fee Range" className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.feeRange} onChange={e => setFormData({...formData, feeRange: e.target.value})} />
-                        <div className="space-y-2 rounded-2xl border border-dashed border-white/10 bg-white/5 p-3.5">
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                          <input placeholder="Annual Fee From" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.feeFrom} onChange={e => setFormData({...formData, feeFrom: e.target.value})} required/>
+                          <input placeholder="Up To" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.feeTo} onChange={e => setFormData({...formData, feeTo: e.target.value})} required/>
+                        </div>
+                        <input placeholder="Display Fee Range (auto if blank)" className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.feeRange} onChange={e => setFormData({...formData, feeRange: e.target.value})} />
+                        <div className="space-y-2 rounded-2xl border border-dashed border-white/10 bg-white/5 p-3">
                           <h5 className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-fuchsia-400">
                             <BookOpen size={12}/> Document Upload
                           </h5>
@@ -672,7 +785,7 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
                                 </button>
                               </div>
                             ) : (
-                              <label className="flex cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-black/20 px-3 py-4 text-center">
+                              <label className="flex cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-black/20 px-3 py-3 text-center">
                                 <div>
                                   <div className="text-xs font-black text-white">Click to upload document</div>
                                   <div className="mt-1 text-[9px] text-white/40">PDF, DOC, DOCX, XLS, TXT</div>
@@ -690,26 +803,98 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
                         </div>
                       </div>
 
-                      <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3.5 sm:p-4">
+                      <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3">
                         <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><Phone size={14}/> Contact Details</h4>
-                        <input placeholder="Phone" className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
-                        <input placeholder="Email" className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
-                        <input placeholder="Address" className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} />
+                        <input placeholder="Phone" className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} required/>
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                          <input placeholder="Email" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} required/>
+                          <input placeholder="Address" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} required/>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="space-y-4 sm:space-y-5">
-                      <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3.5 sm:p-4">
+                    <div className="space-y-3">
+                      <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3">
                         <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><ShieldCheck size={14}/> Quick Facts</h4>
-                        <div className="grid grid-cols-2 gap-3.5">
-                          <input placeholder="Institution Type" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} />
-                          <input placeholder="Course Levels" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.levels} onChange={e => setFormData({...formData, levels: e.target.value})} />
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                          <input placeholder="Institution Type" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} required/>
+                          <input placeholder="Course Levels" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.levels} onChange={e => setFormData({...formData, levels: e.target.value})} required/>
                         </div>
                       </div>
 
-                      <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3.5 sm:p-4">
+                      <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3">
                         <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><Layers size={14}/> About Section</h4>
-                        <textarea rows="3" placeholder="About the college..." className="w-full resize-none rounded-2xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.about} onChange={e => setFormData({...formData, about: e.target.value})} />
+                        <textarea rows="3" placeholder="About the college..." className="w-full resize-none rounded-2xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm xl:h-24" value={formData.about} onChange={e => setFormData({...formData, about: e.target.value})} required/>
+                      </div>
+
+                      <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3">
+                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500">
+                          <Layers size={14}/> Image Upload
+                        </h4>
+                        <div className="grid grid-cols-1 gap-3 lg:grid-cols-[0.85fr_1.15fr]">
+                          <div className="space-y-2">
+                            <div className="group relative h-28 w-full overflow-hidden rounded-2xl border-2 border-dashed border-white/10 bg-white/5 transition-colors hover:border-fuchsia-500/50">
+                              {formData.image_url ? (
+                                <>
+                                  <img src={formData.image_url} alt="" className="h-full w-full object-cover" />
+                                  <button
+                                    type="button"
+                                    onClick={() => setFormData({...formData, image_url: ''})}
+                                    className="absolute right-2 top-2 z-20 rounded-lg bg-red-500 p-1"
+                                  >
+                                    <X size={14} />
+                                  </button>
+                                </>
+                              ) : (
+                                <div className="flex h-full flex-col items-center justify-center gap-1 opacity-40">
+                                  <Plus size={20} />
+                                  <span className="text-[9px] font-bold uppercase tracking-widest">Cover Image</span>
+                                </div>
+                              )}
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleCoverFileChange}
+                                className="absolute inset-0 z-10 cursor-pointer opacity-0"
+                                aria-label="Upload main cover image"
+                              />
+                            </div>
+                            <input
+                              value={formData.image_url}
+                              onChange={(e) => setFormData({...formData, image_url: e.target.value})}
+                              placeholder="Paste image URL"
+                              className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500"
+                              required
+                            />
+                          </div>
+
+                          <div className="grid grid-cols-3 gap-2">
+                            {formData.images?.slice(0, 5).map((img, idx) => (
+                              <div key={idx} className="relative h-16 overflow-hidden rounded-lg border border-white/10 bg-white/10">
+                                <img src={img} alt="" className="h-full w-full object-cover" />
+                                <button
+                                  type="button"
+                                  onClick={() => setFormData({...formData, images: formData.images.filter((_, i) => i !== idx)})}
+                                  className="absolute inset-0 flex items-center justify-center bg-red-500/80 opacity-0 transition-opacity hover:opacity-100"
+                                >
+                                  <Trash2 size={14} />
+                                </button>
+                              </div>
+                            ))}
+                            <label className="relative flex h-16 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-white/10 transition-colors hover:border-fuchsia-500">
+                              <Plus size={16} className="text-fuchsia-500" />
+                              <span className="text-[8px] font-bold uppercase text-white/40">Gallery</span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                onChange={handleGalleryFileChange}
+                                className="absolute inset-0 cursor-pointer opacity-0"
+                                aria-label="Upload gallery images"
+                              />
+                            </label>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -721,15 +906,15 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
                       <div className="space-y-3 rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
                         <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><Info size={14}/> Basic Information</h4>
                         <input placeholder="Course Name" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required/>
-                        <div className="grid grid-cols-2 gap-4">
-                          <input placeholder="Degree" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.degree} onChange={e => setFormData({...formData, degree: e.target.value})} />
-                          <input placeholder="Category" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} />
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                          <input placeholder="Degree" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.degree} onChange={e => setFormData({...formData, degree: e.target.value})} required/>
+                          <input placeholder="Category" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} required/>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <input placeholder="Level" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.levels} onChange={e => setFormData({...formData, levels: e.target.value})} />
-                          <input placeholder="Duration" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.duration} onChange={e => setFormData({...formData, duration: e.target.value})} />
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                          <input placeholder="Level" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.levels} onChange={e => setFormData({...formData, levels: e.target.value})} required/>
+                          <input placeholder="Duration" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.duration} onChange={e => setFormData({...formData, duration: e.target.value})} required/>
                         </div>
-                        <select className="w-full rounded-xl border border-white/10 bg-[#1e0f2d] p-3 outline-none focus:border-fuchsia-500" value={formData.college_id} onChange={e => setFormData({...formData, college_id: e.target.value})}>
+                        <select className="w-full rounded-xl border border-white/10 bg-[#1e0f2d] p-3 outline-none focus:border-fuchsia-500" value={formData.college_id} onChange={e => setFormData({...formData, college_id: e.target.value})} required>
                           <option value="">Select College</option>
                           {globalData.Colleges?.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                         </select>
@@ -777,22 +962,26 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
 
                       <div className="space-y-3 rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
                         <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><Banknote size={14}/> Financial Information</h4>
-                        <input placeholder="Course Fees" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.feeRange} onChange={e => setFormData({...formData, feeRange: e.target.value})} />
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                          <input placeholder="Annual Fee From" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.feeFrom} onChange={e => setFormData({...formData, feeFrom: e.target.value})} required/>
+                          <input placeholder="Up To" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.feeTo} onChange={e => setFormData({...formData, feeTo: e.target.value})} required/>
+                        </div>
+                        <input placeholder="Display Fee Range (auto if blank)" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.feeRange} onChange={e => setFormData({...formData, feeRange: e.target.value})} />
                       </div>
                     </div>
 
                     <div className="space-y-5 sm:space-y-6">
                       <div className="space-y-3 rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
                         <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><ShieldCheck size={14}/> Provider Information</h4>
-                        <input placeholder="Provider Type" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} />
-                        <input placeholder="Affiliation" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.affiliation} onChange={e => setFormData({...formData, affiliation: e.target.value})} />
-                        <input placeholder="Phone" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
-                        <input placeholder="Email" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+                        <input placeholder="Provider Type" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} required/>
+                        <input placeholder="Affiliation" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.affiliation} onChange={e => setFormData({...formData, affiliation: e.target.value})} required/>
+                        <input placeholder="Phone" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} required/>
+                        <input placeholder="Email" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} required/>
                       </div>
 
                       <div className="space-y-3 rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
                         <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><Layers size={14}/> About Section</h4>
-                        <textarea rows="4" placeholder="About the course..." className="w-full resize-none rounded-2xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.about} onChange={e => setFormData({...formData, about: e.target.value})} />
+                        <textarea rows="4" placeholder="About the course..." className="w-full resize-none rounded-2xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.about} onChange={e => setFormData({...formData, about: e.target.value})} required/>
                       </div>
                     </div>
                   </div>
@@ -804,87 +993,10 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
                   </div>
                 )}
 
-                {activeCategory === 'Colleges' && (
-                  <div className="mt-5 space-y-3 rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
-                    <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500">
-                      <Layers size={14}/> Media Assets
-                    </h4>
-
-                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                      <div className="space-y-3">
-                        <label className="text-[10px] font-bold uppercase text-white/40">Main Cover Image URL</label>
-                        <div className="group relative h-32 w-full overflow-hidden rounded-2xl border-2 border-dashed border-white/10 bg-white/5 transition-colors hover:border-fuchsia-500/50 sm:h-36">
-                          {formData.image_url ? (
-                            <>
-                              <img src={formData.image_url} alt="" className="h-full w-full object-cover" />
-                              <button
-                                type="button"
-                                onClick={() => setFormData({...formData, image_url: ''})}
-                                className="absolute right-2 top-2 z-20 rounded-lg bg-red-500 p-1"
-                              >
-                                <X size={14} />
-                              </button>
-                            </>
-                          ) : (
-                            <div className="flex h-full flex-col items-center justify-center gap-2 opacity-30">
-                              <Plus size={24} />
-                              <span className="text-[9px] font-bold">Click to upload</span>
-                            </div>
-                          )}
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleCoverFileChange}
-                            className="absolute inset-0 z-10 cursor-pointer opacity-0"
-                            aria-label="Upload main cover image"
-                          />
-                        </div>
-                        <input
-                          value={formData.image_url}
-                          onChange={(e) => setFormData({...formData, image_url: e.target.value})}
-                          placeholder="https://image-link.com/photo.jpg or upload from device"
-                          className="w-full rounded-xl border border-white/10 bg-white/5 p-3 text-[11px] outline-none focus:border-fuchsia-500"
-                        />
-                      </div>
-
-                      <div className="space-y-3">
-                        <label className="text-[10px] font-bold uppercase text-white/40">Additional Gallery Images</label>
-                        <div className="grid grid-cols-3 gap-2">
-                          {formData.images?.map((img, idx) => (
-                            <div key={idx} className="relative h-20 overflow-hidden rounded-lg border border-white/10 bg-white/10">
-                              <img src={img} alt="" className="h-full w-full object-cover" />
-                              <button
-                                type="button"
-                                onClick={() => setFormData({...formData, images: formData.images.filter((_, i) => i !== idx)})}
-                                className="absolute inset-0 flex items-center justify-center bg-red-500/80 opacity-0 transition-opacity hover:opacity-100"
-                              >
-                                <Trash2 size={14} />
-                              </button>
-                            </div>
-                          ))}
-                          <label className="relative flex h-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-white/10 transition-colors hover:border-fuchsia-500">
-                            <Plus size={16} className="text-fuchsia-500" />
-                            <span className="text-[8px] font-bold opacity-40">ADD MORE</span>
-                            <span className="text-[7px] font-bold uppercase tracking-[0.2em] text-white/20">From File</span>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              multiple
-                              onChange={handleGalleryFileChange}
-                              className="absolute inset-0 cursor-pointer opacity-0"
-                              aria-label="Upload gallery images"
-                            />
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
               </form>
 
-              <div className="shrink-0 border-t border-white/10 bg-[#12081d]/98 p-3 backdrop-blur-xl sm:p-4 lg:p-5">
-                <div className="flex flex-col items-center justify-between gap-4 rounded-[2rem] border border-white/10 bg-[#12081d]/95 p-4 md:flex-row md:gap-6 md:p-5">
+              <div className="shrink-0 border-t border-white/10 bg-[#12081d]/98 p-2.5 backdrop-blur-xl sm:p-3">
+                <div className="flex flex-col items-center justify-between gap-3 rounded-[1.35rem] border border-white/10 bg-[#12081d]/95 p-3 md:flex-row md:gap-6">
                 {isEditing ? (
                   <button 
                       type="button" 
@@ -899,7 +1011,7 @@ export default function Add({ onNavigate, globalData, setGlobalData }) {
                 
                 <div className="flex w-full gap-4 md:w-auto">
                   <button onClick={closeModal} type="button" className="hidden md:block px-8 text-white/30 text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors">Discard</button>
-                  <button type="submit" form="add-opportunity-form" className="w-full md:w-auto bg-fuchsia-500 px-12 py-4 rounded-2xl text-white font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all flex items-center justify-center gap-3 shadow-xl shadow-fuchsia-500/20">
+                  <button type="submit" form="add-opportunity-form" className="w-full md:w-auto bg-fuchsia-500 px-10 py-3 rounded-2xl text-white font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all flex items-center justify-center gap-3 shadow-xl shadow-fuchsia-500/20">
                       {isEditing ? "SAVE CHANGES" : "PUBLISH DATA"} <Send size={18}/>
                   </button>
                 </div>

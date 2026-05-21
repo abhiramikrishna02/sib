@@ -18,12 +18,12 @@ export function FlowSection({
     <section
       data-flow-section
       aria-label={ariaLabel}
-      className={cx('relative min-h-screen w-full overflow-hidden', className)}
+      className={cx('relative w-full overflow-hidden md:min-h-[100svh]', className)}
     >
       <div
         data-flow-inner
         className={cx(
-          'flow-art-container relative flex min-h-screen w-full flex-col justify-between gap-6 px-[4vw] pt-[clamp(2rem,8vw,4vw)] pb-[4vw]',
+          'flow-art-container relative flex w-full flex-col justify-start gap-8 px-5 py-10 sm:px-8 sm:py-12 md:min-h-[100svh] lg:justify-between lg:gap-6 lg:px-[4vw] lg:pt-[clamp(2rem,8vw,4vw)] lg:pb-[4vw]',
           'will-change-transform',
         )}
         style={{ transformOrigin: 'bottom left', ...style }}
@@ -52,7 +52,7 @@ export default function FlowArt({
   }, [])
 
   useEffect(() => {
-    if (!containerRef.current || reducedMotion) return undefined
+    if (!containerRef.current || reducedMotion || window.innerWidth < 768) return undefined
 
     const sections = Array.from(containerRef.current.querySelectorAll('[data-flow-section]'))
     if (sections.length === 0) return undefined

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import './App.css'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -34,15 +34,45 @@ function getPathname() {
 }
 
 function normalizeRows(rows = []) {
-  return rows.map((row) => ({
-    ...row,
-    feeRange: row.fee_range || row.feeRange || '',
-    image_url: row.image_url || '',
-    images: Array.isArray(row.images) ? row.images : [],
-    document_url: row.document_url || '',
-    document_name: row.document_name || '',
-    document_type: row.document_type || '',
-  }))
+  const splitFeeRange = (value) => {
+    const text = String(value || '').trim()
+    if (!text) return ['', '']
+    const parts = text.split(/\s*(?:-|–|—|to)\s*/i).map((part) => part.trim()).filter(Boolean)
+    return parts.length >= 2 ? [parts[0], parts.slice(1).join(' - ')] : [text, '']
+  }
+
+  const parseImages = (images) => {
+    if (Array.isArray(images)) return images.filter(Boolean)
+    if (typeof images === 'string') {
+      try {
+        const parsed = JSON.parse(images)
+        if (Array.isArray(parsed)) return parsed.filter(Boolean)
+      } catch {
+        return images
+          .split(/\r?\n|,/)
+          .map((item) => item.trim())
+          .filter(Boolean)
+      }
+    }
+    return []
+  }
+
+  return rows.map((row) => {
+    const feeRange = row.fee_range || row.feeRange || ''
+    const [rangeFrom, rangeTo] = splitFeeRange(feeRange)
+
+    return {
+      ...row,
+      feeRange,
+      feeFrom: row.fee_from || row.feeFrom || rangeFrom,
+      feeTo: row.fee_to || row.feeTo || rangeTo,
+      image_url: row.image_url || row.logo_url || '',
+      images: parseImages(row.images),
+      document_url: row.document_url || '',
+      document_name: row.document_name || '',
+      document_type: row.document_type || '',
+    }
+  })
 }
 
 function groupEducationData({
@@ -64,56 +94,75 @@ function App() {
   const [globalData, setGlobalData] = useState({ Universities: [], Colleges: [], Courses: [] })
   const [dataLoading, setDataLoading] = useState(true)
   const lenisRef = useRef(null)
+  const hasLoadedDataRef = useRef(false)
+
+  const loadGlobalData = useCallback(async ({ silent = false } = {}) => {
+    if (!silent) setDataLoading(true)
+
+    if (!isSupabaseConfigured) {
+      console.warn(supabaseConfigMessage)
+      setGlobalData({ Universities: [], Colleges: [], Courses: [] })
+      setDataLoading(false)
+      hasLoadedDataRef.current = true
+      return
+    }
+
+    const loadTable = async (tableName) => {
+      const ordered = await supabase.from(tableName).select('*').order('created_at', { ascending: true })
+      if (!ordered.error) return ordered
+
+      const message = `${ordered.error.message || ''} ${ordered.error.details || ''} ${ordered.error.hint || ''}`.toLowerCase()
+      const canRetryWithoutOrder =
+        message.includes('created_at') ||
+        message.includes('order') ||
+        message.includes('does not exist') ||
+        message.includes('schema cache')
+
+      if (canRetryWithoutOrder) {
+        const unordered = await supabase.from(tableName).select('*')
+        if (!unordered.error) return unordered
+      }
+
+      return ordered
+    }
+
+    const [universitiesResult, collegesResult, coursesResult] = await Promise.all([
+      loadTable('universities'),
+      loadTable('colleges'),
+      loadTable('courses'),
+    ])
+
+    const hasError = universitiesResult.error || collegesResult.error || coursesResult.error
+
+    if (hasError) {
+      console.error('Failed to load some education data:', {
+        universities: universitiesResult.error,
+        colleges: collegesResult.error,
+        courses: coursesResult.error,
+      })
+    }
+
+    setGlobalData(
+      groupEducationData({
+        universities: universitiesResult.error ? [] : universitiesResult.data || [],
+        colleges: collegesResult.error ? [] : collegesResult.data || [],
+        courses: coursesResult.error ? [] : coursesResult.data || [],
+      })
+    )
+
+    setDataLoading(false)
+    hasLoadedDataRef.current = true
+  }, [])
 
   useEffect(() => {
-    let mounted = true
-
-    const loadGlobalData = async () => {
-      setDataLoading(true)
-
-      if (!isSupabaseConfigured) {
-        console.warn(supabaseConfigMessage)
-        setGlobalData({ Universities: [], Colleges: [], Courses: [] })
-        setDataLoading(false)
-        return
-      }
-
-      const [universitiesResult, collegesResult, coursesResult] = await Promise.all([
-        supabase.from('universities').select('*').order('created_at', { ascending: true }),
-        supabase.from('colleges').select('*').order('created_at', { ascending: true }),
-        supabase.from('courses').select('*').order('created_at', { ascending: true }),
-      ])
-
-      if (!mounted) return
-
-      const hasError = universitiesResult.error || collegesResult.error || coursesResult.error
-
-      if (hasError) {
-        console.error('Failed to load education data:', {
-          universities: universitiesResult.error,
-          colleges: collegesResult.error,
-          courses: coursesResult.error,
-        })
-        setGlobalData({ Universities: [], Colleges: [], Courses: [] })
-      } else {
-        setGlobalData(
-          groupEducationData({
-            universities: universitiesResult.data || [],
-            colleges: collegesResult.data || [],
-            courses: coursesResult.data || [],
-          })
-        )
-      }
-
-      setDataLoading(false)
-    }
-
     loadGlobalData()
+  }, [loadGlobalData])
 
-    return () => {
-      mounted = false
-    }
-  }, [])
+  useEffect(() => {
+    if (!hasLoadedDataRef.current) return
+    if (!['/services', '/details', '/add'].includes(pathname)) return
+    loadGlobalData({ silent: true })
+  }, [loadGlobalData, pathname])
 
   useEffect(() => {
     window.history.scrollRestoration = 'manual'
@@ -202,6 +251,7 @@ function App() {
           onNavigate={navigate}
           globalData={globalData}
           setGlobalData={setGlobalData}
+          refreshGlobalData={() => loadGlobalData({ silent: true })}
           locationHash={locationHash}
           dataLoading={dataLoading}
         />

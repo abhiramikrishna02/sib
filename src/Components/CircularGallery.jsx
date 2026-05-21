@@ -385,16 +385,23 @@ class App {
     }))
   }
 
-  getWorldX(clientX) {
+  getWorldPosition(clientX, clientY) {
     const rect = this.container.getBoundingClientRect()
-    return ((clientX - rect.left) / rect.width - 0.5) * this.viewport.width
+    return {
+      x: ((clientX - rect.left) / rect.width - 0.5) * this.viewport.width,
+      y: (0.5 - (clientY - rect.top) / rect.height) * this.viewport.height
+    }
   }
 
-  selectNearest(clientX) {
+  selectNearest(clientX, clientY) {
     if (!this.onSelect || !this.medias?.length) return
-    const worldX = this.getWorldX(clientX)
+    const pointer = this.getWorldPosition(clientX, clientY)
     const selected = this.medias.reduce((nearest, media) => {
-      const distance = Math.abs(media.plane.position.x - worldX)
+      const distanceX = Math.abs(media.plane.position.x - pointer.x)
+      const distanceY = Math.abs(media.plane.position.y - pointer.y)
+      const withinCard = distanceX <= media.plane.scale.x / 2 && distanceY <= media.plane.scale.y / 2
+      if (!withinCard) return nearest
+      const distance = Math.hypot(distanceX, distanceY)
       if (!nearest || distance < nearest.distance) return { media, distance }
       return nearest
     }, null)
@@ -406,7 +413,9 @@ class App {
     this.didDrag = false
     this.scroll.position = this.scroll.current
     this.start = e.touches ? e.touches[0].clientX : e.clientX
+    this.startY = e.touches ? e.touches[0].clientY : e.clientY
     this.lastPointerX = this.start
+    this.lastPointerY = this.startY
   }
 
   onTouchMove(e) {
@@ -415,11 +424,13 @@ class App {
     const distance = (this.start - x) * (this.scrollSpeed * 0.025)
     if (Math.abs(this.start - x) > 8) this.didDrag = true
     this.lastPointerX = x
+    this.lastPointerY = e.touches ? e.touches[0].clientY : e.clientY
     this.scroll.target = this.scroll.position + distance
   }
 
   onTouchUp() {
-    if (!this.didDrag) this.selectNearest(this.lastPointerX || this.start)
+    if (!this.isDown) return
+    if (!this.didDrag) this.selectNearest(this.lastPointerX || this.start, this.lastPointerY || this.startY)
     this.isDown = false
     this.onCheck()
   }
