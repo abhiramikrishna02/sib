@@ -265,18 +265,95 @@ function WhyChooseSection() {
     const ctx = gsap.context(() => {
       const cards = gsap.utils.toArray('.why-card')
       const cardContents = gsap.utils.toArray('.why-card-content')
+
       if (isMobileViewport()) {
-        gsap.from([coreRef.current, ...cards], {
-          y: 24,
-          opacity: 0,
-          duration: 0.65,
-          stagger: 0.08,
-          ease: 'power2.out',
-          scrollTrigger: { trigger: containerRef.current, start: 'top 72%', once: true },
+        // ── Mobile 3-phase scroll animation ──
+        // Cards are on an ELLIPSE: rx=310px (hides E/W), ry=175px (N/S close to circle).
+        // GSAP cannot rotate an ellipse directly, so we animate each card's angle
+        // individually via a proxy object, recalculating x/y every frame.
+        //
+        // Phase 1 — hold: user reads top (0) & bottom (2).
+        // Phase 2 — all angles advance 90°: cards 1 & 3 arrive at top/bottom.
+        //           Card contents counter-rotate so text stays upright.
+        // Phase 3 — cards fade, centre circle zooms → portal flash.
+
+        const mobileCards = gsap.utils.toArray('.mobile-why-card')
+        const mobileCardContents = gsap.utils.toArray('.mobile-why-card-content')
+
+        const RX = 310  // horizontal semi-axis — E/W card centre is 310px off screen centre → hidden
+        const RY = 175  // vertical semi-axis   — N/S card centre is 175px from circle centre → snug
+
+        // Each card starts at angle: 0=top(-90°), 1=right(0°), 2=bottom(90°), 3=left(180°)
+        const baseAngles = [-90, 0, 90, 180]  // degrees
+        const proxy = { angle: 0 }  // shared rotation offset
+
+        // Position all 4 cards at their current angle+offset
+        const RING_SIZE = (RX + 120) * 2  // ring container size
+        const RING_HALF = RING_SIZE / 2
+
+        function positionCards(offset) {
+          mobileCards.forEach((card, i) => {
+            const deg = baseAngles[i] + offset
+            const rad = deg * (Math.PI / 180)
+            const cx = RING_HALF + Math.cos(rad) * RX
+            const cy = RING_HALF + Math.sin(rad) * RY
+            const CARD_W = 200
+            const CARD_H = 185
+            gsap.set(card, {
+              x: cx - RING_HALF - CARD_W / 2,
+              y: cy - RING_HALF - CARD_H / 2,
+            })
+          })
+        }
+
+        // Set initial card positions (offset = 0)
+        positionCards(0)
+
+        gsap.set(mobileCards, {
+          position: 'absolute',
+          left: '50%',
+          top: '50%',
+          width: '200px',
+          transformOrigin: 'center center',
         })
+        gsap.set(coreRef.current, { scale: 1, opacity: 1 })
+        gsap.set(portalFlashRef.current, { opacity: 0, backgroundColor: 'transparent' })
+        gsap.set('.bg-glow', { opacity: 1, scale: 1 })
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top top',
+            end: '+=280%',
+            scrub: 1,
+            pin: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          },
+        })
+
+        // Phase 1: hold
+        tl.to({}, { duration: 0.35 })
+
+        // Phase 2: rotate all cards 90° on the ellipse (x/y only — no wrapper rotation, so content stays upright)
+        tl.to(proxy, {
+            angle: 90,
+            duration: 1.1,
+            ease: 'power2.inOut',
+            onUpdate: () => positionCards(proxy.angle),
+          }, 'phase2')
+          .to({}, { duration: 0.35 })
+
+        // Phase 3: dive
+        tl.to(mobileCards, { opacity: 0, scale: 0.72, duration: 0.4, stagger: 0.015, ease: 'power2.in' }, 'phase3')
+          .to(coreRef.current, { scale: 12, opacity: 1, duration: 0.9, ease: 'power3.in' }, 'phase3+=0.15')
+          .to('.bg-glow', { opacity: 0, scale: 0.45, duration: 0.55, ease: 'power2.in' }, 'phase3+=0.2')
+          .to(portalFlashRef.current, { opacity: 1, duration: 0.28, backgroundColor: '#1b1028' }, 'phase3+=0.8')
+
         return
       }
 
+      // ── Desktop (completely unchanged) ──
       const baseScale = window.innerWidth >= 1280 ? 0.86 : 0.74
       const readingScale = window.innerWidth >= 1280 ? 1.08 : 0.96
       const diveScale = readingScale * 1.14
@@ -300,10 +377,8 @@ function WhyChooseSection() {
         },
       })
 
-      // Scene 1: hold the current orbit so the user can understand the layout.
       tl.to(orbitalRef.current, { scale: baseScale, rotate: 0, duration: 0.5, ease: 'none' })
 
-      // Scene 2: one full cinema-style orbit, zooming the cards enough to read them.
       tl.to(orbitalRef.current, { rotate: 360, scale: baseScale, duration: 1.25, ease: 'none' }, 'scene2')
         .to(cardContents, { rotate: -360, duration: 1.25, ease: 'none' }, 'scene2')
         .to(orbitalRef.current, { scale: readingScale, duration: 0.9, ease: 'power2.out' }, 'read')
@@ -311,7 +386,6 @@ function WhyChooseSection() {
         .to(coreRef.current, { scale: 0.9, duration: 0.9, ease: 'power2.out' }, 'read')
         .to({}, { duration: 0.45 })
 
-      // Scene 3: dive through the center circle into the next section.
       tl.to(cards, { opacity: 0, scale: 0.76, duration: 0.45, stagger: 0.02, ease: 'power2.in' }, 'scene3')
         .to(orbitalRef.current, { scale: diveScale, duration: 0.5, ease: 'power2.in' }, 'scene3')
         .to(coreRef.current, { scale: 9, opacity: 1, duration: 0.85, ease: 'power3.in' }, 'scene3+=0.18')
@@ -334,69 +408,147 @@ function WhyChooseSection() {
       <PageGridOverlay opacity="opacity-[0.12]" />
       <div ref={portalFlashRef} className="absolute inset-0 z-[100] opacity-0 pointer-events-none" />
       <div className="bg-glow absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[70px]" />
-      <div className="relative flex h-full w-full items-center justify-center">
-        {/* Mobile scale: 0.38 → fits 4 orbital cards on small screens; sm: 0.52; md: 0.82; lg+: 1 */}
-        <div ref={orbitalRef} className="relative flex h-[760px] w-[760px] items-center justify-center preserve-3d" style={{ transform: `scale(${isMobile ? 0.34 : 0.62})` }}>
-          {/* Use inline style for the initial scale so GSAP can animate from it */}
-          <style>{`@media (min-width: 480px)  { .orbital-inner { transform: scale(0.52) !important; } }@media (min-width: 640px)  { .orbital-inner { transform: scale(0.65) !important; } }@media (min-width: 768px)  { .orbital-inner { transform: scale(0.82) !important; } }@media (min-width: 1024px) { .orbital-inner { transform: scale(1)    !important; } }`}</style>
-          <div ref={coreRef} className="relative z-50 preserve-3d h-52 w-52 md:h-64 md:w-64">
-            <div className="backface-hidden absolute inset-0 flex flex-col items-center justify-center rounded-full border border-white/35 bg-gradient-to-br from-[#2b133f]/92 via-[#1f1735]/88 to-[#120a1f]/94 shadow-[0_0_50px_rgba(88,28,135,0.18)]">
-              <h2 className="text-center text-lg font-black uppercase tracking-tighter text-white md:text-2xl">Why Choose <br /><span className="text-violet-400 underline decoration-violet-500/50 underline-offset-8">StudyIn</span><br />Bengaluru?</h2>
-            </div>
-            <div className="backface-hidden absolute inset-0 flex items-center justify-center rounded-full border-2 border-violet-300/70 bg-gradient-to-br from-[#1f1432] via-[#311a4b] to-[#130b22] shadow-[0_0_80px_rgba(168,85,247,0.28)]" style={{ transform: 'rotateY(180deg)' }}>
-              <span className="animate-pulse text-2xl font-bold italic tracking-widest text-white">Why Bengaluru?</span>
-            </div>
-          </div>
-          {features.map((f, i) => {
-            const positions = [
-              { top: '50%', left: '50%', transform: 'translate(-50%, -154%)' },
-              { top: '50%', left: '50%', transform: 'translate(82%, -50%)' },
-              { top: '50%', left: '50%', transform: 'translate(-50%, 54%)' },
-              { top: '50%', left: '50%', transform: 'translate(-182%, -50%)' },
-            ]
-            const Icon = f.icon
-            return (
-              <div
-                key={f.title}
-                className="why-card absolute z-40"
-                style={{
-                  width: '245px',
-                  ...positions[i],
-                }}
-              >
-                <div className="why-card-content preserve-3d">
+
+      {isMobile ? (
+        /* ── Mobile layout ──
+           Elliptical orbit: rx=310px hides E/W cards beyond the ~195px screen half-width.
+           ry=175px keeps N/S cards visually close to the 60px-radius centre circle.
+           Cards are absolutely positioned at left:50% top:50% then offset via x/y by GSAP.
+           coreRef is a sibling of the card container → never rotates.
+        */
+        <div className="relative flex h-full w-full items-center justify-center overflow-hidden">
+          {/* Card container — centred, cards positioned via GSAP x/y from here */}
+          <div
+            className="absolute"
+            style={{ left: '50%', top: '50%', width: 0, height: 0 }}
+          >
+            {features.map((f, i) => {
+              const Icon = f.icon
+              return (
+                <div
+                  key={f.title}
+                  className="mobile-why-card absolute z-40"
+                  style={{
+                    width: '200px',
+                    transformOrigin: 'center center',
+                  }}
+                >
                   <div
-                    className="group relative overflow-hidden rounded-[1.4rem] border bg-[#170a24]/94 p-4 shadow-2xl shadow-black/20 backdrop-blur-xl"
-                    style={{
-                      borderColor: `${f.accent}66`,
-                      boxShadow: `0 24px 70px rgba(0,0,0,0.22), 0 0 34px ${f.accent}22`,
-                    }}
+                    className="mobile-why-card-content"
+                    style={{ transformOrigin: 'center center' }}
                   >
-                    <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.08),transparent_42%),radial-gradient(circle_at_20%_18%,rgba(255,255,255,0.12),transparent_28%)]" />
-                    <div className="absolute inset-0 opacity-[0.12] [background-image:repeating-linear-gradient(45deg,rgba(255,255,255,0.34)_0px,rgba(255,255,255,0.34)_1px,transparent_1px,transparent_22px)]" />
-                    <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full border opacity-40 transition-transform duration-700 group-hover:scale-110" style={{ borderColor: f.accent }} />
-                    <div className="relative z-10">
-                      <div className="mb-3 flex items-center justify-between">
-                        <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/12 bg-white/8" style={{ color: f.accent, boxShadow: `0 0 28px ${f.accent}30` }}>
-                          <span className="text-base font-black">{f.code}</span>
+                    <div
+                      className="group relative overflow-hidden rounded-[1.2rem] border bg-[#170a24]/94 p-3.5 shadow-2xl shadow-black/20 backdrop-blur-xl"
+                      style={{
+                        borderColor: `${f.accent}66`,
+                        boxShadow: `0 16px 48px rgba(0,0,0,0.28), 0 0 24px ${f.accent}22`,
+                      }}
+                    >
+                      <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.08),transparent_42%),radial-gradient(circle_at_20%_18%,rgba(255,255,255,0.12),transparent_28%)]" />
+                      <div className="absolute inset-0 opacity-[0.10] [background-image:repeating-linear-gradient(45deg,rgba(255,255,255,0.34)_0px,rgba(255,255,255,0.34)_1px,transparent_1px,transparent_22px)]" />
+                      <div className="absolute -right-7 -top-7 h-16 w-16 rounded-full border opacity-40" style={{ borderColor: f.accent }} />
+                      <div className="relative z-10">
+                        <div className="mb-2 flex items-center justify-between">
+                          <div
+                            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/12 bg-white/8"
+                            style={{ color: f.accent, boxShadow: `0 0 20px ${f.accent}30` }}
+                          >
+                            <span className="text-[11px] font-black">{f.code}</span>
+                          </div>
+                          <Icon size={14} style={{ color: f.accent }} />
                         </div>
-                        <Icon size={18} style={{ color: f.accent }} />
-                      </div>
-                      <p className="mb-2 text-[7px] font-black uppercase tracking-[0.32em] text-white/38">{f.subtitle}</p>
-                      <h3 className="mb-2 text-base font-black uppercase leading-tight text-white">{f.title}</h3>
-                      <p className="text-[12px] leading-relaxed text-white/66">{f.desc}</p>
-                      <div className="mt-3 flex items-center justify-between border-t border-white/12 pt-3">
-                        <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-[8px] font-black uppercase tracking-widest text-white/70">Explore</span>
-                        <span className="text-2xl font-black" style={{ color: f.accent }}>-&gt;</span>
+                        <p className="mb-1 text-[7px] font-black uppercase tracking-[0.28em] text-white/38">{f.subtitle}</p>
+                        <h3 className="mb-1.5 text-[11px] font-black uppercase leading-tight text-white">{f.title}</h3>
+                        <p className="text-[10px] leading-relaxed text-white/66">{f.desc}</p>
+                        <div className="mt-2 flex items-center justify-between border-t border-white/12 pt-2">
+                          <span className="rounded-full border border-white/12 bg-white/8 px-2 py-1 text-[7px] font-black uppercase tracking-widest text-white/70">Explore</span>
+                          <span className="text-base font-black" style={{ color: f.accent }}>-&gt;</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )
-          })}
+              )
+            })}
+          </div>
+
+          {/* Centre circle — sibling of card container, never rotates */}
+          <div
+            ref={coreRef}
+            className="absolute z-50 flex h-[120px] w-[120px] flex-col items-center justify-center rounded-full border border-white/35 bg-gradient-to-br from-[#2b133f]/92 via-[#1f1735]/88 to-[#120a1f]/94 shadow-[0_0_50px_rgba(88,28,135,0.18)]"
+            style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)', transformOrigin: 'center center' }}
+          >
+            <h2 className="text-center text-[10px] font-black uppercase tracking-tighter text-white leading-tight px-2">
+              Why Choose <br />
+              <span className="text-violet-400 underline decoration-violet-500/50 underline-offset-4">StudyIn</span>
+              <br />Bengaluru?
+            </h2>
+          </div>
         </div>
-      </div>
+      ) : (
+        /* ── Desktop layout (completely unchanged) ── */
+        <div className="relative flex h-full w-full items-center justify-center">
+          <div ref={orbitalRef} className="relative flex h-[760px] w-[760px] items-center justify-center preserve-3d" style={{ transform: `scale(0.62)` }}>
+            <style>{`@media (min-width: 480px)  { .orbital-inner { transform: scale(0.52) !important; } }@media (min-width: 640px)  { .orbital-inner { transform: scale(0.65) !important; } }@media (min-width: 768px)  { .orbital-inner { transform: scale(0.82) !important; } }@media (min-width: 1024px) { .orbital-inner { transform: scale(1)    !important; } }`}</style>
+            <div ref={coreRef} className="relative z-50 preserve-3d h-52 w-52 md:h-64 md:w-64">
+              <div className="backface-hidden absolute inset-0 flex flex-col items-center justify-center rounded-full border border-white/35 bg-gradient-to-br from-[#2b133f]/92 via-[#1f1735]/88 to-[#120a1f]/94 shadow-[0_0_50px_rgba(88,28,135,0.18)]">
+                <h2 className="text-center text-lg font-black uppercase tracking-tighter text-white md:text-2xl">Why Choose <br /><span className="text-violet-400 underline decoration-violet-500/50 underline-offset-8">StudyIn</span><br />Bengaluru?</h2>
+              </div>
+              <div className="backface-hidden absolute inset-0 flex items-center justify-center rounded-full border-2 border-violet-300/70 bg-gradient-to-br from-[#1f1432] via-[#311a4b] to-[#130b22] shadow-[0_0_80px_rgba(168,85,247,0.28)]" style={{ transform: 'rotateY(180deg)' }}>
+                <span className="animate-pulse text-2xl font-bold italic tracking-widest text-white">Why Bengaluru?</span>
+              </div>
+            </div>
+            {features.map((f, i) => {
+              const positions = [
+                { top: '50%', left: '50%', transform: 'translate(-50%, -154%)' },
+                { top: '50%', left: '50%', transform: 'translate(82%, -50%)' },
+                { top: '50%', left: '50%', transform: 'translate(-50%, 54%)' },
+                { top: '50%', left: '50%', transform: 'translate(-182%, -50%)' },
+              ]
+              const Icon = f.icon
+              return (
+                <div
+                  key={f.title}
+                  className="why-card absolute z-40"
+                  style={{
+                    width: '245px',
+                    ...positions[i],
+                  }}
+                >
+                  <div className="why-card-content preserve-3d">
+                    <div
+                      className="group relative overflow-hidden rounded-[1.4rem] border bg-[#170a24]/94 p-4 shadow-2xl shadow-black/20 backdrop-blur-xl"
+                      style={{
+                        borderColor: `${f.accent}66`,
+                        boxShadow: `0 24px 70px rgba(0,0,0,0.22), 0 0 34px ${f.accent}22`,
+                      }}
+                    >
+                      <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.08),transparent_42%),radial-gradient(circle_at_20%_18%,rgba(255,255,255,0.12),transparent_28%)]" />
+                      <div className="absolute inset-0 opacity-[0.12] [background-image:repeating-linear-gradient(45deg,rgba(255,255,255,0.34)_0px,rgba(255,255,255,0.34)_1px,transparent_1px,transparent_22px)]" />
+                      <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full border opacity-40 transition-transform duration-700 group-hover:scale-110" style={{ borderColor: f.accent }} />
+                      <div className="relative z-10">
+                        <div className="mb-3 flex items-center justify-between">
+                          <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/12 bg-white/8" style={{ color: f.accent, boxShadow: `0 0 28px ${f.accent}30` }}>
+                            <span className="text-base font-black">{f.code}</span>
+                          </div>
+                          <Icon size={18} style={{ color: f.accent }} />
+                        </div>
+                        <p className="mb-2 text-[7px] font-black uppercase tracking-[0.32em] text-white/38">{f.subtitle}</p>
+                        <h3 className="mb-2 text-base font-black uppercase leading-tight text-white">{f.title}</h3>
+                        <p className="text-[12px] leading-relaxed text-white/66">{f.desc}</p>
+                        <div className="mt-3 flex items-center justify-between border-t border-white/12 pt-3">
+                          <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-[8px] font-black uppercase tracking-widest text-white/70">Explore</span>
+                          <span className="text-2xl font-black" style={{ color: f.accent }}>-&gt;</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
     </section>
   )
 }
