@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
 import { Menu as MenuIcon, X, Sparkles, Zap, Shield } from "lucide-react";
+import ChatButton from "./ChatButton.jsx";
 
 export const menuLinks = [
   { href: "/", label: "Home", icon: Zap },
@@ -115,6 +116,8 @@ function Menu({ currentPath = "/", onNavigate, theme }) {
             </motion.a>
           );
         })}
+
+        <ChatButton theme={activeTheme} />
       </nav>
 
       {/* --- MOBILE TOGGLE --- */}
@@ -200,6 +203,7 @@ function Menu({ currentPath = "/", onNavigate, theme }) {
                           )}
                         </motion.button>
                       ))}
+                      <ChatButton theme={activeTheme} variant="mobile" />
                     </div>
 
                     {/* Footer Info */}

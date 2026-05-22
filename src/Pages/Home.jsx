@@ -9,7 +9,6 @@ import {
 import CircularGallery from '../Components/CircularGallery'
 import FlowArt, { FlowSection } from '../Components/StoryScroll'
 import FallingText from '../Components/FallingText'
-import { CanvasRevealEffect } from '../Components/CanvasRevealEffect'
 import VariableProximity from './VariableProximity'
 import { Liquid } from '../../components/ui/button-1'
 import EtherealBeamsBackground from '../../components/ui/ethereal-beams-background'
@@ -32,6 +31,10 @@ const HomeGridOverlay = ({ opacity = 'opacity-[0.14]' }) => (
     }}
   />
 )
+
+const opportunitySectionBackground = {
+  background: 'radial-gradient(circle at 14% 20%, rgba(34, 211, 238, 0.13) 0%, transparent 26%), radial-gradient(circle at 84% 18%, rgba(232, 121, 249, 0.14) 0%, transparent 28%), radial-gradient(circle at 50% 100%, rgba(245, 158, 11, 0.08) 0%, transparent 34%), linear-gradient(180deg, #08040f 0%, #14091d 48%, #0c0614 100%)'
+}
 
 function HeroSection() {
   const videoRef = useRef(null)
@@ -156,9 +159,7 @@ function Opportunities({ onNavigate }) {
     <div 
       ref={containerRef} 
       className="relative flex min-h-[88svh] w-full items-center overflow-hidden border-y border-white/6 bg-[#0f0816] py-7 sm:min-h-[92svh] sm:py-10 lg:min-h-[100svh] lg:py-14"
-      style={{ 
-        background: 'radial-gradient(circle at 14% 20%, rgba(34, 211, 238, 0.13) 0%, transparent 26%), radial-gradient(circle at 84% 18%, rgba(232, 121, 249, 0.14) 0%, transparent 28%), radial-gradient(circle at 50% 100%, rgba(245, 158, 11, 0.08) 0%, transparent 34%), linear-gradient(180deg, #08040f 0%, #14091d 48%, #0c0614 100%)' 
-      }}
+      style={opportunitySectionBackground}
     >
       <HomeGridOverlay opacity="opacity-[0.16]" />
       <div className="absolute left-1/2 top-1/2 z-0 h-[360px] w-[360px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[90px] sm:h-[520px] sm:w-[520px] lg:h-[620px] lg:w-[620px] lg:blur-[120px]" />
@@ -325,20 +326,10 @@ function VisionVideoSection() {
   }, [])
 
   return (
-    <section ref={outerRef} className="relative h-[100svh] min-h-[100svh] w-full overflow-hidden border-y border-white/10 bg-black">
+    <section ref={outerRef} className="relative h-[100svh] min-h-[100svh] w-full overflow-hidden border-y border-white/10 bg-[#0f0816]" style={opportunitySectionBackground}>
       <div className="pointer-events-none absolute inset-0 z-0">
-        <CanvasRevealEffect
-          containerClassName="bg-black"
-          colors={[
-            [255, 255, 255],
-            [168, 85, 247],
-            [34, 211, 238],
-          ]}
-          dotSize={5}
-          opacities={[0.14, 0.16, 0.2, 0.24, 0.3, 0.38, 0.48, 0.6, 0.74, 0.9]}
-          showGradient={false}
-        />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.06)_0%,rgba(0,0,0,0.34)_64%,rgba(0,0,0,0.82)_100%)]" />
+        <HomeGridOverlay opacity="opacity-[0.16]" />
+        <div className="absolute left-1/2 top-1/2 z-0 h-[360px] w-[360px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[90px] sm:h-[520px] sm:w-[520px] lg:h-[620px] lg:w-[620px] lg:blur-[120px]" />
         <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/85 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/85 to-transparent" />
       </div>
@@ -558,20 +549,10 @@ function FinalCTASection({ onNavigate }) {
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden border-t border-white/10 bg-black py-8 sm:py-12 lg:py-16">
+    <section ref={sectionRef} className="relative overflow-hidden border-t border-white/10 bg-[#0f0816] py-8 sm:py-12 lg:py-16" style={opportunitySectionBackground}>
       <div className="pointer-events-none absolute inset-0 z-0">
-        <CanvasRevealEffect
-          containerClassName="bg-black"
-          colors={[
-            [255, 255, 255],
-            [168, 85, 247],
-            [34, 211, 238],
-          ]}
-          dotSize={5}
-          opacities={[0.14, 0.16, 0.2, 0.24, 0.3, 0.38, 0.48, 0.6, 0.74, 0.9]}
-          showGradient={false}
-        />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.06)_0%,rgba(0,0,0,0.34)_64%,rgba(0,0,0,0.82)_100%)]" />
+        <HomeGridOverlay opacity="opacity-[0.16]" />
+        <div className="absolute left-1/2 top-1/2 z-0 h-[360px] w-[360px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[90px] sm:h-[520px] sm:w-[520px] lg:h-[620px] lg:w-[620px] lg:blur-[120px]" />
         <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/85 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/85 to-transparent" />
       </div>
