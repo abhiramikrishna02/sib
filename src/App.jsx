@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react'
 import './App.css'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -6,17 +6,17 @@ import Lenis from 'lenis'
 import Navbar from './Components/Navbar.jsx'
 import Footer from './Components/Footer.jsx'
 import ApplyModal from './Components/ApplyModal.jsx'
-// import Apply from './Pages/Apply.jsx'
-import About from './Pages/About.jsx'
-import Contact from './Pages/Contact.jsx'
-import Home from './Pages/Home.jsx'
-import Services from './Pages/Services.jsx'
-import Details from './Pages/Details.jsx'
-import Login from './Components/Login.jsx'; // Add this line
-import Add from './Pages/Add.jsx';
 import { isSupabaseConfigured, supabase, supabaseConfigMessage } from './lib/supabase.js'
 
 gsap.registerPlugin(ScrollTrigger)
+
+const Home = lazy(() => import('./Pages/Home.jsx'))
+const About = lazy(() => import('./Pages/About.jsx'))
+const Contact = lazy(() => import('./Pages/Contact.jsx'))
+const Services = lazy(() => import('./Pages/Services.jsx'))
+const Details = lazy(() => import('./Pages/Details.jsx'))
+const Login = lazy(() => import('./Components/Login.jsx'))
+const Add = lazy(() => import('./Pages/Add.jsx'))
 
 const routeMap = {
   '/': Home,
@@ -247,14 +247,16 @@ function App() {
       )}
       
       <main className="site-main">
-        <Page
-          onNavigate={navigate}
-          globalData={globalData}
-          setGlobalData={setGlobalData}
-          refreshGlobalData={() => loadGlobalData({ silent: true })}
-          locationHash={locationHash}
-          dataLoading={dataLoading}
-        />
+        <Suspense fallback={<div className="min-h-screen bg-[#08040f]" />}>
+          <Page
+            onNavigate={navigate}
+            globalData={globalData}
+            setGlobalData={setGlobalData}
+            refreshGlobalData={() => loadGlobalData({ silent: true })}
+            locationHash={locationHash}
+            dataLoading={dataLoading}
+          />
+        </Suspense>
       </main>
       
       <ApplyModal open={applyOpen} onClose={() => setApplyOpen(false)} />
