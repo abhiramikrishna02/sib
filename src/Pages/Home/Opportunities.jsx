@@ -52,16 +52,28 @@ function Opportunities({ onNavigate }) {
   })), [])
 
   useEffect(() => {
+    const getCarouselScrollDistance = () => {
+      const itemCount = Math.max(galleryItems.length, 1)
+      const isMobile = window.innerWidth < 768
+      const perItemDistance = isMobile ? 260 : 320
+      const viewportMultiplier = isMobile ? itemCount * 0.82 : 2.4
+
+      return Math.max(window.innerHeight * viewportMultiplier, itemCount * perItemDistance)
+    }
+
     const ctx = gsap.context(() => {
-      ScrollTrigger.create({
+      const carouselTrigger = ScrollTrigger.create({
         trigger: containerRef.current,
         start: 'top top',
-        end: () => {
-          const mobile = window.innerWidth < 768
-          return `+=${mobile ? window.innerHeight * 1.15 : Math.max(window.innerHeight * 2.4, galleryItems.length * 260)}`
-        },
+        end: () => `+=${getCarouselScrollDistance()}`,
         pin: true,
         scrub: 1,
+        snap: {
+          snapTo: galleryItems.length > 1 ? 1 / (galleryItems.length - 1) : 1,
+          duration: { min: 0.12, max: 0.28 },
+          delay: 0.04,
+          ease: 'power1.out',
+        },
         anticipatePin: 1,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
@@ -71,6 +83,12 @@ function Opportunities({ onNavigate }) {
           galleryRef.current?.setScrollProgress(0)
         },
       })
+
+      requestAnimationFrame(() => {
+        carouselTrigger.refresh()
+        ScrollTrigger.refresh()
+      })
+
       gsap.fromTo('.opportunity-heading', { opacity: 0, y: 34, filter: 'blur(12px)' }, {
         opacity: 1,
         y: 0,

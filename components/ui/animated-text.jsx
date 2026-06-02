@@ -11,11 +11,12 @@ export function AnimatedText({
   style = {},
 }) {
   const containerRef = useRef(null)
+  const words = text.split(' ')
 
   useEffect(() => {
     if (!containerRef.current) return
 
-    const spans = containerRef.current.querySelectorAll('span')
+    const spans = containerRef.current.querySelectorAll('.animated-text-letter')
     const numLetters = spans.length
 
     spans.forEach((span, index) => {
@@ -25,11 +26,11 @@ export function AnimatedText({
   }, [text, delayMultiplier])
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex min-w-0 items-center justify-center">
       <p
         ref={containerRef}
         aria-label={text}
-        className={`m-0 font-sans ${className}`}
+        className={`m-0 min-w-0 font-sans ${className}`}
         style={{
           fontSize,
           '--animated-min-weight': minWeight,
@@ -38,9 +39,21 @@ export function AnimatedText({
           ...style,
         }}
       >
-        {text.split('').map((char, index) => (
-          <span key={`${char}-${index}`} aria-hidden="true" className="animated-text-letter">
-            {char === ' ' ? '\u00A0' : char}
+        {words.map((word, wordIndex) => (
+          <span
+            key={`${word}-${wordIndex}`}
+            aria-hidden="true"
+            className={`inline-block whitespace-nowrap ${wordIndex < words.length - 1 ? 'mr-[0.22em]' : ''}`}
+          >
+            {word.split('').map((char, charIndex) => (
+              <span
+                key={`${char}-${wordIndex}-${charIndex}`}
+                aria-hidden="true"
+                className="animated-text-letter"
+              >
+                {char}
+              </span>
+            ))}
           </span>
         ))}
       </p>

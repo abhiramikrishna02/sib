@@ -32,13 +32,13 @@ function ChatButton({ theme, variant = "desktop", onOpen }) {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.6 }}
           onClick={openChat}
-          className="group relative flex flex-col items-start rounded-3xl border border-fuchsia-500/30 bg-fuchsia-500/10 p-6 transition-all hover:border-fuchsia-400/60 hover:bg-fuchsia-500/15"
+          className="group relative flex flex-col items-start rounded-2xl border border-fuchsia-500/30 bg-fuchsia-500/10 p-4 text-left transition-all hover:border-fuchsia-400/60 hover:bg-fuchsia-500/15 sm:rounded-3xl sm:p-5"
         >
           <div className="flex w-full items-center justify-between">
-            <span className="text-4xl font-black uppercase tracking-tighter text-white">Chat</span>
+            <span className="text-[clamp(1.75rem,9vw,2.65rem)] font-black uppercase leading-none tracking-tighter text-white">Chat</span>
             <MessageCircle className="text-fuchsia-400" size={24} />
           </div>
-          <span className="mt-2 text-[10px] font-bold uppercase tracking-[0.3em] text-white/30">
+          <span className="mt-2 text-[8px] font-bold uppercase tracking-[0.24em] text-white/30 sm:text-[9px] sm:tracking-[0.3em]">
             Study Assistant Preview
           </span>
         </motion.button>

@@ -151,24 +151,24 @@ function Menu({ currentPath = "/", onNavigate, theme }) {
                     animate={{ x: 0 }}
                     exit={{ x: '100%' }}
                     transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                    className="absolute right-0 top-0 h-full w-[85%] border-l border-white/10 bg-[#0f071a]/95 p-8 shadow-[-20px_0_80px_rgba(0,0,0,0.8)] flex flex-col"
+                    className="absolute right-0 top-0 flex h-full w-full max-w-[24rem] flex-col border-l border-white/10 bg-[#0f071a]/95 px-4 py-5 shadow-[-20px_0_80px_rgba(0,0,0,0.8)] sm:w-[86%] sm:px-6 sm:py-7"
                   >
                     {/* Tech Textures */}
                     <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/grid-me.png')] opacity-[0.05] pointer-events-none" />
                     
                     {/* Header */}
-                    <div className="relative mb-12 flex items-center justify-between">
+                    <div className="relative mb-5 flex shrink-0 items-center justify-between sm:mb-8">
                       <div>
-                        <h2 className="text-3xl font-black italic tracking-tighter text-white">CORE_NAV</h2>
-                        <div className="h-1 w-12 bg-fuchsia-500 mt-1" />
+                        <h2 className="text-[clamp(1.7rem,9vw,2.25rem)] font-black italic leading-none tracking-tighter text-white">CORE_NAV</h2>
+                        <div className="mt-2 h-1 w-12 bg-fuchsia-500" />
                       </div>
-                      <button onClick={() => setMobileMenuOpen(false)} className="p-2 bg-white/5 rounded-full border border-white/10">
+                      <button onClick={() => setMobileMenuOpen(false)} className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-white/10 bg-white/5 sm:h-12 sm:w-12">
                         <X size={20} className="text-white/40" />
                       </button>
                     </div>
 
                     {/* Links */}
-                    <div className="flex flex-col gap-4 relative z-10">
+                    <div className="relative z-10 flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pr-1 sm:gap-4">
                       {menuLinks.map((link, i) => (
                         <motion.button
                           key={link.href}
@@ -176,29 +176,29 @@ function Menu({ currentPath = "/", onNavigate, theme }) {
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: i * 0.1 + 0.2 }}
                           onClick={(e) => handleNavigate(e, link.href)}
-                          className={`group relative flex flex-col items-start rounded-3xl border p-6 transition-all ${
+                          className={`group relative flex flex-col items-start rounded-2xl border p-4 text-left transition-all sm:rounded-3xl sm:p-5 ${
                             currentPath === link.href 
                               ? "border-fuchsia-500/50 bg-fuchsia-500/10" 
                               : "border-white/5 bg-white/[0.02]"
                           }`}
                         >
                           <div className="flex w-full items-center justify-between">
-                            <span className={`text-4xl font-black uppercase tracking-tighter ${currentPath === link.href ? 'text-white' : 'text-white/20'}`}>
+                            <span className={`min-w-0 text-[clamp(1.75rem,9vw,2.65rem)] font-black uppercase leading-none tracking-tighter ${currentPath === link.href ? 'text-white' : 'text-white/20'}`}>
                                 {link.label}
                             </span>
                             <link.icon className={currentPath === link.href ? 'text-fuchsia-500' : 'text-white/10'} size={24} />
                           </div>
                           
                           {/* Subtext decorator */}
-                          <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mt-2">
+                          <span className="mt-2 text-[8px] font-bold uppercase tracking-[0.24em] text-white/20 sm:text-[9px] sm:tracking-[0.3em]">
                              Access System Protocol 0{i+1}
                           </span>
 
                           {/* Hover/Active Corner Brackets */}
                           {currentPath === link.href && (
                              <>
-                                <div className="absolute top-4 left-4 h-2 w-2 border-t border-l border-fuchsia-500" />
-                                <div className="absolute bottom-4 right-4 h-2 w-2 border-b border-r border-fuchsia-500" />
+                                <div className="absolute left-3 top-3 h-2 w-2 border-l border-t border-fuchsia-500 sm:left-4 sm:top-4" />
+                                <div className="absolute bottom-3 right-3 h-2 w-2 border-b border-r border-fuchsia-500 sm:bottom-4 sm:right-4" />
                              </>
                           )}
                         </motion.button>
@@ -207,8 +207,8 @@ function Menu({ currentPath = "/", onNavigate, theme }) {
                     </div>
 
                     {/* Footer Info */}
-                    <div className="mt-auto pt-10 border-t border-white/5 flex flex-col gap-2">
-                         <p className="text-[9px] font-black uppercase tracking-[0.5em] text-white/20 text-center">Neural Interface v2.04</p>
+                    <div className="mt-4 flex shrink-0 flex-col gap-2 border-t border-white/5 pt-4 sm:mt-6 sm:pt-6">
+                         <p className="text-center text-[8px] font-black uppercase tracking-[0.32em] text-white/20 sm:text-[9px] sm:tracking-[0.5em]">Neural Interface v2.04</p>
                          <div className="flex justify-center gap-4">
                              <div className="h-1 w-1 bg-fuchsia-500 rounded-full animate-pulse" />
                              <div className="h-1 w-1 bg-fuchsia-500 rounded-full animate-pulse delay-75" />

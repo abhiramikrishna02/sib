@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { GraduationCap, School, BookOpen, Star, MapPin, ArrowRight, Layers, Search, Download } from 'lucide-react'
-import EtherealBeamsBackground from '../../components/ui/ethereal-beams-background'
 
 export default function Services({ globalData, locationHash, onNavigate, dataLoading }) {
   const { Universities = [], Colleges = [], Courses = [] } = globalData || {}
@@ -129,21 +128,12 @@ export default function Services({ globalData, locationHash, onNavigate, dataLoa
 
   return (
 
-    <div className="relative min-h-screen overflow-hidden bg-black px-4 pb-16 pt-28 text-white sm:px-6 sm:pb-20 sm:pt-32 md:px-16">
-      <div className="pointer-events-none fixed inset-0 z-0">
-        <EtherealBeamsBackground
-          beamWidth={2.5}
-          beamHeight={18}
-          beamNumber={15}
-          lightColor="#ffffff"
-          speed={2.5}
-          noiseIntensity={2}
-          scale={0.15}
-          rotation={43}
-        />
-      </div>
-      <div className="pointer-events-none fixed inset-0 z-0 bg-gradient-to-t from-black/70 via-black/20 to-black/40" />
-      <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_42%)]" />
+    <div className="relative min-h-screen overflow-hidden bg-[#08040f] px-4 pb-16 pt-28 text-white sm:px-6 sm:pb-20 sm:pt-32 md:px-16">
+      <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(180deg,#08040f_0%,#14091d_48%,#0c0614_100%)]" />
+      <div className="pointer-events-none fixed left-[-10%] top-[-10%] z-0 h-[520px] w-[520px] rounded-full bg-cyan-500/10 blur-[110px]" />
+      <div className="pointer-events-none fixed right-[-8%] top-[-8%] z-0 h-[520px] w-[520px] rounded-full bg-fuchsia-400/12 blur-[120px]" />
+      <div className="pointer-events-none fixed bottom-[-12%] left-1/2 z-0 h-[520px] w-[720px] -translate-x-1/2 rounded-full bg-amber-500/8 blur-[130px]" />
+      <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.04] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_1px,transparent_1px)] bg-[size:24px_24px]" />
       <div className="relative z-10 mx-auto max-w-7xl">
         <header className="mb-16 text-center sm:mb-20 md:mb-24">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
