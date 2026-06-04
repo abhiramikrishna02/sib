@@ -9,7 +9,7 @@ const initialMessages = [
   {
     id: "welcome",
     sender: "bot",
-    text: "Hi! I am your Study Assistant. Ask me anything about admissions, courses, or colleges.",
+    text: "Chatbot integration will be added soon.",
   },
 ];
 
