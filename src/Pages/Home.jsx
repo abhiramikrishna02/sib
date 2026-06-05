@@ -2,6 +2,9 @@ import { useEffect } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import HeroSection from './Home/Hero'
+import FirstSection from './Home/first'
+import SecondSection from './Home/second'
+import ThirdSection from './Home/third'
 import Opportunities from './Home/Opportunities'
 import ImpactNumbersSection from './Home/ImpactNumbers'
 import VisionVideoSection from './Home/VisionVideo'
@@ -29,6 +32,9 @@ function Home({ onNavigate }) {
   return (
     <>
       <HeroSection />
+      <FirstSection />
+      <SecondSection />
+      <ThirdSection />
       <Opportunities onNavigate={onNavigate} />
       <ImpactNumbersSection />
       <VisionVideoSection />
@@ -37,5 +43,7 @@ function Home({ onNavigate }) {
     </>
   )
 }
+
+
 
 export default Home
