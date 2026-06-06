@@ -128,11 +128,11 @@ export default function Services({ globalData, locationHash, onNavigate, dataLoa
 
   return (
 
-    <div className="relative min-h-screen overflow-hidden bg-[#08040f] px-4 pb-16 pt-28 text-white sm:px-6 sm:pb-20 sm:pt-32 md:px-16">
-      <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(180deg,#08040f_0%,#14091d_48%,#0c0614_100%)]" />
-      <div className="pointer-events-none fixed left-[-10%] top-[-10%] z-0 h-[520px] w-[520px] rounded-full bg-cyan-500/10 blur-[110px]" />
-      <div className="pointer-events-none fixed right-[-8%] top-[-8%] z-0 h-[520px] w-[520px] rounded-full bg-fuchsia-400/12 blur-[120px]" />
-      <div className="pointer-events-none fixed bottom-[-12%] left-1/2 z-0 h-[520px] w-[720px] -translate-x-1/2 rounded-full bg-amber-500/8 blur-[130px]" />
+    <div className="relative min-h-screen overflow-hidden bg-[#050505] px-4 pb-16 pt-28 text-white sm:px-6 sm:pb-20 sm:pt-32 md:px-16">
+      <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(180deg,#050505_0%,#111111_48%,#000000_100%)]" />
+      <div className="pointer-events-none fixed left-[-10%] top-[-10%] z-0 h-[520px] w-[520px] rounded-full bg-white/8 blur-[110px]" />
+      <div className="pointer-events-none fixed right-[-8%] top-[-8%] z-0 h-[520px] w-[520px] rounded-full bg-white/10 blur-[120px]" />
+      <div className="pointer-events-none fixed bottom-[-12%] left-1/2 z-0 h-[520px] w-[720px] -translate-x-1/2 rounded-full bg-white/6 blur-[130px]" />
       <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.04] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_1px,transparent_1px)] bg-[size:24px_24px]" />
       <div className="relative z-10 mx-auto max-w-7xl">
         <header className="mb-16 text-center sm:mb-20 md:mb-24">
@@ -268,7 +268,7 @@ export default function Services({ globalData, locationHash, onNavigate, dataLoa
                   <motion.article key={item.id} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="overflow-hidden rounded-[1.4rem] border border-white/10 bg-white/[0.07] shadow-xl shadow-black/20 backdrop-blur-md transition-transform duration-300 hover:-translate-y-1 hover:bg-white/[0.1]">
                     <div className="relative h-44 overflow-hidden">
                       {getCardImage(item) ? <img src={getCardImage(item)} alt={item.name} className="h-full w-full object-cover" /> : <div className="h-full w-full bg-[linear-gradient(135deg,#111,#5a5a5a)]" />}
-                      {item.rating && <div className="absolute right-2 top-2 rounded-full bg-black/35 px-3 py-1 text-[10px] font-black text-yellow-300 backdrop-blur-md">{'★'.repeat(Math.min(5, Math.round(Number(item.rating) || 0)))}</div>}
+                      {item.rating && <div className="absolute right-2 top-2 rounded-full bg-black/35 px-3 py-1 text-[10px] font-black text-white backdrop-blur-md">{'★'.repeat(Math.min(5, Math.round(Number(item.rating) || 0)))}</div>}
                     </div>
                     <div className="p-4 text-white">
                       <h3 className="text-base font-black leading-snug sm:text-lg">{item.name}</h3>
@@ -333,7 +333,7 @@ export default function Services({ globalData, locationHash, onNavigate, dataLoa
                   <motion.article key={item.id} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="overflow-hidden rounded-[1.4rem] border border-white/10 bg-white/[0.07] shadow-xl shadow-black/20 backdrop-blur-md transition-transform duration-300 hover:-translate-y-1 hover:bg-white/[0.1]">
                     <div className="relative h-44 overflow-hidden">
                       {getCardImage(item) ? <img src={getCardImage(item)} alt={item.name} className="h-full w-full object-cover" /> : <div className="h-full w-full bg-[linear-gradient(135deg,#111,#5a5a5a)]" />}
-                      {item.rating && <div className="absolute right-2 top-2 rounded-full bg-black/35 px-3 py-1 text-[10px] font-black text-yellow-300 backdrop-blur-md">{'★'.repeat(Math.min(5, Math.round(Number(item.rating) || 0)))}</div>}
+                      {item.rating && <div className="absolute right-2 top-2 rounded-full bg-black/35 px-3 py-1 text-[10px] font-black text-white backdrop-blur-md">{'★'.repeat(Math.min(5, Math.round(Number(item.rating) || 0)))}</div>}
                     </div>
                     <div className="p-4 text-white">
                       <h3 className="text-base font-black leading-snug sm:text-lg">{item.name}</h3>

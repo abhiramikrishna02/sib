@@ -459,7 +459,7 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
       <section className="mb-12 sm:mb-14 md:mb-16">
         <div className="mb-7 flex flex-col items-start gap-4 border-b border-white/5 pb-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between sm:pb-5">
           <div className="flex items-center gap-4 sm:gap-5">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-fuchsia-500/20 bg-fuchsia-500/10 text-fuchsia-400 sm:h-14 sm:w-14">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/20 bg-white/10 text-white sm:h-14 sm:w-14">
               <Icon size={28} />
             </div>
             <div>
@@ -469,7 +469,7 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
           </div>
           <button 
             onClick={() => { setIsEditing(false); setActiveCategory(title); }}
-            className="w-full rounded-xl bg-white px-5 py-3 text-[11px] font-black uppercase tracking-widest text-black transition-all hover:bg-fuchsia-500 hover:text-white sm:w-auto sm:px-8"
+            className="w-full rounded-xl bg-white px-5 py-3 text-[11px] font-black uppercase tracking-widest text-black transition-all hover:bg-white hover:text-white sm:w-auto sm:px-8"
           >
             + ADD {title.slice(0, -1)}
           </button>
@@ -490,7 +490,7 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
             <motion.div 
               layout 
               key={item.id} 
-              className="group relative flex min-h-[340px] flex-col overflow-hidden rounded-[1.8rem] border border-white/10 bg-[#1a0b2e] transition-all duration-500 hover:-translate-y-1 hover:border-fuchsia-500/30 sm:min-h-[360px] sm:rounded-[2.2rem]"
+              className="group relative flex min-h-[340px] flex-col overflow-hidden rounded-[1.8rem] border border-white/10 bg-[#111111] transition-all duration-500 hover:-translate-y-1 hover:border-white/30 sm:min-h-[360px] sm:rounded-[2.2rem]"
             >
               <div className="relative h-36 w-full overflow-hidden sm:h-40">
                 {getCardImage(item) ? (
@@ -500,15 +500,15 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
                       alt={item.name}
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#12081d] via-[#12081d]/20 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f0f] via-[#0f0f0f]/20 to-transparent" />
                   </>
                 ) : (
-                  <div className="h-full w-full bg-[radial-gradient(circle_at_top,rgba(168,85,247,0.22),transparent_50%),linear-gradient(180deg,#2a1140_0%,#1a0b2e_100%)]" />
+                  <div className="h-full w-full bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.22),transparent_50%),linear-gradient(180deg,#1f1f1f_0%,#111111_100%)]" />
                 )}
 
                 <div className="absolute inset-x-0 top-0 flex items-start justify-between p-3">
                   {item.rating && (
-                    <span className="flex shrink-0 items-center gap-1 rounded-xl border border-amber-400/20 bg-black/45 px-2.5 py-1 text-[10px] font-black text-amber-400 backdrop-blur-md">
+                    <span className="flex shrink-0 items-center gap-1 rounded-xl border border-white/20 bg-black/45 px-2.5 py-1 text-[10px] font-black text-white backdrop-blur-md">
                       <Star size={10} fill="currentColor" /> {item.rating}
                     </span>
                   )}
@@ -536,7 +536,7 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
                     {item.type || item.level || 'General'}
                   </span>
                   {item.affiliation && (
-                    <span className="rounded-lg border border-fuchsia-400/20 bg-fuchsia-400/10 px-2 py-1 text-[9px] font-bold uppercase text-fuchsia-300 backdrop-blur-md">
+                    <span className="rounded-lg border border-white/20 bg-white/10 px-2 py-1 text-[9px] font-bold uppercase text-white backdrop-blur-md">
                       {item.affiliation}
                     </span>
                   )}
@@ -559,7 +559,7 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
                     {item.document_url && (
                       <div className="flex items-center justify-between gap-4">
                         <span className="uppercase tracking-[0.2em] text-white/25">Document</span>
-                        <a href={item.document_url} target="_blank" rel="noreferrer" className="font-semibold text-fuchsia-200 hover:text-white">
+                        <a href={item.document_url} target="_blank" rel="noreferrer" className="font-semibold text-white hover:text-white">
                           Download
                         </a>
                       </div>
@@ -589,19 +589,19 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
                           onNavigate(`/details#type=course&id=${item.id}`)
                         }
                       }}
-                      className="flex items-center justify-center gap-1 rounded-xl border border-fuchsia-400/20 bg-fuchsia-400/10 px-3 py-2 text-[9px] font-black uppercase tracking-widest text-fuchsia-200 transition-all hover:bg-fuchsia-500 hover:text-white backdrop-blur-md"
+                      className="flex items-center justify-center gap-1 rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-[9px] font-black uppercase tracking-widest text-white transition-all hover:bg-white hover:text-white backdrop-blur-md"
                     >
                       <ArrowRight size={12} /> View
                     </button>
                     <button
                       onClick={() => handleEdit(title, item)}
-                      className="flex items-center justify-center gap-1 rounded-xl bg-white/10 px-3 py-2 text-[9px] font-black uppercase tracking-widest text-white transition-all hover:bg-fuchsia-500 backdrop-blur-md"
+                      className="flex items-center justify-center gap-1 rounded-xl bg-white/10 px-3 py-2 text-[9px] font-black uppercase tracking-widest text-white transition-all hover:bg-white backdrop-blur-md"
                     >
                       <Pencil size={12} /> Edit
                     </button>
                     <button
                       onClick={() => removeItem(title, item.id)}
-                      className="flex items-center justify-center gap-1 rounded-xl bg-white/10 px-3 py-2 text-[9px] font-black uppercase tracking-widest text-white/40 transition-all hover:bg-red-500 hover:text-white backdrop-blur-md"
+                      className="flex items-center justify-center gap-1 rounded-xl bg-white/10 px-3 py-2 text-[9px] font-black uppercase tracking-widest text-white/40 transition-all hover:bg-white hover:text-white backdrop-blur-md"
                     >
                       <Trash2 size={12} /> Delete
                     </button>
@@ -613,7 +613,7 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
         </div>
 
         {items.length > 6 && (
-          <button onClick={() => setShowAll({...showAll, [title]: !showAll[title]})} className="mt-12 mx-auto block text-[10px] font-black uppercase tracking-[0.5em] text-white/20 hover:text-fuchsia-400 transition-colors">
+          <button onClick={() => setShowAll({...showAll, [title]: !showAll[title]})} className="mt-12 mx-auto block text-[10px] font-black uppercase tracking-[0.5em] text-white/20 hover:text-white transition-colors">
             {showAll[title] ? "Hide Extras" : "See More Options"}
           </button>
         )}
@@ -622,11 +622,11 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
   };
 
   return (
-    <div className="relative min-h-screen bg-[#06010a] p-4 text-white sm:p-6 md:p-16">
+    <div className="relative min-h-screen bg-[#050505] p-4 text-white sm:p-6 md:p-16">
       <div className="max-w-7xl mx-auto relative z-10">
         <header className="mb-16 flex flex-col items-start gap-6 sm:mb-20 sm:flex-row sm:justify-between sm:items-start md:mb-24">
           <div>
-            <h1 className="text-[clamp(2.8rem,12vw,6rem)] font-black italic tracking-tighter text-white">CORE<span className="text-fuchsia-500">.</span></h1>
+            <h1 className="text-[clamp(2.8rem,12vw,6rem)] font-black italic tracking-tighter text-white">CORE<span className="text-white">.</span></h1>
             <p className="text-white/20 text-xs font-bold uppercase tracking-[0.5em] mt-2">Database Management</p>
           </div>
           <button onClick={() => onNavigate('/')} className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-white/40 transition-all hover:text-white sm:pt-4">
@@ -635,7 +635,7 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
         </header>
 
         {!isSupabaseConfigured && (
-          <div className="mb-10 rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-100">
+          <div className="mb-10 rounded-2xl border border-white/30 bg-white/10 p-4 text-sm text-white">
             {supabaseConfigMessage}
           </div>
         )}
@@ -653,14 +653,14 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
           >
             <motion.div initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 0}} onClick={closeModal} className="absolute inset-0 bg-black/90 backdrop-blur-xl" />
             
-            <motion.div initial={{y: 50, opacity: 0}} animate={{y: 0, opacity: 1}} className="relative z-10 flex h-[calc(100dvh-0.75rem)] w-[99vw] max-w-[96rem] flex-col overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#12081d] shadow-2xl sm:rounded-[2rem] md:h-[calc(100dvh-1.5rem)]">
+            <motion.div initial={{y: 50, opacity: 0}} animate={{y: 0, opacity: 1}} className="relative z-10 flex h-[calc(100dvh-0.75rem)] w-[99vw] max-w-[96rem] flex-col overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#0f0f0f] shadow-2xl sm:rounded-[2rem] md:h-[calc(100dvh-1.5rem)]">
               
               <div className="shrink-0 flex items-center justify-between border-b border-white/5 bg-white/[0.02] px-4 py-3 sm:px-5 lg:px-6">
                 <div>
                     <h2 className="text-xl font-black italic tracking-tighter uppercase sm:text-2xl lg:text-[1.8rem]">
                         {isEditing ? `Edit ${activeCategory.slice(0,-1)}` : `New ${activeCategory.slice(0,-1)}`}
                     </h2>
-                    {isEditing && <p className="text-[10px] font-bold text-fuchsia-400 uppercase tracking-widest mt-1">Modifying existing record ID: {editId}</p>}
+                    {isEditing && <p className="text-[10px] font-bold text-white uppercase tracking-widest mt-1">Modifying existing record ID: {editId}</p>}
                 </div>
                 <button onClick={closeModal} className="p-2 hover:bg-white/10 rounded-full transition-all"><X /></button>
               </div>
@@ -675,12 +675,12 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
                   <div className="grid gap-5 xl:grid-cols-[1.15fr_0.85fr] xl:gap-6">
                     <div className="space-y-5">
                       <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
-                        <h4 className="mb-3 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500">
+                        <h4 className="mb-3 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white">
                           <Info size={14}/> University Info
                         </h4>
                         <input
                           placeholder="University Name"
-                          className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500"
+                          className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-white"
                           value={formData.name}
                           onChange={(e) => setFormData({...formData, name: e.target.value})}
                           required
@@ -688,7 +688,7 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
                         <textarea
                           rows="6"
                           placeholder="Short description about the university..."
-                          className="mt-4 w-full resize-none rounded-2xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500"
+                          className="mt-4 w-full resize-none rounded-2xl border border-white/10 bg-white/5 p-3 outline-none focus:border-white"
                           value={formData.about}
                           onChange={(e) => setFormData({...formData, about: e.target.value})}
                           required
@@ -698,17 +698,17 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
 
                     <div className="space-y-5">
                       <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
-                        <h4 className="mb-3 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500">
+                        <h4 className="mb-3 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white">
                           <Layers size={14}/> Logo
                         </h4>
-                        <div className="group relative h-36 w-full overflow-hidden rounded-2xl border-2 border-dashed border-white/10 bg-white/5 transition-colors hover:border-fuchsia-500/50">
+                        <div className="group relative h-36 w-full overflow-hidden rounded-2xl border-2 border-dashed border-white/10 bg-white/5 transition-colors hover:border-white/50">
                           {formData.image_url ? (
                             <>
                               <img src={formData.image_url} alt="" className="h-full w-full object-contain p-4" />
                               <button
                                 type="button"
                                 onClick={() => setFormData({...formData, image_url: ''})}
-                                className="absolute right-2 top-2 z-20 rounded-lg bg-red-500 p-1"
+                                className="absolute right-2 top-2 z-20 rounded-lg bg-white p-1"
                               >
                                 <X size={14} />
                               </button>
@@ -731,7 +731,7 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
                           value={formData.image_url}
                           onChange={(e) => setFormData({...formData, image_url: e.target.value})}
                           placeholder="Paste logo image URL if needed"
-                          className="mt-3 w-full rounded-xl border border-white/10 bg-white/5 p-3 text-[11px] outline-none focus:border-fuchsia-500"
+                          className="mt-3 w-full rounded-xl border border-white/10 bg-white/5 p-3 text-[11px] outline-none focus:border-white"
                           required
                         />
                       </div>
@@ -743,27 +743,27 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
                   <div className="grid grid-cols-1 gap-3 xl:grid-cols-[1fr_1fr] xl:gap-4">
                     <div className="space-y-3">
                       <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3">
-                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><Info size={14}/> Basic Information</h4>
-                        <input placeholder="College Name" className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required/>
+                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white"><Info size={14}/> Basic Information</h4>
+                        <input placeholder="College Name" className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-white sm:text-sm" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required/>
                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                          <input placeholder="Rating" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.rating} onChange={e => setFormData({...formData, rating: e.target.value})} required/>
-                          <input placeholder="Location" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} required/>
+                          <input placeholder="Rating" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-white sm:text-sm" value={formData.rating} onChange={e => setFormData({...formData, rating: e.target.value})} required/>
+                          <input placeholder="Location" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-white sm:text-sm" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} required/>
                         </div>
-                        <select className="w-full rounded-xl border border-white/10 bg-[#1e0f2d] p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.university_id} onChange={e => setFormData({...formData, university_id: e.target.value})} required>
+                        <select className="w-full rounded-xl border border-white/10 bg-[#1a1a1a] p-2.5 text-[11px] outline-none focus:border-white sm:text-sm" value={formData.university_id} onChange={e => setFormData({...formData, university_id: e.target.value})} required>
                           <option value="">Select University</option>
                           {globalData.Universities?.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
                         </select>
                       </div>
 
                       <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3">
-                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><Banknote size={14}/> Fee / Upload</h4>
+                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white"><Banknote size={14}/> Fee / Upload</h4>
                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                          <input placeholder="Annual Fee From" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.feeFrom} onChange={e => setFormData({...formData, feeFrom: e.target.value})} required/>
-                          <input placeholder="Up To" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.feeTo} onChange={e => setFormData({...formData, feeTo: e.target.value})} required/>
+                          <input placeholder="Annual Fee From" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-white sm:text-sm" value={formData.feeFrom} onChange={e => setFormData({...formData, feeFrom: e.target.value})} required/>
+                          <input placeholder="Up To" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-white sm:text-sm" value={formData.feeTo} onChange={e => setFormData({...formData, feeTo: e.target.value})} required/>
                         </div>
-                        <input placeholder="Display Fee Range (auto if blank)" className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.feeRange} onChange={e => setFormData({...formData, feeRange: e.target.value})} />
+                        <input placeholder="Display Fee Range (auto if blank)" className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-white sm:text-sm" value={formData.feeRange} onChange={e => setFormData({...formData, feeRange: e.target.value})} />
                         <div className="space-y-2 rounded-2xl border border-dashed border-white/10 bg-white/5 p-3">
-                          <h5 className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-fuchsia-400">
+                          <h5 className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-white">
                             <BookOpen size={12}/> Document Upload
                           </h5>
                           <p className="text-[10px] leading-snug text-white/45">
@@ -779,7 +779,7 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
                                 <button
                                   type="button"
                                   onClick={() => setFormData((prev) => ({ ...prev, document_url: '', document_name: '', document_type: '' }))}
-                                  className="rounded-full bg-red-500 px-2.5 py-1 text-[9px] font-black uppercase text-white"
+                                  className="rounded-full bg-white px-2.5 py-1 text-[9px] font-black uppercase text-white"
                                 >
                                   Remove
                                 </button>
@@ -804,43 +804,43 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
                       </div>
 
                       <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3">
-                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><Phone size={14}/> Contact Details</h4>
-                        <input placeholder="Phone" className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} required/>
+                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white"><Phone size={14}/> Contact Details</h4>
+                        <input placeholder="Phone" className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-white sm:text-sm" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} required/>
                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                          <input placeholder="Email" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} required/>
-                          <input placeholder="Address" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} required/>
+                          <input placeholder="Email" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-white sm:text-sm" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} required/>
+                          <input placeholder="Address" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-white sm:text-sm" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} required/>
                         </div>
                       </div>
                     </div>
 
                     <div className="space-y-3">
                       <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3">
-                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><ShieldCheck size={14}/> Quick Facts</h4>
+                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white"><ShieldCheck size={14}/> Quick Facts</h4>
                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                          <input placeholder="Institution Type" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} required/>
-                          <input placeholder="Course Levels" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm" value={formData.levels} onChange={e => setFormData({...formData, levels: e.target.value})} required/>
+                          <input placeholder="Institution Type" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-white sm:text-sm" value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} required/>
+                          <input placeholder="Course Levels" className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-white sm:text-sm" value={formData.levels} onChange={e => setFormData({...formData, levels: e.target.value})} required/>
                         </div>
                       </div>
 
                       <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3">
-                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><Layers size={14}/> About Section</h4>
-                        <textarea rows="3" placeholder="About the college..." className="w-full resize-none rounded-2xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500 sm:text-sm xl:h-24" value={formData.about} onChange={e => setFormData({...formData, about: e.target.value})} required/>
+                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white"><Layers size={14}/> About Section</h4>
+                        <textarea rows="3" placeholder="About the college..." className="w-full resize-none rounded-2xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-white sm:text-sm xl:h-24" value={formData.about} onChange={e => setFormData({...formData, about: e.target.value})} required/>
                       </div>
 
                       <div className="space-y-2.5 rounded-3xl border border-white/5 bg-white/[0.02] p-3">
-                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500">
+                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white">
                           <Layers size={14}/> Image Upload
                         </h4>
                         <div className="grid grid-cols-1 gap-3 lg:grid-cols-[0.85fr_1.15fr]">
                           <div className="space-y-2">
-                            <div className="group relative h-28 w-full overflow-hidden rounded-2xl border-2 border-dashed border-white/10 bg-white/5 transition-colors hover:border-fuchsia-500/50">
+                            <div className="group relative h-28 w-full overflow-hidden rounded-2xl border-2 border-dashed border-white/10 bg-white/5 transition-colors hover:border-white/50">
                               {formData.image_url ? (
                                 <>
                                   <img src={formData.image_url} alt="" className="h-full w-full object-cover" />
                                   <button
                                     type="button"
                                     onClick={() => setFormData({...formData, image_url: ''})}
-                                    className="absolute right-2 top-2 z-20 rounded-lg bg-red-500 p-1"
+                                    className="absolute right-2 top-2 z-20 rounded-lg bg-white p-1"
                                   >
                                     <X size={14} />
                                   </button>
@@ -863,7 +863,7 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
                               value={formData.image_url}
                               onChange={(e) => setFormData({...formData, image_url: e.target.value})}
                               placeholder="Paste image URL"
-                              className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-fuchsia-500"
+                              className="w-full rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] outline-none focus:border-white"
                               required
                             />
                           </div>
@@ -875,14 +875,14 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
                                 <button
                                   type="button"
                                   onClick={() => setFormData({...formData, images: formData.images.filter((_, i) => i !== idx)})}
-                                  className="absolute inset-0 flex items-center justify-center bg-red-500/80 opacity-0 transition-opacity hover:opacity-100"
+                                  className="absolute inset-0 flex items-center justify-center bg-white/80 opacity-0 transition-opacity hover:opacity-100"
                                 >
                                   <Trash2 size={14} />
                                 </button>
                               </div>
                             ))}
-                            <label className="relative flex h-16 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-white/10 transition-colors hover:border-fuchsia-500">
-                              <Plus size={16} className="text-fuchsia-500" />
+                            <label className="relative flex h-16 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-white/10 transition-colors hover:border-white">
+                              <Plus size={16} className="text-white" />
                               <span className="text-[8px] font-bold uppercase text-white/40">Gallery</span>
                               <input
                                 type="file"
@@ -904,24 +904,24 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
                   <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1fr_1fr] xl:gap-6">
                     <div className="space-y-4 sm:space-y-5">
                       <div className="space-y-3 rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
-                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><Info size={14}/> Basic Information</h4>
-                        <input placeholder="Course Name" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required/>
+                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white"><Info size={14}/> Basic Information</h4>
+                        <input placeholder="Course Name" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-white" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required/>
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                          <input placeholder="Degree" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.degree} onChange={e => setFormData({...formData, degree: e.target.value})} required/>
-                          <input placeholder="Category" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} required/>
+                          <input placeholder="Degree" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-white" value={formData.degree} onChange={e => setFormData({...formData, degree: e.target.value})} required/>
+                          <input placeholder="Category" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-white" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} required/>
                         </div>
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                          <input placeholder="Level" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.levels} onChange={e => setFormData({...formData, levels: e.target.value})} required/>
-                          <input placeholder="Duration" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.duration} onChange={e => setFormData({...formData, duration: e.target.value})} required/>
+                          <input placeholder="Level" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-white" value={formData.levels} onChange={e => setFormData({...formData, levels: e.target.value})} required/>
+                          <input placeholder="Duration" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-white" value={formData.duration} onChange={e => setFormData({...formData, duration: e.target.value})} required/>
                         </div>
-                        <select className="w-full rounded-xl border border-white/10 bg-[#1e0f2d] p-3 outline-none focus:border-fuchsia-500" value={formData.college_id} onChange={e => setFormData({...formData, college_id: e.target.value})} required>
+                        <select className="w-full rounded-xl border border-white/10 bg-[#1a1a1a] p-3 outline-none focus:border-white" value={formData.college_id} onChange={e => setFormData({...formData, college_id: e.target.value})} required>
                           <option value="">Select College</option>
                           {globalData.Colleges?.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                         </select>
                       </div>
 
                       <div className="space-y-3 rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
-                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500">
+                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white">
                           <BookOpen size={14}/> Document Upload
                         </h4>
                         <p className="text-[11px] text-white/45">
@@ -937,7 +937,7 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
                               <button
                                 type="button"
                                 onClick={() => setFormData((prev) => ({ ...prev, document_url: '', document_name: '', document_type: '' }))}
-                                className="rounded-full bg-red-500 px-3 py-1 text-[10px] font-black uppercase text-white"
+                                className="rounded-full bg-white px-3 py-1 text-[10px] font-black uppercase text-white"
                               >
                                 Remove
                               </button>
@@ -961,27 +961,27 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
                       </div>
 
                       <div className="space-y-3 rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
-                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><Banknote size={14}/> Financial Information</h4>
+                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white"><Banknote size={14}/> Financial Information</h4>
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                          <input placeholder="Annual Fee From" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.feeFrom} onChange={e => setFormData({...formData, feeFrom: e.target.value})} required/>
-                          <input placeholder="Up To" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.feeTo} onChange={e => setFormData({...formData, feeTo: e.target.value})} required/>
+                          <input placeholder="Annual Fee From" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-white" value={formData.feeFrom} onChange={e => setFormData({...formData, feeFrom: e.target.value})} required/>
+                          <input placeholder="Up To" className="rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-white" value={formData.feeTo} onChange={e => setFormData({...formData, feeTo: e.target.value})} required/>
                         </div>
-                        <input placeholder="Display Fee Range (auto if blank)" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.feeRange} onChange={e => setFormData({...formData, feeRange: e.target.value})} />
+                        <input placeholder="Display Fee Range (auto if blank)" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-white" value={formData.feeRange} onChange={e => setFormData({...formData, feeRange: e.target.value})} />
                       </div>
                     </div>
 
                     <div className="space-y-5 sm:space-y-6">
                       <div className="space-y-3 rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
-                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><ShieldCheck size={14}/> Provider Information</h4>
-                        <input placeholder="Provider Type" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} required/>
-                        <input placeholder="Affiliation" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.affiliation} onChange={e => setFormData({...formData, affiliation: e.target.value})} required/>
-                        <input placeholder="Phone" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} required/>
-                        <input placeholder="Email" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} required/>
+                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white"><ShieldCheck size={14}/> Provider Information</h4>
+                        <input placeholder="Provider Type" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-white" value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} required/>
+                        <input placeholder="Affiliation" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-white" value={formData.affiliation} onChange={e => setFormData({...formData, affiliation: e.target.value})} required/>
+                        <input placeholder="Phone" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-white" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} required/>
+                        <input placeholder="Email" className="w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-white" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} required/>
                       </div>
 
                       <div className="space-y-3 rounded-3xl border border-white/5 bg-white/[0.02] p-4 sm:p-5">
-                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-fuchsia-500"><Layers size={14}/> About Section</h4>
-                        <textarea rows="4" placeholder="About the course..." className="w-full resize-none rounded-2xl border border-white/10 bg-white/5 p-3 outline-none focus:border-fuchsia-500" value={formData.about} onChange={e => setFormData({...formData, about: e.target.value})} required/>
+                        <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white"><Layers size={14}/> About Section</h4>
+                        <textarea rows="4" placeholder="About the course..." className="w-full resize-none rounded-2xl border border-white/10 bg-white/5 p-3 outline-none focus:border-white" value={formData.about} onChange={e => setFormData({...formData, about: e.target.value})} required/>
                       </div>
                     </div>
                   </div>
@@ -995,13 +995,13 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
 
               </form>
 
-              <div className="shrink-0 border-t border-white/10 bg-[#12081d]/98 p-2.5 backdrop-blur-xl sm:p-3">
-                <div className="flex flex-col items-center justify-between gap-3 rounded-[1.35rem] border border-white/10 bg-[#12081d]/95 p-3 md:flex-row md:gap-6">
+              <div className="shrink-0 border-t border-white/10 bg-[#0f0f0f]/98 p-2.5 backdrop-blur-xl sm:p-3">
+                <div className="flex flex-col items-center justify-between gap-3 rounded-[1.35rem] border border-white/10 bg-[#0f0f0f]/95 p-3 md:flex-row md:gap-6">
                 {isEditing ? (
                   <button 
                       type="button" 
                       onClick={() => removeItem(activeCategory, editId)}
-                      className="w-full md:w-auto text-red-500/50 hover:text-red-500 text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 transition-colors"
+                      className="w-full md:w-auto text-white/50 hover:text-white text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 transition-colors"
                   >
                       <Trash2 size={14}/> Delete Forever
                   </button>
@@ -1011,7 +1011,7 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
                 
                 <div className="flex w-full gap-4 md:w-auto">
                   <button onClick={closeModal} type="button" className="hidden md:block px-8 text-white/30 text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors">Discard</button>
-                  <button type="submit" form="add-opportunity-form" className="w-full md:w-auto bg-fuchsia-500 px-10 py-3 rounded-2xl text-white font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all flex items-center justify-center gap-3 shadow-xl shadow-fuchsia-500/20">
+                  <button type="submit" form="add-opportunity-form" className="w-full md:w-auto bg-white px-10 py-3 rounded-2xl text-white font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all flex items-center justify-center gap-3 shadow-xl shadow-white/20">
                       {isEditing ? "SAVE CHANGES" : "PUBLISH DATA"} <Send size={18}/>
                   </button>
                 </div>

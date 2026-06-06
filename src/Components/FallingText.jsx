@@ -4,7 +4,7 @@ import Matter from 'matter-js'
 const FallingText = ({
   text = '',
   highlightWords = [],
-  highlightClass = 'text-cyan-300 font-bold',
+  highlightClass = 'text-white font-bold',
   trigger = 'auto',
   backgroundColor = 'transparent',
   wireframes = false,
@@ -59,9 +59,11 @@ const FallingText = ({
   }, [observerOptions, trigger])
 
   useEffect(() => {
-    if (!effectStarted || !containerRef.current || !textRef.current || !canvasContainerRef.current) return undefined
+    if (!effectStarted || !containerRef.current || !textRef.current || !canvasContainerRef.current)
+      return undefined
 
     const { Engine, Render, World, Bodies, Runner, Mouse, MouseConstraint, Body } = Matter
+
     const container = containerRef.current
     const textNode = textRef.current
     const canvasNode = canvasContainerRef.current
@@ -194,7 +196,9 @@ const FallingText = ({
         style={{ fontSize, lineHeight }}
       >
         {words.map((word, index) => {
-          const isHighlighted = highlightWords.some((highlight) => word.toLowerCase().startsWith(highlight.toLowerCase()))
+          const isHighlighted = highlightWords.some((highlight) =>
+            word.toLowerCase().startsWith(highlight.toLowerCase())
+          )
           return (
             <span
               key={`${word}-${index}`}

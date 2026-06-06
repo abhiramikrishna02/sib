@@ -139,6 +139,7 @@ function GalleryScene({
     maxBlur: 3,
   },
   scrollSourceRef,
+  active = true,
 }) {
   const velocityRef = useRef(0)
   const autoplayRef = useRef(true)
@@ -248,6 +249,8 @@ function GalleryScene({
   }, [materials])
 
   useFrame((state, delta) => {
+    if (!active) return
+
     if (autoplayRef.current) velocityRef.current += 0.3 * delta
     velocityRef.current *= 0.95
 
@@ -405,6 +408,8 @@ export default function InfiniteGallery({
   scrollSourceRef,
 }) {
   const [webglSupported, setWebglSupported] = useState(true)
+  const [active, setActive] = useState(true)
+  const containerRef = useRef(null)
 
   useEffect(() => {
     try {
@@ -416,17 +421,33 @@ export default function InfiniteGallery({
     }
   }, [])
 
+  useEffect(() => {
+    const node = containerRef.current
+    if (!node || typeof IntersectionObserver === 'undefined') return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setActive(entry.isIntersecting),
+      { rootMargin: '240px 0px' },
+    )
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [])
+
   if (!webglSupported) {
     return (
-      <div className={className} style={style}>
+      <div ref={containerRef} className={className} style={style}>
         <FallbackGallery images={images} />
       </div>
     )
   }
 
   return (
-    <div className={className} style={style}>
-      <Canvas camera={{ position: [0, 0, 0], fov: 55 }} gl={{ antialias: true, alpha: true }}>
+    <div ref={containerRef} className={className} style={style}>
+      <Canvas
+        camera={{ position: [0, 0, 0], fov: 55 }}
+        dpr={[1, 1.5]}
+        gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }}
+      >
         <Suspense fallback={null}>
           <GalleryScene
             images={images}
@@ -435,6 +456,7 @@ export default function InfiniteGallery({
             fadeSettings={fadeSettings}
             blurSettings={blurSettings}
             scrollSourceRef={scrollSourceRef}
+            active={active}
           />
         </Suspense>
       </Canvas>

@@ -169,26 +169,27 @@ function App() {
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     let lenis = null
-    let raf = null
+    let rafId = 0
 
     if (!prefersReducedMotion) {
       lenis = new Lenis({
-        duration: 1,
-        lerp: 0.075,
+        lerp: 0.12,
         smoothWheel: true,
         smoothTouch: false,
-        wheelMultiplier: 0.9,
+        wheelMultiplier: 1,
+        touchMultiplier: 1.4,
+        syncTouch: false,
       })
       lenisRef.current = lenis
 
       const onScroll = () => ScrollTrigger.update()
       lenis.on('scroll', onScroll)
 
-      raf = (time) => {
-        lenis.raf(time * 1000)
+      const raf = (time) => {
+        lenis.raf(time)
+        rafId = requestAnimationFrame(raf)
       }
-      gsap.ticker.add(raf)
-      gsap.ticker.lagSmoothing(0)
+      rafId = requestAnimationFrame(raf)
     }
 
     const onPopState = () => {
@@ -204,8 +205,8 @@ function App() {
         lenis.destroy()
         lenisRef.current = null
       }
-      if (raf) {
-        gsap.ticker.remove(raf)
+      if (rafId) {
+        cancelAnimationFrame(rafId)
       }
     }
   }, [])

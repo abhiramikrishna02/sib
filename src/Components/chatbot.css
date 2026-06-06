@@ -6,7 +6,7 @@
   justify-content: flex-end;
   padding: 96px 18px 18px;
   background:
-    radial-gradient(circle at 80% 12%, rgba(168, 85, 247, 0.2), transparent 30%),
+    radial-gradient(circle at 80% 12%, rgba(255,255,255,0.2), transparent 30%),
     rgba(5, 2, 10, 0.42);
   backdrop-filter: blur(10px);
 }
@@ -35,7 +35,7 @@
   width: 280px;
   height: 280px;
   pointer-events: none;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.34), transparent 68%);
+  background: radial-gradient(circle, rgba(255,255,255,0.34), transparent 68%);
   filter: blur(10px);
 }
 
@@ -70,8 +70,8 @@
   width: 46px;
   height: 46px;
   border-radius: 16px;
-  background: linear-gradient(135deg, #a855f7, #ec4899);
-  box-shadow: 0 14px 34px rgba(168, 85, 247, 0.28);
+  background: linear-gradient(135deg, #ffffff, #b8b8b8);
+  box-shadow: 0 14px 34px rgba(255,255,255,0.28);
 }
 
 .chatbot-header p {
@@ -158,11 +158,11 @@
 }
 
 .chat-message__avatar--bot {
-  color: #d8b4fe;
+  color: #d6d6d6;
 }
 
 .chat-message__avatar--user {
-  color: #bfdbfe;
+  color: #cfcfcf;
 }
 
 .chat-message__bubble {
@@ -186,9 +186,9 @@
 }
 
 .chat-message--user .chat-message__bubble {
-  border-color: rgba(168, 85, 247, 0.42);
+  border-color: rgba(255,255,255,0.42);
   border-bottom-right-radius: 8px;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.96), rgba(219, 39, 119, 0.9));
+  background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(219, 39, 119, 0.9));
 }
 
 .chat-message__bubble--typing {
@@ -240,9 +240,9 @@
 }
 
 .chatbot-input input:focus {
-  border-color: rgba(168, 85, 247, 0.58);
+  border-color: rgba(255,255,255,0.58);
   background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.14);
+  box-shadow: 0 0 0 4px rgba(255,255,255,0.14);
 }
 
 .chatbot-input button {
@@ -255,8 +255,8 @@
   border: 0;
   border-radius: 16px;
   color: #fff;
-  background: linear-gradient(135deg, #a855f7, #ec4899);
-  box-shadow: 0 14px 28px rgba(168, 85, 247, 0.26);
+  background: linear-gradient(135deg, #ffffff, #b8b8b8);
+  box-shadow: 0 14px 28px rgba(255,255,255,0.26);
   transition: transform 180ms ease, filter 180ms ease, opacity 180ms ease;
 }
 

@@ -195,7 +195,7 @@ export function CanvasRevealEffect({
         className="absolute inset-0 opacity-80 [animation:canvas-reveal-drift_10s_linear_infinite]"
         style={{
           backgroundImage:
-            'radial-gradient(circle, rgba(255,255,255,0.34) 0 2px, transparent 2.6px), radial-gradient(circle, rgba(168,85,247,0.24) 0 1.8px, transparent 2.5px)',
+            'radial-gradient(circle, rgba(255,255,255,0.34) 0 2px, transparent 2.6px), radial-gradient(circle, rgba(255,255,255,0.24) 0 1.8px, transparent 2.5px)',
           backgroundPosition: '0 0, 13px 13px',
           backgroundSize: '26px 26px',
         }}

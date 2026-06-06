@@ -140,35 +140,35 @@ function FinalCTASection({ onNavigate }) {
         />
         <div className="interactive-portal relative z-20 flex justify-center">
           <div className="relative inline-block">
-            <div className="absolute w-[112.81%] h-[128.57%] top-[8.57%] left-1/2 -translate-x-1/2 filter blur-[19px] opacity-70">
-              <span className="absolute inset-0 rounded-[1rem] bg-[#d9d9d9] filter blur-[6.5px]" />
-              <div className="relative w-full h-full overflow-hidden rounded-[1rem]">
+            <div className="absolute w-[112.81%] h-[128.57%] top-[8.57%] left-1/2 -translate-x-1/2 filter blur-[13px] opacity-70">
+              <span className="absolute inset-0 rounded-xl bg-[#d9d9d9] filter blur-[5px]" />
+              <div className="relative w-full h-full overflow-hidden rounded-xl">
                 <Liquid isHovered={buttonHovered} colors={CTA_BUTTON_COLORS} />
               </div>
             </div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[40%] w-[92.23%] h-[112.85%] rounded-[1rem] bg-[#010128] filter blur-[7.3px]" />
-            <div className="relative h-20 w-[min(18rem,88vw)] overflow-hidden rounded-[1rem] border border-white/20 sm:h-24 sm:w-[18rem]">
-              <span className="absolute inset-0 rounded-[1rem] bg-[#d9d9d9]" />
-              <span className="absolute inset-0 rounded-[1rem] bg-black" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[40%] w-[92.23%] h-[112.85%] rounded-xl bg-[#010128] filter blur-[5px]" />
+            <div className="relative h-11 w-[9.75rem] overflow-hidden rounded-xl border border-white/20 sm:h-12 sm:w-[10.75rem] lg:h-14 lg:w-[12rem]">
+              <span className="absolute inset-0 rounded-xl bg-[#d9d9d9]" />
+              <span className="absolute inset-0 rounded-xl bg-black" />
               <Liquid isHovered={buttonHovered} colors={CTA_BUTTON_COLORS} />
               {[1, 2, 3, 4, 5].map((i) => (
                 <span
                   key={i}
-                  className={`absolute inset-0 rounded-[1rem] mix-blend-overlay border border-white/10 filter ${
+                  className={`absolute inset-0 rounded-xl mix-blend-overlay border border-white/10 filter ${
                     i <= 2 ? 'blur-[3px]' : i === 3 ? 'blur-[5px]' : 'blur-[4px]'
                   }`}
                 />
               ))}
-              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[40%] w-[70.8%] h-[42.85%] rounded-[1rem] filter blur-[15px] bg-[#006]" />
+              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[40%] w-[70.8%] h-[42.85%] rounded-xl filter blur-[10px] bg-[#006]" />
               <button
                 type="button"
                 onClick={() => onNavigate?.('/contact')}
                 onMouseEnter={() => setButtonHovered(true)}
                 onMouseLeave={() => setButtonHovered(false)}
-                className="absolute inset-0 rounded-[1rem] bg-transparent"
+                className="absolute inset-0 rounded-xl bg-transparent"
               >
-                <span className="relative flex h-full w-full items-center justify-center gap-3 rounded-[1rem] px-5 text-lg font-semibold uppercase tracking-wide text-white sm:px-6 sm:text-xl">
-                  <ArrowUpRight className="h-5 w-5 sm:h-6 sm:w-6" />
+                <span className="relative flex h-full w-full items-center justify-center gap-2 rounded-xl px-3 text-xs font-semibold uppercase tracking-wide text-white sm:text-sm lg:text-base">
+                  <ArrowUpRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 lg:h-4.5 lg:w-4.5" />
                   <span>Connect</span>
                 </span>
               </button>

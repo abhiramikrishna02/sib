@@ -48,7 +48,7 @@ export default function ApplyModal({ open, onClose }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 18 }}
             transition={{ duration: 0.22, ease: 'easeOut' }}
-            className="relative z-10 w-full max-w-4xl overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#32104f] text-white shadow-[0_30px_80px_rgba(0,0,0,0.6)] sm:rounded-[2rem]"
+            className="relative z-10 w-full max-w-4xl overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#111111] text-white shadow-[0_30px_80px_rgba(0,0,0,0.6)] sm:rounded-[2rem]"
           >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_42%)]" />
 
@@ -57,7 +57,7 @@ export default function ApplyModal({ open, onClose }) {
                 <div className="w-full text-center">
                   <h2
                     id="apply-modal-title"
-                    className="text-[clamp(1.8rem,4vw,2.8rem)] font-serif italic font-semibold text-violet-200"
+                    className="text-[clamp(1.8rem,4vw,2.8rem)] font-serif italic font-semibold text-white"
                   >
                     Apply Now
                   </h2>
@@ -78,7 +78,7 @@ export default function ApplyModal({ open, onClose }) {
                   <span className="text-sm font-semibold text-white/90">Name</span>
                   <input
                     type="text"
-                    className="h-11 rounded-lg border border-white/35 bg-transparent px-3 text-white outline-none placeholder:text-white/30 focus:border-violet-200/80 sm:h-12"
+                    className="h-11 rounded-lg border border-white/35 bg-transparent px-3 text-white outline-none placeholder:text-white/30 focus:border-white/80 sm:h-12"
                     placeholder=""
                   />
                 </label>
@@ -87,7 +87,7 @@ export default function ApplyModal({ open, onClose }) {
                   <span className="text-sm font-semibold text-white/90">Phone Number</span>
                   <input
                     type="tel"
-                    className="h-11 rounded-lg border border-white/35 bg-transparent px-3 text-white outline-none placeholder:text-white/30 focus:border-violet-200/80 sm:h-12"
+                    className="h-11 rounded-lg border border-white/35 bg-transparent px-3 text-white outline-none placeholder:text-white/30 focus:border-white/80 sm:h-12"
                     placeholder=""
                   />
                 </label>
@@ -96,17 +96,17 @@ export default function ApplyModal({ open, onClose }) {
                   <span className="text-sm font-semibold text-white/90">Email</span>
                   <input
                     type="email"
-                    className="h-11 rounded-lg border border-white/35 bg-transparent px-3 text-white outline-none placeholder:text-white/30 focus:border-violet-200/80 sm:h-12"
+                    className="h-11 rounded-lg border border-white/35 bg-transparent px-3 text-white outline-none placeholder:text-white/30 focus:border-white/80 sm:h-12"
                     placeholder=""
                   />
                 </label>
 
                 <label className="grid gap-2">
                   <span className="text-sm font-semibold text-white/90">State</span>
-                  <select className="h-11 rounded-lg border border-white/35 bg-transparent px-3 text-white outline-none focus:border-violet-200/80 sm:h-12">
-                    <option value="" className="bg-[#32104f]">Select state</option>
+                  <select className="h-11 rounded-lg border border-white/35 bg-transparent px-3 text-white outline-none focus:border-white/80 sm:h-12">
+                    <option value="" className="bg-[#111111]">Select state</option>
                     {states.map((state) => (
-                      <option key={state} value={state} className="bg-[#32104f]">
+                      <option key={state} value={state} className="bg-[#111111]">
                         {state}
                       </option>
                     ))}
@@ -117,17 +117,17 @@ export default function ApplyModal({ open, onClose }) {
                   <span className="text-sm font-semibold text-white/90">Interested Course</span>
                   <input
                     type="text"
-                    className="h-11 rounded-lg border border-white/35 bg-transparent px-3 text-white outline-none placeholder:text-white/30 focus:border-violet-200/80 sm:h-12"
+                    className="h-11 rounded-lg border border-white/35 bg-transparent px-3 text-white outline-none placeholder:text-white/30 focus:border-white/80 sm:h-12"
                     placeholder=""
                   />
                 </label>
 
                 <label className="grid gap-2">
                   <span className="text-sm font-semibold text-white/90">District</span>
-                  <select className="h-11 rounded-lg border border-white/35 bg-transparent px-3 text-white outline-none focus:border-violet-200/80 sm:h-12">
-                    <option value="" className="bg-[#32104f]">Select district</option>
+                  <select className="h-11 rounded-lg border border-white/35 bg-transparent px-3 text-white outline-none focus:border-white/80 sm:h-12">
+                    <option value="" className="bg-[#111111]">Select district</option>
                     {districts.map((district) => (
-                      <option key={district} value={district} className="bg-[#32104f]">
+                      <option key={district} value={district} className="bg-[#111111]">
                         {district}
                       </option>
                     ))}
@@ -138,7 +138,7 @@ export default function ApplyModal({ open, onClose }) {
                   <span className="text-sm font-semibold text-white/90">Interested College</span>
                   <input
                     type="text"
-                    className="h-11 rounded-lg border border-white/35 bg-transparent px-3 text-white outline-none placeholder:text-white/30 focus:border-violet-200/80 sm:h-12"
+                    className="h-11 rounded-lg border border-white/35 bg-transparent px-3 text-white outline-none placeholder:text-white/30 focus:border-white/80 sm:h-12"
                     placeholder=""
                   />
                 </label>
@@ -146,7 +146,7 @@ export default function ApplyModal({ open, onClose }) {
                 <div className="mt-2 flex flex-col gap-3 md:col-span-2 md:flex-row md:items-center md:justify-between">
                   <button
                     type="submit"
-                    className="w-full rounded-lg bg-[#7c3aed] px-4 py-3 text-sm font-bold text-white transition hover:bg-[#8b5cf6] md:w-auto"
+                    className="w-full rounded-lg bg-white px-4 py-3 text-sm font-bold text-black transition hover:bg-zinc-200 md:w-auto"
                   >
                     Submit
                   </button>
@@ -166,4 +166,3 @@ export default function ApplyModal({ open, onClose }) {
     </AnimatePresence>
   )
 }
-

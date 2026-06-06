@@ -5,11 +5,11 @@ import { DotGlobeHero } from '../../components/ui/globe-hero';
 
 export default function Contact() {
   return (
-    <DotGlobeHero rotationSpeed={0.004} globeRadius={1.18} className="min-h-[100svh] bg-[#08040f] px-3 pb-14 pt-28 sm:px-5 sm:pb-18 sm:pt-36 md:px-6 md:pb-24 md:pt-44 lg:pt-48">
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(180deg,#08040f_0%,#14091d_48%,#0c0614_100%)]" />
-      <div className="pointer-events-none absolute left-[-10%] top-[-10%] z-0 h-[420px] w-[420px] rounded-full bg-cyan-500/10 blur-[100px] sm:h-[520px] sm:w-[520px] sm:blur-[110px]" />
-      <div className="pointer-events-none absolute right-[-8%] top-[-8%] z-0 h-[420px] w-[420px] rounded-full bg-fuchsia-400/12 blur-[110px] sm:h-[520px] sm:w-[520px] sm:blur-[120px]" />
-      <div className="pointer-events-none absolute bottom-[-12%] left-1/2 z-0 h-[420px] w-[560px] -translate-x-1/2 rounded-full bg-amber-500/8 blur-[120px] sm:h-[520px] sm:w-[720px] sm:blur-[130px]" />
+    <DotGlobeHero rotationSpeed={0.004} globeRadius={1.18} className="min-h-[100svh] bg-[#050505] px-3 pb-14 pt-28 sm:px-5 sm:pb-18 sm:pt-36 md:px-6 md:pb-24 md:pt-44 lg:pt-48">
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(180deg,#050505_0%,#111111_48%,#000000_100%)]" />
+      <div className="pointer-events-none absolute left-[-10%] top-[-10%] z-0 h-[420px] w-[420px] rounded-full bg-white/8 blur-[100px] sm:h-[520px] sm:w-[520px] sm:blur-[110px]" />
+      <div className="pointer-events-none absolute right-[-8%] top-[-8%] z-0 h-[420px] w-[420px] rounded-full bg-white/10 blur-[110px] sm:h-[520px] sm:w-[520px] sm:blur-[120px]" />
+      <div className="pointer-events-none absolute bottom-[-12%] left-1/2 z-0 h-[420px] w-[560px] -translate-x-1/2 rounded-full bg-white/6 blur-[120px] sm:h-[520px] sm:w-[720px] sm:blur-[130px]" />
       <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.04] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_1px,transparent_1px)] bg-[size:24px_24px]" />
       <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-t from-black/35 via-transparent to-black/20" />
 

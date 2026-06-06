@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import EtherealBeamsBackground from '../../../components/ui/ethereal-beams-background'
 
 const stats = [
   { value: 100,  suffix: '+',  label: 'Partner Colleges'   },
@@ -93,30 +92,19 @@ function ImpactNumbersSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden border-y border-white/8 bg-[#090909] text-white"
+      className="relative overflow-hidden border-y border-white/8 bg-black text-white"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {/* ── Ethereal beams + overlays ── */}
-      <div className="pointer-events-none absolute inset-0 z-0">
-        <EtherealBeamsBackground
-          beamWidth={2.5}
-          beamHeight={18}
-          beamNumber={15}
-          lightColor="#ffffff"
-          speed={2.5}
-          noiseIntensity={2}
-          scale={0.15}
-          rotation={43}
-        />
-      </div>
-      <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-t from-black/50 via-transparent to-black/30" />
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_42%)]" />
+      {/* ── Glossy Black Background Overlays ── */}
+      <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-white/[0.08] via-transparent to-white/[0.03]" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.12),transparent_50%)]" />
+      
       <div className="pointer-events-none absolute inset-x-0 top-0    z-10 h-px bg-gradient-to-r from-transparent via-white/18 to-transparent" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-px bg-gradient-to-r from-transparent via-white/18 to-transparent" />
 
       {/* ── Stats layer (always rendered, lives underneath curtains) ── */}
-      <div className="relative z-10 mx-auto flex w-full items-center justify-center gap-6 px-6 py-14 sm:gap-14 sm:px-10 sm:py-16 lg:gap-20 lg:py-20">
+      <div className="relative z-10 mx-auto flex w-full flex-wrap items-center justify-center gap-x-6 gap-y-10 px-4 py-14 sm:gap-14 sm:px-10 sm:py-16 lg:gap-20 lg:py-20">
         {stats.map((stat, i) => (
           <StatItem
             key={stat.label}

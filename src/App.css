@@ -22,7 +22,7 @@
 
 .eyebrow {
   margin: 0;
-  color: var(--accent-bright-violet);
+  color: var(--text-soft);
   font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -176,7 +176,7 @@
 }
 
 .secondary-btn {
-  background: rgba(244, 232, 247, 0.72);
+  background: rgba(245, 245, 245, 0.72);
   border-color: var(--border);
 }
 
@@ -216,7 +216,7 @@
   padding: 1.25rem;
   border-radius: 1.75rem;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 248, 239, 0.65));
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(220, 220, 220, 0.65));
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
 }
@@ -256,8 +256,8 @@
 
 .contact-form input:focus,
 .contact-form textarea:focus {
-  outline: 2px solid rgba(154, 79, 45, 0.22);
-  border-color: rgba(123, 44, 191, 0.34);
+  outline: 2px solid rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.34);
 }
 
 .contact-card h3 {

@@ -36,9 +36,9 @@ export default function Login({ onNavigate }) {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#0a0212] flex items-center justify-center p-6 relative overflow-hidden">
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-fuchsia-600/10 blur-[120px] rounded-full" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-600/10 blur-[120px] rounded-full" />
+    <div className="min-h-screen w-full bg-[#050505] flex items-center justify-center p-6 relative overflow-hidden">
+      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-white/10 blur-[120px] rounded-full" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-white/10 blur-[120px] rounded-full" />
 
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
@@ -46,7 +46,7 @@ export default function Login({ onNavigate }) {
         className="relative z-10 w-full max-w-md bg-white/5 border border-white/10 backdrop-blur-2xl rounded-[2.5rem] p-10 shadow-2xl"
       >
         <div className="text-center mb-10">
-          <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-fuchsia-600 to-purple-600 mb-4 shadow-lg shadow-fuchsia-500/20">
+          <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-white to-white mb-4 shadow-lg shadow-white/20">
             {isAdminView ? <ShieldCheck className="text-white" size={32} /> : <User className="text-white" size={32} />}
           </div>
           <h1 className="text-3xl font-black italic tracking-tighter text-white">
@@ -55,7 +55,7 @@ export default function Login({ onNavigate }) {
           
           {/* NEW: Error Message Display */}
           {error && (
-            <p className="mt-4 text-xs font-bold uppercase text-red-500 bg-red-500/10 py-2 rounded-lg border border-red-500/20">
+            <p className="mt-4 text-xs font-bold uppercase text-white bg-white/10 py-2 rounded-lg border border-white/20">
               {error}
             </p>
           )}
@@ -63,11 +63,11 @@ export default function Login({ onNavigate }) {
 
         <form onSubmit={handleLogin} className="space-y-6">
           <div className="relative group">
-            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-fuchsia-400 transition-colors" size={18} />
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-white transition-colors" size={18} />
             <input 
               type="email" 
               placeholder="Email Address"
-              className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-white/20 outline-none focus:border-fuchsia-500/50 transition-all"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-white/20 outline-none focus:border-white/50 transition-all"
               value={email}
               onChange={(e) => { setEmail(e.target.value); setError(''); }}
               required
@@ -75,11 +75,11 @@ export default function Login({ onNavigate }) {
           </div>
 
           <div className="relative group">
-            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-fuchsia-400 transition-colors" size={18} />
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-white transition-colors" size={18} />
             <input 
               type="password" 
               placeholder="Password"
-              className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-white/20 outline-none focus:border-fuchsia-500/50 transition-all"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-white/20 outline-none focus:border-white/50 transition-all"
               value={password}
               onChange={(e) => { setPassword(e.target.value); setError(''); }}
               required
@@ -88,7 +88,7 @@ export default function Login({ onNavigate }) {
 
           <button 
             type="submit"
-            className="w-full group relative overflow-hidden rounded-2xl bg-white py-4 font-black uppercase tracking-widest text-black transition-all hover:bg-fuchsia-500 hover:text-white"
+            className="w-full group relative overflow-hidden rounded-2xl bg-white py-4 font-black uppercase tracking-widest text-black transition-all hover:bg-white hover:text-white"
           >
             <span className="relative z-10 flex items-center justify-center gap-2">
               Access Dashboard <ArrowRight size={18} />

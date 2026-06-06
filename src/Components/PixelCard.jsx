@@ -117,7 +117,7 @@ const VARIANTS = {
   violet: {
     gap: 8,
     speed: 42,
-    colors: '#ddd6fe,#a78bfa,#7c3aed',
+    colors: '#ddd6fe,#c8c8c8,#7c3aed',
     noFocus: false
   }
 }

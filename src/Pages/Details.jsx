@@ -36,11 +36,11 @@ function getFeeRange(item) {
 function DetailRow({ icon: Icon, label, value }) {
   return (
     <div className="flex items-start gap-3">
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-violet-300">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-white">
         <Icon size={16} />
       </div>
       <div>
-        <div className="text-[11px] font-black uppercase tracking-[0.18em] text-violet-200/70">{label}</div>
+        <div className="text-[11px] font-black uppercase tracking-[0.18em] text-white/70">{label}</div>
         <div className="mt-0.5 text-sm font-semibold text-white">{value || 'N/A'}</div>
       </div>
     </div>
@@ -63,7 +63,7 @@ export default function Details({ onNavigate, globalData, locationHash, dataLoad
 
   if (!item && dataLoading) {
     return (
-      <div className="min-h-screen bg-[#431f60] px-6 py-32 text-white">
+      <div className="min-h-screen bg-[#050505] px-6 py-32 text-white">
         <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/5 p-8 text-center">
           <h1 className="text-3xl font-black">Loading details...</h1>
         </div>
@@ -73,7 +73,7 @@ export default function Details({ onNavigate, globalData, locationHash, dataLoad
 
   if (!item) {
     return (
-      <div className="min-h-screen bg-[#431f60] px-6 py-32 text-white">
+      <div className="min-h-screen bg-[#050505] px-6 py-32 text-white">
         <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/5 p-8 text-center">
           <h1 className="text-3xl font-black">Details not found</h1>
           <button
@@ -115,7 +115,7 @@ export default function Details({ onNavigate, globalData, locationHash, dataLoad
     : item.location || 'Location not set'
 
   return (
-    <div className="min-h-screen bg-[#431f60] px-4 pb-16 pt-44 text-white sm:px-6 md:px-16 md:pt-48">
+    <div className="min-h-screen bg-[#050505] px-4 pb-16 pt-44 text-white sm:px-6 md:px-16 md:pt-48">
       <div className="mx-auto max-w-7xl">
         <div className="relative z-[60] mb-10 mt-2 flex items-center justify-start">
           <button
@@ -130,20 +130,20 @@ export default function Details({ onNavigate, globalData, locationHash, dataLoad
           <section className="mb-16 overflow-hidden rounded-[2.5rem] border border-white/10 bg-[linear-gradient(180deg,rgba(40,14,61,0.98),rgba(94,57,132,0.82))] shadow-2xl">
             <div className="relative px-4 py-10 sm:px-6 sm:py-12 md:px-10">
               <div className="mb-6 text-center">
-                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-violet-300/80">Top Universities</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/80">Top Universities</p>
                 <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/55">
                   Discover the best universities to pursue your academic goals.
                 </p>
               </div>
 
               <div className="mx-auto mb-8 max-w-2xl">
-                <label className="flex items-center gap-3 rounded-full border border-white/15 bg-white/90 px-4 py-3 text-[#28103d] shadow-lg shadow-black/20">
-                  <Search size={18} className="shrink-0 text-[#4b2c73]" />
+                <label className="flex items-center gap-3 rounded-full border border-white/15 bg-white/90 px-4 py-3 text-[#111111] shadow-lg shadow-black/20">
+                  <Search size={18} className="shrink-0 text-[#333333]" />
                   <input
                     readOnly
                     value={universitySearch}
                     placeholder="Search universities"
-                    className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-[#4b2c73]/60"
+                    className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-[#333333]/60"
                   />
                 </label>
               </div>
@@ -159,7 +159,7 @@ export default function Details({ onNavigate, globalData, locationHash, dataLoad
                         {getCardImage(uni) ? (
                           <img src={getCardImage(uni)} alt={uni.name} className="h-full w-full object-cover" />
                         ) : (
-                          <GraduationCap className="text-violet-500" size={28} />
+                          <GraduationCap className="text-white" size={28} />
                         )}
                       </div>
                       <div className="min-w-0">
@@ -171,7 +171,7 @@ export default function Details({ onNavigate, globalData, locationHash, dataLoad
                           <MapPin size={11} />
                           <span className="truncate">{uni.location || 'Location not set'}</span>
                           {uni.rating && (
-                            <span className="rounded-full border border-white/10 bg-black/20 px-2 py-1 text-[9px] font-black uppercase tracking-[0.18em] text-violet-200">
+                            <span className="rounded-full border border-white/10 bg-black/20 px-2 py-1 text-[9px] font-black uppercase tracking-[0.18em] text-white">
                               {uni.rating}
                             </span>
                           )}
@@ -181,7 +181,7 @@ export default function Details({ onNavigate, globalData, locationHash, dataLoad
                       <div className="flex justify-start lg:justify-end">
                         <button
                           onClick={() => onNavigate?.(`/services#colleges-${uni.id}`)}
-                          className="inline-flex shrink-0 items-center justify-center rounded-full bg-violet-500 px-5 py-3 text-[11px] font-black uppercase tracking-widest text-white transition-colors hover:bg-white hover:text-black"
+                          className="inline-flex shrink-0 items-center justify-center rounded-full bg-white px-5 py-3 text-[11px] font-black uppercase tracking-widest text-white transition-colors hover:bg-white hover:text-black"
                         >
                           View Colleges
                         </button>
@@ -194,14 +194,14 @@ export default function Details({ onNavigate, globalData, locationHash, dataLoad
           </section>
         )}
 
-        <div className="relative z-10 rounded-[2.25rem] border border-white/10 bg-[#1a0b2e] p-4 shadow-2xl shadow-black/20 sm:p-5 md:p-6">
+        <div className="relative z-10 rounded-[2.25rem] border border-white/10 bg-[#111111] p-4 shadow-2xl shadow-black/20 sm:p-5 md:p-6">
           <div className={`grid gap-5 ${showHeroMedia ? 'lg:grid-cols-[320px_1fr]' : 'lg:grid-cols-1'}`}>
             {showHeroMedia && (
               <div className="overflow-hidden rounded-[1.1rem] border border-white/10 bg-white/5">
                 {getCardImage(item) ? (
                   <img src={getCardImage(item)} alt={heroTitle} className="h-[260px] w-full object-cover" />
                 ) : (
-                  <div className="flex h-[260px] items-center justify-center bg-[linear-gradient(135deg,#7a5da0,#b58fdc)]">
+                  <div className="flex h-[260px] items-center justify-center bg-[linear-gradient(135deg,#404040,#d0d0d0)]">
                     <Building2 size={44} className="text-white/80" />
                   </div>
                 )}
@@ -216,11 +216,11 @@ export default function Details({ onNavigate, globalData, locationHash, dataLoad
 
                 <div className="mt-3 flex flex-wrap items-center gap-3">
                   {item.rating && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-[#3f2a77] px-3 py-1 text-[10px] font-black text-yellow-300">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[#333333] px-3 py-1 text-[10px] font-black text-white">
                       <Star size={12} fill="currentColor" /> {item.rating}
                     </span>
                   )}
-                  <span className="rounded-full bg-[#2c4ea0] px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white">
+                  <span className="rounded-full bg-[#555555] px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white">
                     {typeLabel}
                   </span>
                 </div>
@@ -277,7 +277,7 @@ export default function Details({ onNavigate, globalData, locationHash, dataLoad
 
         <div className="mt-6 grid gap-6 lg:grid-cols-[1.3fr_0.7fr]">
           <div className="space-y-6">
-            <section className="rounded-[1.5rem] border border-white/10 bg-[#1a0b2e] p-5 sm:p-6">
+            <section className="rounded-[1.5rem] border border-white/10 bg-[#111111] p-5 sm:p-6">
               <h2 className="text-2xl font-black text-white">
                 {type === 'university' ? 'About the University' : type === 'course' ? 'About the Course' : 'About the College'}
               </h2>
@@ -288,7 +288,7 @@ export default function Details({ onNavigate, globalData, locationHash, dataLoad
             </section>
 
             {showGallery && (
-              <section className="rounded-[1.5rem] border border-white/10 bg-[#1a0b2e] p-5 sm:p-6">
+              <section className="rounded-[1.5rem] border border-white/10 bg-[#111111] p-5 sm:p-6">
                 <h2 className="text-2xl font-black text-white">
                   {type === 'university' ? 'University Gallery' : 'Campus Gallery'}
                 </h2>
@@ -303,7 +303,7 @@ export default function Details({ onNavigate, globalData, locationHash, dataLoad
               </section>
             )}
 
-            <section className="rounded-[1.5rem] border border-white/10 bg-[#1a0b2e] p-5 sm:p-6">
+            <section className="rounded-[1.5rem] border border-white/10 bg-[#111111] p-5 sm:p-6">
               <h2 className="text-2xl font-black text-white">
                 {type === 'university' ? 'Available Colleges' : 'Available Courses'}
               </h2>
@@ -320,7 +320,7 @@ export default function Details({ onNavigate, globalData, locationHash, dataLoad
                             : row.degree || row.level || row.levels || 'Course'}
                         </div>
                       </div>
-                      <span className="rounded-full bg-[#dfffd8] px-3 py-1 text-[10px] font-black uppercase text-[#1b6b2a]">
+                      <span className="rounded-full bg-[#f1f1f1] px-3 py-1 text-[10px] font-black uppercase text-[#222222]">
                         {type === 'university'
                           ? 'College'
                           : String(row.level || row.levels || 'UG').toUpperCase().includes('PG')
@@ -342,7 +342,7 @@ export default function Details({ onNavigate, globalData, locationHash, dataLoad
           </div>
 
           <div className="space-y-6">
-            <section className="rounded-[1.5rem] border border-white/10 bg-[#1a0b2e] p-5 sm:p-6">
+            <section className="rounded-[1.5rem] border border-white/10 bg-[#111111] p-5 sm:p-6">
               <h2 className="text-2xl font-black text-white">Quick Facts</h2>
               <div className="mt-3 h-px bg-white/10" />
               <div className="mt-5 space-y-4">
@@ -359,7 +359,7 @@ export default function Details({ onNavigate, globalData, locationHash, dataLoad
               </div>
             </section>
 
-            <section className="rounded-[1.5rem] border border-white/10 bg-[#1a0b2e] p-5 sm:p-6">
+            <section className="rounded-[1.5rem] border border-white/10 bg-[#111111] p-5 sm:p-6">
               <h2 className="text-2xl font-black text-white">Contact Information</h2>
               <div className="mt-3 h-px bg-white/10" />
               <div className="mt-5 space-y-4">
