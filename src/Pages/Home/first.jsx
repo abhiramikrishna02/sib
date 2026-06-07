@@ -67,7 +67,7 @@ function FirstSection() {
               {[...row.items, ...row.items].map((text, index) => (
                 <div
                   key={index}
-                  className={`mx-3 px-10 py-4 text-2xl md:text-4xl font-extrabold uppercase tracking-wider rounded-lg border border-white/5 whitespace-nowrap ${row.bgColor} ${row.textColor}`}
+                  className={`mx-3 px-10 py-4 text-2xl md:text-4xl font-extrabold uppercase tracking-wider rounded-none border border-white/5 whitespace-nowrap ${row.bgColor} ${row.textColor}`}
                 >
                   {text}
                 </div>

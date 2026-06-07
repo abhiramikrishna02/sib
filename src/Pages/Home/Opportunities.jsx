@@ -313,7 +313,7 @@ function Opportunities({ onNavigate }) {
             ref={galleryRef}
             items={galleryItems}
             bend={2.6}
-            borderRadius={0.07}
+            borderRadius={0}
             scrollSpeed={2.2}
             scrollEase={0.045}
             onSelect={handleSelect}
