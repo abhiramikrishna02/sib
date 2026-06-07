@@ -161,20 +161,6 @@ const GradientSvg: FC<GradientSvgProps> = ({
     ...Object.values(svgStates).map((svg) => svg.stops.length)
   );
   const stopsAnimationArray = createStopsArray(svgStates, svgOrder, maxStops);
-  const gradientTransform = svgOrder.map(
-    (svgKey) => svgStates[svgKey].gradientTransform
-  );
-
-  const variants = {
-    hovered: {
-      gradientTransform: gradientTransform,
-      transition: { duration: 50, repeat: Infinity, ease: 'linear' },
-    },
-    notHovered: {
-      gradientTransform: gradientTransform,
-      transition: { duration: 10, repeat: Infinity, ease: 'linear' },
-    },
-  };
 
   return (
     <svg
@@ -198,7 +184,7 @@ const GradientSvg: FC<GradientSvgProps> = ({
           cy='0'
           r='1'
           gradientUnits='userSpaceOnUse'
-          animate={isHovered ? variants.hovered : variants.notHovered}
+          gradientTransform={svgStates.svg1.gradientTransform}
         >
           {stopsAnimationArray.map((stopConfigs, index) => (
             <AnimatePresence key={index}>

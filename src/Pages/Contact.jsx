@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin, Star, Send, MessageSquare } from 'lucide-react';
-import PixelBlast from '../components/ui/PixelBlast';
+import PixelBlast from '../Components/ui/PixelBlast';
 
 export default function Contact() {
   return (

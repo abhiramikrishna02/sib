@@ -1,4 +1,4 @@
-// PixelBlast — Three.js only, NO postprocessing dependency
+// PixelBlast - Three.js only, NO postprocessing dependency
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
@@ -214,7 +214,6 @@ const PixelBlast = ({
     const container = containerRef.current;
     if (!container) return;
 
-    // cleanup previous
     if (threeRef.current) {
       const t = threeRef.current;
       t.resizeObserver?.disconnect();
@@ -222,7 +221,6 @@ const PixelBlast = ({
       t.quad?.geometry.dispose();
       t.material.dispose();
       t.renderer.dispose();
-      t.renderer.forceContextLoss();
       if (t.renderer.domElement.parentElement === container) {
         container.removeChild(t.renderer.domElement);
       }
@@ -279,7 +277,7 @@ const PixelBlast = ({
     const quadGeom = new THREE.PlaneGeometry(2, 2);
     const quad = new THREE.Mesh(quadGeom, material);
     scene.add(quad);
-    const clock = new THREE.Clock();
+    const startTime = performance.now();
 
     const setSize = () => {
       const w = container.clientWidth || 1;
@@ -322,13 +320,13 @@ const PixelBlast = ({
         raf = requestAnimationFrame(animate);
         return;
       }
-      uniforms.uTime.value = timeOffset + clock.getElapsedTime() * speedRef.current;
+      uniforms.uTime.value = timeOffset + ((performance.now() - startTime) / 1000) * speedRef.current;
       renderer.render(scene, camera);
       raf = requestAnimationFrame(animate);
     };
     raf = requestAnimationFrame(animate);
 
-    threeRef.current = { renderer, scene, camera, material, clock, clickIx: 0, uniforms, resizeObserver: ro, raf, quad };
+    threeRef.current = { renderer, scene, camera, material, clickIx: 0, uniforms, resizeObserver: ro, raf, quad };
 
     return () => {
       if (!threeRef.current) return;
@@ -338,13 +336,11 @@ const PixelBlast = ({
       t.quad?.geometry.dispose();
       t.material.dispose();
       t.renderer.dispose();
-      t.renderer.forceContextLoss();
       if (t.renderer.domElement.parentElement === container) container.removeChild(t.renderer.domElement);
       threeRef.current = null;
     };
   }, [antialias, pixelSize, patternScale, patternDensity, enableRipples, rippleIntensityScale, rippleThickness, rippleSpeed, pixelSizeJitter, edgeFade, transparent, autoPauseOffscreen, variant, color]);
 
-  // update uniforms live without reinit
   useEffect(() => {
     if (!threeRef.current) return;
     const t = threeRef.current;
