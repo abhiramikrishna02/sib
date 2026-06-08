@@ -10,23 +10,23 @@ import Shuffle from '../../../components/ui/shuffle'
 
 gsap.registerPlugin(ScrollTrigger)
 
-/* ─── Data — glossy black cards with white text ──────────────────────────── */
+/* ─── Data — each card gets its own accent from the About palette ────────── */
 const cardData = [
-  { title: 'Universities',       subtitle: 'GLOBAL ACCESS',  icon: GraduationCap, code: 'UN',  accent: '#ffffff', accentSoft: 'rgba(255,255,255,0.08)',  note: 'Compare top institutions with clearer admissions guidance.',     path: '/services#universities' },
-  { title: 'Colleges',           subtitle: 'CITY NETWORK',   icon: School,        code: 'CL',  accent: '#ffffff', accentSoft: 'rgba(255,255,255,0.08)',  note: 'Find trusted colleges across Bengaluru with practical support.', path: '/services#colleges'     },
-  { title: 'Courses',            subtitle: 'FUTURE TRACKS',  icon: BookOpen,      code: 'CR',  accent: '#ffffff', accentSoft: 'rgba(255,255,255,0.08)',  note: 'Match your goals with programs that fit your next move.',        path: '/services#courses'      },
-  { title: 'Online Courses',     subtitle: 'REMOTE READY',   icon: Globe,         code: 'OC',  accent: '#ffffff', accentSoft: 'rgba(255,255,255,0.08)',  note: 'Add flexible learning paths alongside your academic plan.',      path: null                     },
-  { title: 'Short-term',         subtitle: 'FAST SKILLS',    icon: Clock,         code: 'SP',  accent: '#ffffff', accentSoft: 'rgba(255,255,255,0.08)',  note: 'Build employable skills through focused, practical programs.',   path: null                     },
-  { title: 'Part-time Jobs',     subtitle: 'WORK ACCESS',    icon: Briefcase,     code: 'PJ',  accent: '#ffffff', accentSoft: 'rgba(255,255,255,0.08)',  note: 'Discover student-friendly work options around your schedule.',   path: null                     },
-  { title: 'Accommodation',      subtitle: 'NEAR ME',        icon: Library,       code: 'AC',  accent: '#ffffff', accentSoft: 'rgba(255,255,255,0.08)',  note: 'Explore convenient stays close to your campus and city life.',   path: null                     },
-  { title: 'Events',             subtitle: 'CAMPUS LIFE',    icon: Calendar,      code: 'EV',  accent: '#ffffff', accentSoft: 'rgba(255,255,255,0.08)',  note: 'Stay close to student events, meetups, and opportunity days.',  path: null                     },
-  { title: '1-on-1 Counselling', subtitle: 'FREE SESSION',   icon: MessageCircle, code: '1:1', accent: '#ffffff', accentSoft: 'rgba(255,255,255,0.08)',  note: 'Talk through choices with personal guidance before you apply.',  path: null                     },
-  { title: 'Internships',        subtitle: 'CAREER SIGNAL',  icon: UserCheck,     code: 'IN',  accent: '#ffffff', accentSoft: 'rgba(255,255,255,0.08)',  note: 'Connect academic decisions with early career experience.',       path: null                     },
+  { title: 'Universities',       subtitle: 'GLOBAL ACCESS',  icon: GraduationCap, code: 'UN',  accent: '#00E5A0', accentSoft: 'rgba(0,229,160,0.12)',   note: 'Compare top institutions with clearer admissions guidance.',     path: '/services#universities' },
+  { title: 'Colleges',           subtitle: 'CITY NETWORK',   icon: School,        code: 'CL',  accent: '#FFB300', accentSoft: 'rgba(255,179,0,0.12)',    note: 'Find trusted colleges across Bengaluru with practical support.', path: '/services#colleges'     },
+  { title: 'Courses',            subtitle: 'FUTURE TRACKS',  icon: BookOpen,      code: 'CR',  accent: '#00CFFF', accentSoft: 'rgba(0,207,255,0.12)',    note: 'Match your goals with programs that fit your next move.',        path: '/services#courses'      },
+  { title: 'Online Courses',     subtitle: 'REMOTE READY',   icon: Globe,         code: 'OC',  accent: '#4DB6AC', accentSoft: 'rgba(77,182,172,0.12)',   note: 'Add flexible learning paths alongside your academic plan.',      path: null                     },
+  { title: 'Short-term',         subtitle: 'FAST SKILLS',    icon: Clock,         code: 'SP',  accent: '#FFB300', accentSoft: 'rgba(255,179,0,0.12)',    note: 'Build employable skills through focused, practical programs.',   path: null                     },
+  { title: 'Part-time Jobs',     subtitle: 'WORK ACCESS',    icon: Briefcase,     code: 'PJ',  accent: '#00E5A0', accentSoft: 'rgba(0,229,160,0.12)',   note: 'Discover student-friendly work options around your schedule.',   path: null                     },
+  { title: 'Accommodation',      subtitle: 'NEAR ME',        icon: Library,       code: 'AC',  accent: '#FFCA28', accentSoft: 'rgba(255,202,40,0.12)',   note: 'Explore convenient stays close to your campus and city life.',   path: null                     },
+  { title: 'Events',             subtitle: 'CAMPUS LIFE',    icon: Calendar,      code: 'EV',  accent: '#4FC3F7', accentSoft: 'rgba(79,195,247,0.12)',   note: 'Stay close to student events, meetups, and opportunity days.',  path: null                     },
+  { title: '1-on-1 Counselling', subtitle: 'FREE SESSION',   icon: MessageCircle, code: '1:1', accent: '#00E5A0', accentSoft: 'rgba(0,229,160,0.12)',   note: 'Talk through choices with personal guidance before you apply.',  path: null                     },
+  { title: 'Internships',        subtitle: 'CAREER SIGNAL',  icon: UserCheck,     code: 'IN',  accent: '#FFB300', accentSoft: 'rgba(255,179,0,0.12)',   note: 'Connect academic decisions with early career experience.',       path: null                     },
 ]
 
 /* ─── Noise grain ────────────────────────────────────────────────────────── */
 const NoiseBg = () => (
-  <svg className="pointer-events-none absolute inset-0 z-0 h-full w-full opacity-[0.025]" aria-hidden>
+  <svg className="pointer-events-none absolute inset-0 z-0 h-full w-full opacity-[0.035]" aria-hidden>
     <filter id="opp-noise">
       <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="4" stitchTiles="stitch" />
       <feColorMatrix type="saturate" values="0" />
@@ -35,22 +35,24 @@ const NoiseBg = () => (
   </svg>
 )
 
-/* ─── Subtle grid pattern ────────────────────────────────────────────────── */
+/* ─── Grid — white lines on dark teal-black ──────────────────────────────── */
 const GridPattern = () => (
   <div
     aria-hidden
     className="pointer-events-none absolute inset-0 z-0 opacity-[0.07]"
     style={{
       backgroundImage: `
-        linear-gradient(rgba(0,0,0,0.25) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,0,0,0.25) 1px, transparent 1px)
+        linear-gradient(rgba(0,229,160,0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,160,0.15) 1px, transparent 1px)
       `,
-      backgroundSize: '48px 48px',
+      backgroundSize: '72px 72px',
+      maskImage: 'linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)',
+      WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)',
     }}
   />
 )
 
-/* ─── Ambient orbs — subtle dark glows on white bg ──────────────────────── */
+/* ─── Ambient orbs — teal + gold + cyan on dark teal-black ──────────────── */
 const AmbientOrbs = () => (
   <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden>
     <div className="opp-orb opp-orb-a absolute -left-[10vw] top-[6%]  h-[46vmin] w-[46vmin] rounded-full" />
@@ -66,7 +68,7 @@ const ScanLines = () => (
     className="pointer-events-none absolute inset-0 z-0"
     style={{
       backgroundImage:
-        'repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.008) 3px,rgba(0,0,0,0.008) 4px)',
+        'repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,229,160,0.008) 3px,rgba(0,229,160,0.008) 4px)',
     }}
   />
 )
@@ -152,33 +154,33 @@ function Opportunities({ onNavigate }) {
   return (
     <>
       <style>{`
-        /* ── Ambient orbs — soft dark on white ── */
-        .opp-orb-a { background: radial-gradient(circle, rgba(0,0,0,0.04) 0%, transparent 70%); filter: blur(80px); }
-        .opp-orb-b { background: radial-gradient(circle, rgba(0,0,0,0.03) 0%, transparent 70%); filter: blur(90px); }
-        .opp-orb-c { background: radial-gradient(circle, rgba(0,0,0,0.03) 0%, transparent 70%); filter: blur(100px); }
+        /* ── Ambient orbs — teal + gold + cyan on dark teal-black ── */
+        .opp-orb-a { background: radial-gradient(circle, rgba(0,229,160,0.16) 0%, transparent 70%); filter: blur(80px); }
+        .opp-orb-b { background: radial-gradient(circle, rgba(255,179,0,0.12) 0%, transparent 70%);  filter: blur(90px); }
+        .opp-orb-c { background: radial-gradient(circle, rgba(0,207,255,0.10) 0%, transparent 70%);  filter: blur(100px); }
 
-        /* ── Chip ── */
+        /* ── Chip — teal accent ── */
         .opp-chip {
-          background: rgba(0,0,0,0.06);
-          border: 1px solid rgba(0,0,0,0.14);
+          background: rgba(0,229,160,0.10);
+          border: 1px solid rgba(0,229,160,0.30);
           border-radius: 100px;
           font-size: 10px;
           letter-spacing: 0.18em;
           font-weight: 700;
           text-transform: uppercase;
-          color: rgba(0,0,0,0.45);
+          color: rgba(0,229,160,0.75);
           padding: 5px 16px;
           display: inline-block;
         }
 
-        /* ── Footer divider ── */
+        /* ── Footer divider — teal ── */
         .opp-foot-line {
           height: 1px;
           background: linear-gradient(
             90deg,
             transparent,
-            rgba(0,0,0,0.16) 40%,
-            rgba(0,0,0,0.16) 60%,
+            rgba(0,229,160,0.35) 40%,
+            rgba(0,229,160,0.35) 60%,
             transparent
           );
         }
@@ -196,9 +198,10 @@ function Opportunities({ onNavigate }) {
           display: flex;
           align-items: center;
           justify-content: center;
+          z-index: 10;
+          isolation: isolate;
         }
 
-        /* ── Mobile: gallery takes remaining space so card fits fully ── */
         @media (max-width: 767px) {
           .opp-gallery-wrap {
             height: calc(100svh - 180px);
@@ -219,15 +222,18 @@ function Opportunities({ onNavigate }) {
           mix-blend-mode: normal !important;
         }
 
-        /* ── Edge fade colours matching the white background ── */
+        /* ── Edge fades — match dark teal-black bg ── */
         .opp-edge-left {
-          background: linear-gradient(to right, #ffffff, transparent) !important;
+          background: linear-gradient(to right, #030e10, transparent) !important;
+          z-index: 20 !important;
+          pointer-events: none !important;
         }
         .opp-edge-right {
-          background: linear-gradient(to left, #ffffff, transparent) !important;
+          background: linear-gradient(to left, #030e10, transparent) !important;
+          z-index: 20 !important;
+          pointer-events: none !important;
         }
 
-        /* ── Mobile: hide edge fades entirely so card isn't clipped ── */
         @media (max-width: 767px) {
           .opp-edge-left,
           .opp-edge-right {
@@ -235,7 +241,6 @@ function Opportunities({ onNavigate }) {
           }
         }
 
-        /* ── Mobile: tighten header so more room goes to the card ── */
         @media (max-width: 767px) {
           .opp-head {
             padding-top: 10px !important;
@@ -247,13 +252,18 @@ function Opportunities({ onNavigate }) {
             padding-bottom: 4px !important;
           }
         }
+
+        /* ── Head and foot stay above canvas ── */
+        .opp-head { position: relative; z-index: 30; }
+        .opp-foot { position: relative; z-index: 30; }
       `}</style>
 
       <div
         ref={containerRef}
         className="relative flex h-[100svh] w-full flex-col items-center overflow-hidden"
         style={{
-          background: '#ffffff',
+          /* Section 4 — dark teal-black, distinct from navy sections */
+          background: 'linear-gradient(180deg, #030e10 0%, #051a18 50%, #030e10 100%)',
         }}
       >
         <NoiseBg />
@@ -261,17 +271,17 @@ function Opportunities({ onNavigate }) {
         <ScanLines />
         <AmbientOrbs />
 
-        {/* Top edge line */}
+        {/* Top edge line — teal tint */}
         <div
           className="pointer-events-none absolute inset-x-0 top-0 z-10 h-px"
           style={{
             background:
-              'linear-gradient(90deg, transparent, rgba(0,0,0,0.18) 30%, rgba(0,0,0,0.18) 70%, transparent)',
+              'linear-gradient(90deg, transparent, rgba(0,229,160,0.28) 30%, rgba(0,229,160,0.28) 70%, transparent)',
           }}
         />
 
         {/* ── Head ── */}
-        <div className="opp-head relative z-10 flex w-full flex-shrink-0 flex-col items-center gap-3 px-4 pt-10 pb-2 sm:pt-14 sm:gap-4">
+        <div className="opp-head relative z-30 flex w-full flex-shrink-0 flex-col items-center gap-3 px-4 pt-10 pb-2 sm:pt-14 sm:gap-4">
 
           <div className="opp-heading">
             <span className="opp-chip">What We Offer</span>
@@ -292,23 +302,25 @@ function Opportunities({ onNavigate }) {
               triggerOnHover={true}
               respectReducedMotion={true}
               scrambleCharset="ExploreOpportunities"
-              colorFrom="rgba(0,0,0,0.25)"
-              colorTo="#000000"
+              /* scramble from muted teal to white */
+              colorFrom="rgba(0,229,160,0.35)"
+              colorTo="#ffffff"
               textAlign="center"
-              className="mx-auto whitespace-nowrap text-[clamp(1.6rem,4.2vw,3.6rem)] font-black leading-[1.0] tracking-[-0.025em] text-black"
+              className="mx-auto whitespace-nowrap text-[clamp(1.6rem,4.2vw,3.6rem)] font-black leading-[1.0] tracking-[-0.025em] text-white"
             />
           </div>
 
           <p
             className="opp-heading mx-auto max-w-[min(88vw,440px)] text-center text-[clamp(0.75rem,1.6vw,0.92rem)] font-light leading-relaxed"
-            style={{ color: 'rgba(0,0,0,0.42)' }}
+            /* muted teal-white */
+            style={{ color: 'rgba(160,240,210,0.50)' }}
           >
             Tap any card to enter — each one is a gateway to your next step.
           </p>
         </div>
 
         {/* ── Gallery ── */}
-        <div className="opp-gallery opp-gallery-wrap z-10 flex-1">
+        <div className="opp-gallery opp-gallery-wrap flex-1" style={{ zIndex: 10, isolation: 'isolate' }}>
           <CircularGallery
             ref={galleryRef}
             items={galleryItems}
@@ -318,32 +330,27 @@ function Opportunities({ onNavigate }) {
             scrollEase={0.045}
             onSelect={handleSelect}
           />
-          {/* Edge fades — pure white (hidden on mobile via CSS) */}
-          <div
-            className="opp-edge-left pointer-events-none absolute inset-y-0 left-0 z-20 w-[10vw]"
-          />
-          <div
-            className="opp-edge-right pointer-events-none absolute inset-y-0 right-0 z-20 w-[10vw]"
-          />
+          <div className="opp-edge-left pointer-events-none absolute inset-y-0 left-0 w-[10vw]" style={{ zIndex: 20 }} />
+          <div className="opp-edge-right pointer-events-none absolute inset-y-0 right-0 w-[10vw]" style={{ zIndex: 20 }} />
         </div>
 
         {/* ── Footer ── */}
-        <div className="opp-foot relative z-10 flex flex-shrink-0 flex-col items-center gap-2 py-4">
+        <div className="opp-foot relative z-30 flex flex-shrink-0 flex-col items-center gap-2 py-4">
           <div className="opp-foot-line w-16" />
           <span
             className="mt-1 text-[9px] font-bold uppercase tracking-[0.34em]"
-            style={{ color: 'rgba(0,0,0,0.22)' }}
+            style={{ color: 'rgba(0,229,160,0.32)' }}
           >
             Opportunities 2026
           </span>
         </div>
 
-        {/* Bottom edge line */}
+        {/* Bottom edge line — gold tint for contrast with teal top */}
         <div
           className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-px"
           style={{
             background:
-              'linear-gradient(90deg, transparent, rgba(0,0,0,0.14) 30%, rgba(0,0,0,0.14) 70%, transparent)',
+              'linear-gradient(90deg, transparent, rgba(255,179,0,0.20) 30%, rgba(255,179,0,0.20) 70%, transparent)',
           }}
         />
       </div>

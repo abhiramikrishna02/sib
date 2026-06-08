@@ -87,7 +87,7 @@ export default function HeroSection() {
       }
       card.style.zIndex    = z
       card.style.opacity   = props.opacity
-      card.style.transform = `translateX(${props.x}vw) translateY(${props.y}vh) rotate(${props.rotate}deg) scale(${props.scale})`
+      card.style.transform = `translateX(${props.x}cqw) translateY(${props.y}cqh) rotate(${props.rotate}deg) scale(${props.scale})`
     })
   }, [])
 
@@ -176,7 +176,7 @@ export default function HeroSection() {
           p: 1, duration: 0.85, ease: 'expo.out',
           onUpdate() {
             const p = this.targets()[0].p
-            card.style.transform = `translateX(${slot.x * p}vw) translateY(${slot.y * p}vh) rotate(${slot.rotate * p}deg) scale(${0.05 + (slot.scale - 0.05) * p})`
+            card.style.transform = `translateX(${slot.x * p}cqw) translateY(${slot.y * p}cqh) rotate(${slot.rotate * p}deg) scale(${0.05 + (slot.scale - 0.05) * p})`
           },
         }, delay)
       })
@@ -198,7 +198,7 @@ export default function HeroSection() {
           p: 0, duration: 0.48, ease: 'power4.inOut',
           onUpdate() {
             const p = this.targets()[0].p
-            card.style.transform = `translateX(${cx * p}vw) translateY(${cy * p}vh) rotate(${cr * p}deg) scale(${0.05 + (cs - 0.05) * p})`
+            card.style.transform = `translateX(${cx * p}cqw) translateY(${cy * p}cqh) rotate(${cr * p}deg) scale(${0.05 + (cs - 0.05) * p})`
           },
         }, i * 0.025)
       })
@@ -225,8 +225,11 @@ export default function HeroSection() {
   }
 
   return (
-    <section ref={sectionRef}
-      style={{ position: 'relative', display: 'flex', minHeight: '100svh', width: '100%', overflow: 'hidden', background: '#000', color: '#fff' }}>
+    <section
+      ref={sectionRef}
+      className="home-hero-section"
+      style={{ position: 'relative', display: 'flex', minHeight: '100svh', width: '100%', overflow: 'hidden', background: '#000', color: '#fff', contain: 'paint', containerType: 'size' }}
+    >
 
       {/* Dark base */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 10, background: 'rgba(0,0,0,0.55)' }} />

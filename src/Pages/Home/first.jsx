@@ -2,43 +2,43 @@ function FirstSection() {
   const rowData = [
     {
       items: ['STUDY ABROAD', 'STUDY ABROAD', 'STUDY ABROAD', 'STUDY ABROAD', 'STUDY ABROAD', 'STUDY ABROAD', 'STUDY ABROAD', 'STUDY ABROAD', 'STUDY ABROAD', 'STUDY ABROAD'],
-      bgColor: 'bg-neutral-800',
-      textColor: 'text-white',
+      bgColor: 'bg-[#00CFFF]',
+      textColor: 'text-[#020510] font-black',
       direction: 'animate-[marquee-right_60s_linear_infinite]',
       tilt: '-rotate-1',
     },
     {
       items: ['CAREER GROWTH', 'CAREER GROWTH', 'CAREER GROWTH', 'CAREER GROWTH', 'CAREER GROWTH', 'CAREER GROWTH', 'CAREER GROWTH', 'CAREER GROWTH', 'CAREER GROWTH', 'CAREER GROWTH'],
-      bgColor: 'bg-white',
-      textColor: 'text-black font-black',
+      bgColor: 'bg-[#0D0D1F]',
+      textColor: 'text-[#E040FB] font-black',
       direction: 'animate-[marquee-left_70s_linear_infinite]',
       tilt: 'rotate-1',
     },
     {
       items: ['TOP UNIVERSITIES', 'TOP UNIVERSITIES', 'TOP UNIVERSITIES', 'TOP UNIVERSITIES', 'TOP UNIVERSITIES', 'TOP UNIVERSITIES', 'TOP UNIVERSITIES', 'TOP UNIVERSITIES', 'TOP UNIVERSITIES', 'TOP UNIVERSITIES'],
-      bgColor: 'bg-zinc-300',
-      textColor: 'text-black',
+      bgColor: 'bg-[#00E5A0]',
+      textColor: 'text-[#011810] font-black',
       direction: 'animate-[marquee-right_65s_linear_infinite]',
       tilt: '-rotate-2',
     },
     {
       items: ['OPPORTUNITIES', 'OPPORTUNITIES', 'OPPORTUNITIES', 'OPPORTUNITIES', 'OPPORTUNITIES', 'OPPORTUNITIES', 'OPPORTUNITIES', 'OPPORTUNITIES', 'OPPORTUNITIES', 'OPPORTUNITIES'],
-      bgColor: 'bg-zinc-950',
-      textColor: 'text-white font-bold',
+      bgColor: 'bg-[#0E0318]',
+      textColor: 'text-[#FFB300] font-bold',
       direction: 'animate-[marquee-left_55s_linear_infinite]',
       tilt: 'rotate-2',
     },
     {
       items: ['BENGALURU DREAMS', 'BENGALURU DREAMS', 'BENGALURU DREAMS', 'BENGALURU DREAMS', 'BENGALURU DREAMS', 'BENGALURU DREAMS', 'BENGALURU DREAMS', 'BENGALURU DREAMS', 'BENGALURU DREAMS', 'BENGALURU DREAMS'],
-      bgColor: 'bg-zinc-600',
-      textColor: 'text-white',
+      bgColor: 'bg-[#F06292]',
+      textColor: 'text-[#1a0410] font-extrabold',
       direction: 'animate-[marquee-right_75s_linear_infinite]',
       tilt: '-rotate-1',
     },
   ]
 
   return (
-    <section className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden bg-[#0A0A0A] py-20 font-sans select-none">
+    <section className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden bg-[#020510] py-20 font-sans select-none">
       <style>{`
         @keyframes marquee-left {
           0% { transform: translateX(0%); }

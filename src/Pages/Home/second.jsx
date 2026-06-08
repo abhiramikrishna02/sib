@@ -110,7 +110,8 @@ function Particles({ icon, dark }) {
     const cv = ref.current;
     if (!cv) return;
     const ctx = cv.getContext("2d");
-    const color = dark ? "rgba(255,255,255,0.18)" : "rgba(0,0,0,0.15)";
+    // CHANGED: dark cards use cyan glow, light cards use magenta glow
+    const color = dark ? "rgba(0,207,255,0.22)" : "rgba(224,64,251,0.18)";
     const resize = () => { cv.width = cv.offsetWidth || 400; cv.height = cv.offsetHeight || 500; };
     const ro = new ResizeObserver(resize);
     ro.observe(cv);
@@ -147,15 +148,17 @@ function Particles({ icon, dark }) {
 
 // ─── SVG art ──────────────────────────────────────────────────────────────────
 function CardArt({ type, dark }) {
-  const s  = dark ? "rgba(255,255,255,0.22)" : "rgba(0,0,0,0.18)";
-  const st = dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.10)";
+  // CHANGED: dark cards use cyan strokes, light cards use gold strokes
+  const s  = dark ? "rgba(0,207,255,0.30)" : "rgba(255,179,0,0.28)";
+  const st = dark ? "rgba(0,207,255,0.14)" : "rgba(255,179,0,0.14)";
   if (type === "diagonal") {
     return (
       <svg viewBox="0 0 240 240" style={{ width: "100%", height: "100%", overflow: "visible" }}>
         {Array.from({ length: 22 }, (_, i) => (
           <line key={i} x1={220 - Math.min(180, 30 + i * 7)} y1={20 + i * 9} x2={220} y2={20 + i * 9} stroke={s} strokeWidth="1" />
         ))}
-        <line x1="60"  y1="20"  x2="240" y2="240" stroke={dark ? "#111" : "#f0eeea"} strokeWidth="10" />
+        {/* CHANGED: divider line uses card bg color */}
+        <line x1="60"  y1="20"  x2="240" y2="240" stroke={dark ? "#03101e" : "#0e0318"} strokeWidth="10" />
         <line x1="62"  y1="20"  x2="242" y2="240" stroke={s} strokeWidth="1.5" />
       </svg>
     );
@@ -188,15 +191,32 @@ function CardArt({ type, dark }) {
 }
 
 // ─── slide card ───────────────────────────────────────────────────────────────
-function SlideCard({ slide, isMobile }) {
-  const { dark, icon, num, title, subtitle, items, quote } = slide;
-  const bg  = dark ? "#1a1a1a" : "#f0eeea";
-  const fg  = dark ? "#fff"    : "#111";
-  const sub = dark ? "rgba(255,255,255,.40)" : "rgba(0,0,0,.38)";
-  const hr  = dark ? "rgba(255,255,255,.12)" : "rgba(0,0,0,.12)";
-  const itC = dark ? "rgba(255,255,255,.78)" : "rgba(0,0,0,.72)";
-  const numC= dark ? "rgba(255,255,255,.09)" : "rgba(0,0,0,.08)";
-  const icC = dark ? "rgba(255,255,255,.32)" : "rgba(0,0,0,.22)";
+// CHANGED: each dark/light card now uses accent-tinted dark backgrounds instead of #1a1a1a / #f0eeea
+const SLIDE_THEMES = [
+  // 01 Admissions — deep navy + cyan
+  { bg: "#02101e", fg: "#e0f7ff", sub: "rgba(0,207,255,0.45)", hr: "rgba(0,207,255,0.18)", itC: "rgba(200,240,255,0.80)", numC: "rgba(0,207,255,0.08)", icC: "rgba(0,207,255,0.40)", hoverShadow: "0 20px 60px rgba(0,207,255,0.18)" },
+  // 02 Career — deep purple + magenta
+  { bg: "#0d0218", fg: "#f5e0ff", sub: "rgba(224,64,251,0.50)", hr: "rgba(224,64,251,0.18)", itC: "rgba(240,200,255,0.80)", numC: "rgba(224,64,251,0.08)", icC: "rgba(224,64,251,0.40)", hoverShadow: "0 20px 60px rgba(224,64,251,0.18)" },
+  // 03 University — deep teal (light card)
+  { bg: "#001810", fg: "#d0fff0", sub: "rgba(0,229,160,0.55)", hr: "rgba(0,229,160,0.20)", itC: "rgba(180,255,230,0.80)", numC: "rgba(0,229,160,0.08)", icC: "rgba(0,229,160,0.42)", hoverShadow: "0 20px 60px rgba(0,229,160,0.18)" },
+  // 04 Jobs — deep gold-black
+  { bg: "#120900", fg: "#fff5d0", sub: "rgba(255,179,0,0.50)", hr: "rgba(255,179,0,0.18)", itC: "rgba(255,235,160,0.80)", numC: "rgba(255,179,0,0.08)", icC: "rgba(255,179,0,0.40)", hoverShadow: "0 20px 60px rgba(255,179,0,0.18)" },
+  // 05 Lifestyle — deep pink-black (light card)
+  { bg: "#160010", fg: "#ffe0f5", sub: "rgba(240,98,146,0.55)", hr: "rgba(240,98,146,0.20)", itC: "rgba(255,200,230,0.80)", numC: "rgba(240,98,146,0.08)", icC: "rgba(240,98,146,0.42)", hoverShadow: "0 20px 60px rgba(240,98,146,0.18)" },
+];
+
+const STAT_THEMES = [
+  // 01 500+ Partner Colleges — deep navy + cyan
+  { bg: "#02101e", fg: "#e0f7ff", muted: "rgba(0,207,255,0.50)", numC: "rgba(0,207,255,0.10)", hr: "rgba(0,207,255,0.16)", hoverShadow: "0 24px 64px rgba(0,207,255,0.20)" },
+  // 02 98% Success — deep teal (lighter feel)
+  { bg: "#001810", fg: "#d0fff0", muted: "rgba(0,229,160,0.55)", numC: "rgba(0,229,160,0.10)", hr: "rgba(0,229,160,0.18)", hoverShadow: "0 24px 64px rgba(0,229,160,0.20)" },
+  // 03 10K+ Students — deep purple
+  { bg: "#0d0218", fg: "#f5e0ff", muted: "rgba(179,157,219,0.55)", numC: "rgba(179,157,219,0.10)", hr: "rgba(179,157,219,0.18)", hoverShadow: "0 24px 64px rgba(179,157,219,0.20)" },
+];
+
+function SlideCard({ slide, isMobile, themeIndex }) {
+  const { icon, num, title, subtitle, items, quote } = slide;
+  const theme = SLIDE_THEMES[themeIndex] || SLIDE_THEMES[0];
   const [hov, setHov] = useState(false);
   return (
     <div
@@ -204,38 +224,36 @@ function SlideCard({ slide, isMobile }) {
       onMouseLeave={() => setHov(false)}
       style={{
         position: "relative", flexShrink: 0,
-        // On mobile: fill the track height fully, width = 85vw so one card shows with a peek of next
-        // On desktop: use the old clamp sizing
         width: isMobile ? "85vw" : "clamp(280px,30vw,460px)",
         height: "100%",
-        background: bg, borderRadius: "20px",
+        background: theme.bg,
+        borderRadius: "20px",
         padding: isMobile ? "20px" : "clamp(24px,3.5vw,44px)",
         display: "flex", flexDirection: "column", justifyContent: "space-between",
         overflow: "hidden",
-        border: dark ? "1px solid rgba(255,255,255,.07)" : "1px solid rgba(0,0,0,.07)",
-        boxShadow: hov
-          ? dark ? "0 20px 60px rgba(0,0,0,.65)" : "0 20px 60px rgba(0,0,0,.18)"
-          : dark ? "0 2px 40px rgba(0,0,0,.45)" : "0 2px 24px rgba(0,0,0,.08)",
+        // CHANGED: border uses accent color
+        border: `1px solid ${theme.hr}`,
+        boxShadow: hov ? theme.hoverShadow : "0 2px 40px rgba(0,0,0,0.60)",
         transform: hov ? "translateY(-6px) scale(1.01)" : "translateY(0) scale(1)",
         transition: "transform .38s cubic-bezier(.34,1.56,.64,1), box-shadow .38s ease",
         boxSizing: "border-box",
       }}
     >
-      <Particles icon={icon} dark={dark} />
+      <Particles icon={icon} dark={true} />
       <div style={{ position: "relative", zIndex: 2, display: "flex", flexDirection: "column", height: "100%", justifyContent: "space-between" }}>
         <div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: isMobile ? "12px" : "24px" }}>
-            <span style={{ fontSize: isMobile ? "2.4rem" : "clamp(3rem,5.5vw,5rem)", fontWeight: 900, color: numC, lineHeight: 1, fontFamily: "'Helvetica Neue',Arial,sans-serif", userSelect: "none" }}>{num}</span>
-            <span style={{ fontSize: "22px", color: icC, lineHeight: 1 }}>{icon}</span>
+            <span style={{ fontSize: isMobile ? "2.4rem" : "clamp(3rem,5.5vw,5rem)", fontWeight: 900, color: theme.numC, lineHeight: 1, fontFamily: "'Helvetica Neue',Arial,sans-serif", userSelect: "none" }}>{num}</span>
+            <span style={{ fontSize: "22px", color: theme.icC, lineHeight: 1 }}>{icon}</span>
           </div>
-          <h3 style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: isMobile ? "1.35rem" : "clamp(1.4rem,2.4vw,2.1rem)", fontWeight: 800, color: fg, lineHeight: 1.1, margin: isMobile ? "0 0 4px" : "0 0 6px", whiteSpace: "pre-line" }}>{title}</h3>
-          <p style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: "10px", letterSpacing: "3px", color: sub, textTransform: "uppercase", margin: isMobile ? "0 0 14px" : "0 0 22px", fontWeight: 500 }}>{subtitle}</p>
-          <div style={{ height: "1px", background: hr, marginBottom: isMobile ? "12px" : "18px" }} />
+          <h3 style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: isMobile ? "1.35rem" : "clamp(1.4rem,2.4vw,2.1rem)", fontWeight: 800, color: theme.fg, lineHeight: 1.1, margin: isMobile ? "0 0 4px" : "0 0 6px", whiteSpace: "pre-line" }}>{title}</h3>
+          <p style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: "10px", letterSpacing: "3px", color: theme.sub, textTransform: "uppercase", margin: isMobile ? "0 0 14px" : "0 0 22px", fontWeight: 500 }}>{subtitle}</p>
+          <div style={{ height: "1px", background: theme.hr, marginBottom: isMobile ? "12px" : "18px" }} />
           <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: isMobile ? "9px" : "11px" }}>
             {items.map((item, i) => (
               <li key={i} style={{ display: "flex", gap: "8px", alignItems: "flex-start" }}>
-                <span style={{ color: dark ? "rgba(255,255,255,.28)" : "rgba(0,0,0,.28)", fontSize: "10px", marginTop: "3px", flexShrink: 0, fontFamily: "'Helvetica Neue',Arial,sans-serif", fontWeight: 600 }}>{i + 1}:</span>
-                <span style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: isMobile ? ".78rem" : "clamp(.76rem,1.1vw,.88rem)", color: itC, lineHeight: 1.5 }}>{item}</span>
+                <span style={{ color: theme.sub, fontSize: "10px", marginTop: "3px", flexShrink: 0, fontFamily: "'Helvetica Neue',Arial,sans-serif", fontWeight: 600 }}>{i + 1}:</span>
+                <span style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: isMobile ? ".78rem" : "clamp(.76rem,1.1vw,.88rem)", color: theme.itC, lineHeight: 1.5 }}>{item}</span>
               </li>
             ))}
           </ul>
@@ -243,13 +261,13 @@ function SlideCard({ slide, isMobile }) {
         {quote && (
           <div style={{
             marginTop: "16px", alignSelf: "flex-end", width: "clamp(160px,80%,260px)",
-            background: dark ? "rgba(255,255,255,.07)" : "rgba(0,0,0,.055)",
+            background: "rgba(255,255,255,0.05)",
             backdropFilter: "blur(10px)", borderRadius: "14px", padding: "14px 16px",
-            border: dark ? "1px solid rgba(255,255,255,.10)" : "1px solid rgba(0,0,0,.08)",
+            border: `1px solid ${theme.hr}`,
             transform: hov ? "rotate(-1.5deg) translateY(-4px)" : "rotate(-3deg)",
             transition: "transform .38s ease",
           }}>
-            <p style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: ".75rem", color: dark ? "rgba(255,255,255,.72)" : "rgba(0,0,0,.62)", lineHeight: 1.6, margin: 0, fontStyle: "italic" }}>"{quote}"</p>
+            <p style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: ".75rem", color: theme.itC, lineHeight: 1.6, margin: 0, fontStyle: "italic" }}>"{quote}"</p>
           </div>
         )}
       </div>
@@ -258,13 +276,9 @@ function SlideCard({ slide, isMobile }) {
 }
 
 // ─── stat card ────────────────────────────────────────────────────────────────
-function StatCard({ card, cardRef, innerRef, isMobile }) {
-  const { dark, stat, unit, label, desc, art, num } = card;
-  const bg    = dark ? "#1a1a1a" : "#f0eeea";
-  const fg    = dark ? "#fff"    : "#111";
-  const muted = dark ? "rgba(255,255,255,.45)" : "rgba(0,0,0,.40)";
-  const numC  = dark ? "rgba(255,255,255,.10)" : "rgba(0,0,0,.08)";
-  const hr    = dark ? "rgba(255,255,255,.10)" : "rgba(0,0,0,.10)";
+function StatCard({ card, cardRef, innerRef, isMobile, themeIndex }) {
+  const { stat, unit, label, desc, art, num } = card;
+  const theme = STAT_THEMES[themeIndex] || STAT_THEMES[0];
   const [hov, setHov] = useState(false);
   return (
     <div
@@ -273,39 +287,35 @@ function StatCard({ card, cardRef, innerRef, isMobile }) {
       onMouseLeave={() => setHov(false)}
       style={{
         position: "relative",
-        // Mobile: full width minus padding, fixed smaller height
-        // Desktop: use clamp sizing
         width: isMobile ? "100%" : "clamp(220px,26vw,380px)",
         height: isMobile ? "auto" : "clamp(380px,60vh,580px)",
         minHeight: isMobile ? "0" : undefined,
-        background: bg, borderRadius: "18px",
-        border: dark ? "1px solid rgba(255,255,255,.08)" : "1px solid rgba(0,0,0,.08)",
+        background: theme.bg,
+        borderRadius: "18px",
+        border: `1px solid ${theme.hr}`,
         overflow: "hidden", flexShrink: 0, display: "flex", flexDirection: "column",
-        boxShadow: hov
-          ? dark ? "0 24px 64px rgba(0,0,0,.70)" : "0 24px 64px rgba(0,0,0,.16)"
-          : dark ? "0 4px 32px rgba(0,0,0,.50)" : "0 4px 24px rgba(0,0,0,.08)",
+        boxShadow: hov ? theme.hoverShadow : "0 4px 32px rgba(0,0,0,0.60)",
         transform: hov ? "translateY(-6px) scale(1.012)" : "translateY(0) scale(1)",
         transition: "transform .4s cubic-bezier(.34,1.56,.64,1), box-shadow .4s ease",
         boxSizing: "border-box",
       }}
     >
-      <Particles dark={dark} />
+      <Particles dark={true} />
       <div ref={innerRef} style={{ position: "relative", zIndex: 2, display: "flex", flexDirection: "column", height: "100%", padding: isMobile ? "20px" : "clamp(20px,3vw,36px)" }}>
         <div style={{ flex: 1 }}>
-          <h2 style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: isMobile ? "2rem" : "clamp(2.2rem,4vw,3.6rem)", fontWeight: 900, lineHeight: 1, color: fg, margin: "0 0 4px", letterSpacing: "-.03em" }}>{stat} {unit}<br />{label}</h2>
-          <div style={{ height: "1px", background: hr, margin: isMobile ? "12px 0" : "16px 0" }} />
-          <p style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: isMobile ? ".82rem" : "clamp(.78rem,1.1vw,.92rem)", color: muted, lineHeight: 1.6, margin: 0 }}>{desc}</p>
+          <h2 style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: isMobile ? "2rem" : "clamp(2.2rem,4vw,3.6rem)", fontWeight: 900, lineHeight: 1, color: theme.fg, margin: "0 0 4px", letterSpacing: "-.03em" }}>{stat} {unit}<br />{label}</h2>
+          <div style={{ height: "1px", background: theme.hr, margin: isMobile ? "12px 0" : "16px 0" }} />
+          <p style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: isMobile ? ".82rem" : "clamp(.78rem,1.1vw,.92rem)", color: theme.muted, lineHeight: 1.6, margin: 0 }}>{desc}</p>
         </div>
-        {/* Hide decorative art on mobile to save space */}
         {!isMobile && (
           <div style={{ position: "relative", height: "clamp(120px,20vh,200px)", marginTop: "auto", overflow: "hidden" }}>
-            <CardArt type={art} dark={dark} />
-            <span style={{ position: "absolute", bottom: 0, left: 0, fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: "clamp(2.2rem,4vw,3.8rem)", fontWeight: 900, color: numC, lineHeight: 1, userSelect: "none" }}>{num}</span>
+            <CardArt type={art} dark={true} />
+            <span style={{ position: "absolute", bottom: 0, left: 0, fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: "clamp(2.2rem,4vw,3.8rem)", fontWeight: 900, color: theme.numC, lineHeight: 1, userSelect: "none" }}>{num}</span>
           </div>
         )}
         {isMobile && (
           <div style={{ marginTop: "12px", display: "flex", justifyContent: "flex-end" }}>
-            <span style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: "2.4rem", fontWeight: 900, color: numC, lineHeight: 1, userSelect: "none" }}>{num}</span>
+            <span style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: "2.4rem", fontWeight: 900, color: theme.numC, lineHeight: 1, userSelect: "none" }}>{num}</span>
           </div>
         )}
       </div>
@@ -335,7 +345,6 @@ export default function SecondSection() {
   const [dot, setDot] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
-  // ── Detect mobile ──────────────────────────────────────────────────────────
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
@@ -364,7 +373,6 @@ export default function SecondSection() {
     const cards  = cardRefs.current.filter(Boolean);
     const inners = innerRefs.current.filter(Boolean);
 
-    // ── Initial states ──────────────────────────────────────────────────────
     gsap.set(badge,  { opacity: 0, scale: 0.05, transformOrigin: "center center" });
     gsap.set(expand, { scale: 0, transformOrigin: "center center" });
     gsap.set(blast,  { opacity: 0 });
@@ -377,24 +385,20 @@ export default function SecondSection() {
     const explEls = explore.querySelectorAll(".el");
     gsap.set(explEls, { opacity: 0, y: 50 });
 
-    // Spinning badge text
     const spin = gsap.to(bSvg, {
       rotation: 360, duration: 10, repeat: -1, ease: "none",
       transformOrigin: `${BCX}px ${BCY}px`,
     });
 
-    // ── Scroll distance: total px the track must travel ────────────────────
     const getScrollDist = () => {
       const trackEl = trackRef.current;
       const carouselEl = carouselRef.current;
       if (!trackEl || !carouselEl) return 0;
-      // pad = left padding on the track (same value as carouselPad CSS)
       const pad = parseFloat(getComputedStyle(trackEl).paddingLeft) || 16;
       const totalTravel = trackEl.scrollWidth - carouselEl.offsetWidth + pad;
       return Math.max(0, totalTravel);
     };
 
-    // ── Master timeline ─────────────────────────────────────────────────────
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: wrap,
@@ -412,45 +416,25 @@ export default function SecondSection() {
       },
     });
 
-    // Phase 1 — pills parallax (0→0.20)
     cols.forEach((c, i) => {
       tl.to(c, { y: -(280 + COLS[i].speed * 380), ease: "none", duration: 0.20 }, 0);
     });
 
-    // Phase 2 — badge appears (0.06→0.14)
     tl.to(badge, { opacity: 1, scale: 1, duration: 0.08, ease: "back.out(2.2)" }, 0.06);
-
-    // Phase 4 — expand pill bursts (0.20→0.34)
     tl.to(badge,  { opacity: 0, duration: 0.04 }, 0.20);
     tl.to(expand, { scale: 80, duration: 0.14, ease: "power3.inOut" }, 0.20);
-
-    // Phase 5 — blast text appears (0.24→0.28)
     tl.to(blast,  { opacity: 1, duration: 0.04 }, 0.24);
-
-    // Phase 6 — letters explode (0.28→0.40)
     tl.to(blastL, { x: "-55vw", duration: 0.14, ease: "power3.in" }, 0.28);
     tl.to(blastR, { x:  "55vw", duration: 0.14, ease: "power3.in" }, 0.28);
     tl.to(blast,  { opacity: 0, duration: 0.05 }, 0.38);
-
-    // Phase 7 — dark overlay gone (0.22)
     tl.to(dark,   { opacity: 0, duration: 0.06 }, 0.22);
-
-    // Phase 8 — EXPLORE layer (0.40→0.54)
     tl.to(explore, { opacity: 1, duration: 0.04 }, 0.40);
     tl.to(explEls, { opacity: 1, y: 0, duration: 0.08, stagger: 0.015, ease: "power3.out" }, 0.41);
     tl.to(explEls, { opacity: 0, y: -28, duration: 0.06, stagger: 0.01, ease: "power2.in" }, 0.50);
     tl.to(explore, { opacity: 0, duration: 0.04 }, 0.54);
-
-    // Phase 9 — carousel (0.55→0.80)
     tl.to(carousel, { opacity: 1, duration: 0.05 }, 0.55);
-    tl.to(track, {
-      x: () => -getScrollDist(),
-      ease: "none",
-      duration: 0.23,
-    }, 0.55);
+    tl.to(track, { x: () => -getScrollDist(), ease: "none", duration: 0.23 }, 0.55);
     tl.to(carousel, { opacity: 0, duration: 0.04 }, 0.80);
-
-    // Phase 10 — stat cards (0.82→1.00)
     tl.to(content, { opacity: 1, duration: 0.04, ease: "power2.out" }, 0.82);
     cards.forEach((c, i) => tl.to(c, { x: "0%", duration: 0.06, ease: "power3.out" }, 0.84 + i * 0.04));
     tl.to(inners,  { opacity: 1, y: 0, duration: 0.05, stagger: 0.02, ease: "power2.out" }, 0.93);
@@ -459,19 +443,19 @@ export default function SecondSection() {
   }, []);
 
   const colW = 100 / COLS.length;
-
-  // Responsive padding values
   const carouselPad = isMobile ? "16px" : "clamp(24px,4vw,60px)";
 
   return (
     <div
       ref={wrapRef}
-      style={{ position: "relative", width: "100%", height: "100vh", overflow: "hidden", background: "#0e0e0e" }}
+      // CHANGED: wrapper bg is the About page's deep navy
+      style={{ position: "relative", width: "100%", height: "100vh", overflow: "hidden", background: "#020510" }}
     >
-      {/* ── LAYER 1: dark pill grid ─────────────────────────────────────────── */}
-      <div ref={darkRef} style={{ position: "absolute", inset: 0, zIndex: 0, background: "#0e0e0e" }}>
+      {/* ── LAYER 1: pill grid — deep navy with cyan column lines ────────────── */}
+      <div ref={darkRef} style={{ position: "absolute", inset: 0, zIndex: 0, background: "#020510" }}>
         {COLS.map((_, i) => (
-          <div key={`vl${i}`} style={{ position: "absolute", top: 0, bottom: 0, left: `${i * colW + colW / 2}%`, width: "1px", background: "rgba(255,255,255,.06)" }} />
+          // CHANGED: column lines use cyan tint instead of white
+          <div key={`vl${i}`} style={{ position: "absolute", top: 0, bottom: 0, left: `${i * colW + colW / 2}%`, width: "1px", background: "rgba(0,207,255,0.08)" }} />
         ))}
         {COLS.map((col, ci) => (
           <div
@@ -485,13 +469,14 @@ export default function SecondSection() {
             }}
           >
             {Array.from({ length: PILLS }).map((_, pi) => (
-              <div key={pi} style={{ width: "72%", aspectRatio: "1 / 2.1", border: "1px solid rgba(255,255,255,.15)", borderRadius: "999px", background: "transparent", flexShrink: 0 }} />
+              // CHANGED: pills use cyan border glow
+              <div key={pi} style={{ width: "72%", aspectRatio: "1 / 2.1", border: "1px solid rgba(0,207,255,0.18)", borderRadius: "999px", background: "transparent", flexShrink: 0 }} />
             ))}
           </div>
         ))}
       </div>
 
-      {/* ── LAYER 2: white expander pill ───────────────────────────────────── */}
+      {/* ── LAYER 2: expander — CHANGED to deep purple instead of cream ──────── */}
       <div
         ref={expandRef}
         style={{
@@ -501,13 +486,14 @@ export default function SecondSection() {
           width:  `${BW}px`,
           height: `${BH}px`,
           borderRadius: "999px",
-          background: "#f5f4f0",
+          // CHANGED: bursts into deep magenta/purple instead of off-white
+          background: "#0d0218",
           zIndex: 8,
           pointerEvents: "none",
         }}
       />
 
-      {/* ── LAYER 3: spinning badge ─────────────────────────────────────────── */}
+      {/* ── LAYER 3: spinning badge — cyan border + text ─────────────────────── */}
       <div
         ref={badgeRef}
         style={{
@@ -520,32 +506,31 @@ export default function SecondSection() {
           pointerEvents: "none",
         }}
       >
-        <div style={{ position: "absolute", inset: 0, border: "1.5px solid rgba(255,255,255,.78)", borderRadius: "999px" }} />
+        {/* CHANGED: badge border uses cyan */}
+        <div style={{ position: "absolute", inset: 0, border: "1.5px solid rgba(0,207,255,0.70)", borderRadius: "999px" }} />
         <svg
           ref={badgeSvg}
           viewBox={`0 0 ${BW} ${BH}`}
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible" }}
         >
           <defs><path id="bp" d={BADGE_PATH} fill="none" /></defs>
-          <text fontSize="11" fontFamily="'Helvetica Neue',Arial,sans-serif" fontWeight="700" letterSpacing="4" fill="rgba(255,255,255,.88)">
+          {/* CHANGED: badge text uses cyan */}
+          <text fontSize="11" fontFamily="'Helvetica Neue',Arial,sans-serif" fontWeight="700" letterSpacing="4" fill="rgba(0,207,255,0.88)">
             <textPath href="#bp" startOffset="0%">KEEP SCROLLING • KEEP SCROLLING • </textPath>
           </text>
         </svg>
       </div>
 
-      {/* ── LAYER 4: BLAST text ─────────────────────────────────────────────── */}
-      {/* overflow:hidden on this layer clips the words so they never escape the viewport */}
+      {/* ── LAYER 4: BLAST text — CHANGED to cyan/magenta split ──────────────── */}
       <div
         ref={blastRef}
         style={{
           position: "absolute", inset: 0, zIndex: 15,
           pointerEvents: "none",
-          // clip so text never overflows viewport on any screen
           overflow: "hidden",
           display: "flex", alignItems: "center", justifyContent: "center",
         }}
       >
-        {/* Left: "KEEP" */}
         <div
           ref={blastLeftRef}
           style={{
@@ -555,16 +540,15 @@ export default function SecondSection() {
             display: "flex", alignItems: "center", justifyContent: "flex-end",
             paddingRight: "1vw",
             willChange: "transform",
-            // prevent internal overflow
             overflow: "hidden",
           }}
         >
+          {/* CHANGED: "KEEP" is cyan-tinted */}
           <span style={{
             fontFamily: "'Helvetica Neue',Arial,sans-serif",
-            // Tighter on mobile so it fits within 50% width
             fontSize: "clamp(2.8rem,10vw,14rem)",
             fontWeight: 900,
-            color: "rgba(0,0,0,.22)",
+            color: "rgba(0,207,255,0.28)",
             lineHeight: 1,
             letterSpacing: "-.04em",
             whiteSpace: "nowrap",
@@ -573,8 +557,6 @@ export default function SecondSection() {
             KEEP
           </span>
         </div>
-
-        {/* Right: "SCROLLING" */}
         <div
           ref={blastRightRef}
           style={{
@@ -587,11 +569,12 @@ export default function SecondSection() {
             overflow: "hidden",
           }}
         >
+          {/* CHANGED: "SCROLLING" is magenta-tinted */}
           <span style={{
             fontFamily: "'Helvetica Neue',Arial,sans-serif",
             fontSize: "clamp(2.8rem,10vw,14rem)",
             fontWeight: 900,
-            color: "rgba(0,0,0,.22)",
+            color: "rgba(224,64,251,0.28)",
             lineHeight: 1,
             letterSpacing: "-.04em",
             whiteSpace: "nowrap",
@@ -602,69 +585,73 @@ export default function SecondSection() {
         </div>
       </div>
 
-      {/* ── LAYER 5: EXPLORE ───────────────────────────────────────────────── */}
+      {/* ── LAYER 5: EXPLORE — CHANGED from cream to deep purple bg ─────────── */}
       <div
         ref={exploreRef}
         style={{
           position: "absolute", inset: 0, zIndex: 20,
-          background: "#f5f4f0",
+          // CHANGED: deep purple instead of #f5f4f0
+          background: "#06020e",
           display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
           opacity: 0, pointerEvents: "none",
-          // clip so nothing bleeds outside this layer
           overflow: "hidden",
         }}
       >
-        <p className="el" style={{ fontSize: "10px", fontFamily: "'Helvetica Neue',Arial,sans-serif", fontWeight: 600, letterSpacing: "5px", color: "#999", textTransform: "uppercase", margin: "0 0 20px", opacity: 0 }}>
+        {/* CHANGED: label color to cyan */}
+        <p className="el" style={{ fontSize: "10px", fontFamily: "'Helvetica Neue',Arial,sans-serif", fontWeight: 600, letterSpacing: "5px", color: "rgba(0,207,255,0.55)", textTransform: "uppercase", margin: "0 0 20px", opacity: 0 }}>
           Scroll to discover
         </p>
         <div className="el" style={{ display: "flex", alignItems: "baseline", gap: "clamp(1px,.4vw,8px)", opacity: 0, maxWidth: "100vw", overflow: "hidden" }}>
           {"EXPLORE".split("").map((ch, i) => (
             <span key={i} style={{
-              // Smaller on mobile so it never overflows
               fontSize: "clamp(2.8rem,10vw,11rem)",
               fontFamily: "'Helvetica Neue',Arial,sans-serif",
               fontWeight: 900, lineHeight: 0.88, letterSpacing: "-.04em",
-              color: i % 2 === 0 ? "#111" : "#ccc",
+              // CHANGED: alternating cyan / muted purple instead of black / #ccc
+              color: i % 2 === 0 ? "#00CFFF" : "rgba(179,157,219,0.55)",
               display: "inline-block",
               transform: i % 2 === 0 ? "translateY(0)" : "translateY(6px)",
             }}>{ch}</span>
           ))}
         </div>
-        <div className="el" style={{ width: "clamp(140px,80vw,480px)", height: "1px", background: "linear-gradient(90deg,transparent,#999 30%,#999 70%,transparent)", margin: "20px 0", opacity: 0 }} />
-        <p className="el" style={{ fontSize: "clamp(.72rem,1.1vw,.9rem)", fontFamily: "'Helvetica Neue',Arial,sans-serif", fontWeight: 400, letterSpacing: "2px", color: "#888", textTransform: "uppercase", margin: 0, opacity: 0, textAlign: "center", padding: "0 16px" }}>
+        {/* CHANGED: divider uses cyan fade */}
+        <div className="el" style={{ width: "clamp(140px,80vw,480px)", height: "1px", background: "linear-gradient(90deg,transparent,rgba(0,207,255,0.45) 30%,rgba(0,207,255,0.45) 70%,transparent)", margin: "20px 0", opacity: 0 }} />
+        {/* CHANGED: subtitle color to muted cyan */}
+        <p className="el" style={{ fontSize: "clamp(.72rem,1.1vw,.9rem)", fontFamily: "'Helvetica Neue',Arial,sans-serif", fontWeight: 400, letterSpacing: "2px", color: "rgba(0,207,255,0.40)", textTransform: "uppercase", margin: 0, opacity: 0, textAlign: "center", padding: "0 16px" }}>
           Five pathways. One platform.
         </p>
-        {/* Corner accents — hidden on very small screens */}
+        {/* CHANGED: corner accents use cyan border */}
         {!isMobile && [{ top: "8%", left: "5%" }, { top: "8%", right: "5%" }, { bottom: "8%", left: "5%" }, { bottom: "8%", right: "5%" }].map((pos, i) => (
-          <div key={i} style={{ position: "absolute", ...pos, width: "32px", height: "32px", border: "1px solid rgba(0,0,0,.12)", borderRadius: "4px" }} />
+          <div key={i} style={{ position: "absolute", ...pos, width: "32px", height: "32px", border: "1px solid rgba(0,207,255,0.18)", borderRadius: "4px" }} />
         ))}
-        {!isMobile && [{ w: "160px", h: "270px", top: "8%", left: "-3%", op: 0.06 },
-          { w: "120px", h: "200px", bottom: "4%", right: "-2%", op: 0.07 }].map((p, i) => (
-          <div key={i} style={{ position: "absolute", top: p.top, bottom: p.bottom, left: p.left, right: p.right, width: p.w, height: p.h, border: "1px solid rgba(0,0,0,.25)", borderRadius: "999px", opacity: p.op, pointerEvents: "none" }} />
+        {!isMobile && [{ w: "160px", h: "270px", top: "8%", left: "-3%", op: 0.12 },
+          { w: "120px", h: "200px", bottom: "4%", right: "-2%", op: 0.10 }].map((p, i) => (
+          <div key={i} style={{ position: "absolute", top: p.top, bottom: p.bottom, left: p.left, right: p.right, width: p.w, height: p.h, border: "1px solid rgba(0,207,255,0.30)", borderRadius: "999px", opacity: p.op, pointerEvents: "none" }} />
         ))}
       </div>
 
-      {/* ── LAYER 6: carousel ──────────────────────────────────────────────── */}
+      {/* ── LAYER 6: carousel — CHANGED from cream to deep navy ──────────────── */}
       <div
         ref={carouselRef}
         style={{
           position: "absolute", inset: 0, zIndex: 25,
-          background: "#f5f4f0", opacity: 0, pointerEvents: "none",
+          // CHANGED: deep navy bg with subtle grid lines
+          background: "#020510", opacity: 0, pointerEvents: "none",
           overflow: "hidden", display: "flex", flexDirection: "column",
         }}
       >
-        {/* Guide lines — fewer on mobile */}
+        {/* CHANGED: guide lines use cyan tint */}
         {(isMobile ? [50] : [20, 35, 50, 65, 80]).map((pct) => (
-          <div key={pct} style={{ position: "absolute", top: 0, bottom: 0, left: `${pct}%`, width: "1px", background: "rgba(0,0,0,.04)", pointerEvents: "none" }} />
+          <div key={pct} style={{ position: "absolute", top: 0, bottom: 0, left: `${pct}%`, width: "1px", background: "rgba(0,207,255,0.05)", pointerEvents: "none" }} />
         ))}
 
-        {/* Header */}
         <div style={{ padding: `clamp(16px,3vh,40px) ${carouselPad} 0`, flexShrink: 0 }}>
-          <p style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: "10px", letterSpacing: "4px", color: "#aaa", textTransform: "uppercase", margin: "0 0 4px" }}>What we offer</p>
-          <h2 style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: isMobile ? "clamp(2.4rem,14vw,5rem)" : "clamp(3rem,8vw,8rem)", fontWeight: 900, color: "rgba(0,0,0,.07)", lineHeight: 0.9, margin: 0, letterSpacing: "-.03em" }}>Services</h2>
+          {/* CHANGED: label muted cyan */}
+          <p style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: "10px", letterSpacing: "4px", color: "rgba(0,207,255,0.40)", textTransform: "uppercase", margin: "0 0 4px" }}>What we offer</p>
+          {/* CHANGED: "Services" watermark uses cyan ghost */}
+          <h2 style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: isMobile ? "clamp(2.4rem,14vw,5rem)" : "clamp(3rem,8vw,8rem)", fontWeight: 900, color: "rgba(0,207,255,0.06)", lineHeight: 0.9, margin: 0, letterSpacing: "-.03em" }}>Services</h2>
         </div>
 
-        {/* Track */}
         <div style={{ flex: 1, display: "flex", alignItems: "center", overflow: "visible", minHeight: 0 }}>
           <div
             ref={trackRef}
@@ -672,7 +659,6 @@ export default function SecondSection() {
               display: "flex",
               gap: isMobile ? "12px" : "clamp(12px,1.8vw,22px)",
               willChange: "transform",
-              // On mobile, cards are taller relative to the available space
               height: isMobile ? "clamp(320px,62vh,480px)" : "clamp(340px,58vh,520px)",
               paddingLeft: carouselPad,
               paddingRight: carouselPad,
@@ -682,52 +668,50 @@ export default function SecondSection() {
           >
             {SLIDES.map((slide, i) => (
               <div key={i} data-sc="1" style={{ height: "100%", flexShrink: 0 }}>
-                <SlideCard slide={slide} isMobile={isMobile} />
+                <SlideCard slide={slide} isMobile={isMobile} themeIndex={i} />
               </div>
             ))}
           </div>
         </div>
 
-        {/* Dot indicators */}
+        {/* CHANGED: dot indicators use cyan active color */}
         <div style={{ display: "flex", justifyContent: "center", gap: "8px", padding: "12px 0 clamp(12px,2.5vh,28px)", flexShrink: 0 }}>
           {SLIDES.map((_, i) => (
-            <div key={i} style={{ width: i === dot ? "28px" : "8px", height: "8px", borderRadius: "999px", background: i === dot ? "#111" : "rgba(0,0,0,.18)", transition: "all .4s cubic-bezier(.34,1.56,.64,1)" }} />
+            <div key={i} style={{ width: i === dot ? "28px" : "8px", height: "8px", borderRadius: "999px", background: i === dot ? "#00CFFF" : "rgba(0,207,255,0.15)", transition: "all .4s cubic-bezier(.34,1.56,.64,1)" }} />
           ))}
         </div>
       </div>
 
-      {/* ── LAYER 7: stat cards ────────────────────────────────────────────── */}
+      {/* ── LAYER 7: stat cards — CHANGED bg to deep navy #020510 ────────────── */}
       <div
         ref={contentRef}
         style={{
           position: "absolute", inset: 0, zIndex: 30,
-          background: "#111", opacity: 0, pointerEvents: "none",
-          // scroll on mobile so all 3 cards can be seen even if they don't all fit
+          // CHANGED: deep navy instead of #111
+          background: "#020510", opacity: 0, pointerEvents: "none",
           overflowY: isMobile ? "auto" : "hidden",
           overflowX: "hidden",
           display: "flex", flexDirection: "column",
         }}
       >
-        {/* Guide lines */}
+        {/* CHANGED: guide lines use magenta tint */}
         {(isMobile ? [] : [16, 33, 50, 67, 84]).map((p) => (
-          <div key={p} style={{ position: "absolute", top: 0, bottom: 0, left: `${p}%`, width: "1px", background: "rgba(255,255,255,.04)", pointerEvents: "none" }} />
+          <div key={p} style={{ position: "absolute", top: 0, bottom: 0, left: `${p}%`, width: "1px", background: "rgba(224,64,251,0.04)", pointerEvents: "none" }} />
         ))}
 
-        {/* "Why us" label */}
         <div style={{ position: isMobile ? "relative" : "absolute", top: isMobile ? undefined : "clamp(16px,2.5vh,30px)", left: isMobile ? undefined : "clamp(20px,3vw,48px)", display: "flex", alignItems: "center", gap: "10px", zIndex: 4, padding: isMobile ? "clamp(16px,4vh,28px) 20px 0" : undefined, flexShrink: 0 }}>
-          <span style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: "10px", letterSpacing: "5px", color: "rgba(255,255,255,.35)", textTransform: "uppercase" }}>Why us</span>
-          <div style={{ width: "28px", height: "1px", background: "rgba(255,255,255,.18)" }} />
+          {/* CHANGED: "Why us" label uses cyan */}
+          <span style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: "10px", letterSpacing: "5px", color: "rgba(0,207,255,0.40)", textTransform: "uppercase" }}>Why us</span>
+          <div style={{ width: "28px", height: "1px", background: "rgba(0,207,255,0.20)" }} />
         </div>
 
-        {/* "Impact" watermark — desktop only */}
+        {/* CHANGED: "Impact" watermark uses cyan ghost */}
         {!isMobile && (
-          <div style={{ position: "absolute", bottom: "clamp(10px,1.5vh,20px)", left: "clamp(20px,3vw,48px)", fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: "clamp(4rem,11vw,10rem)", fontWeight: 900, color: "rgba(255,255,255,.04)", lineHeight: 1, letterSpacing: "-.03em", userSelect: "none", pointerEvents: "none", zIndex: 0 }}>Impact</div>
+          <div style={{ position: "absolute", bottom: "clamp(10px,1.5vh,20px)", left: "clamp(20px,3vw,48px)", fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: "clamp(4rem,11vw,10rem)", fontWeight: 900, color: "rgba(0,207,255,0.04)", lineHeight: 1, letterSpacing: "-.03em", userSelect: "none", pointerEvents: "none", zIndex: 0 }}>Impact</div>
         )}
 
-        {/* Cards container */}
         <div style={{
           display: "flex",
-          // Stack on mobile, row on desktop
           flexDirection: isMobile ? "column" : "row",
           alignItems: isMobile ? "stretch" : "center",
           justifyContent: isMobile ? "flex-start" : "center",
@@ -743,6 +727,7 @@ export default function SecondSection() {
               key={i}
               card={card}
               isMobile={isMobile}
+              themeIndex={i}
               cardRef={(el) => (cardRefs.current[i] = el)}
               innerRef={(el) => (innerRefs.current[i] = el)}
             />
