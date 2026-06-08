@@ -439,7 +439,11 @@ export default function SecondSection() {
     cards.forEach((c, i) => tl.to(c, { x: "0%", duration: 0.06, ease: "power3.out" }, 0.84 + i * 0.04));
     tl.to(inners,  { opacity: 1, y: 0, duration: 0.05, stagger: 0.02, ease: "power2.out" }, 0.93);
 
-    return () => { spin.kill(); ScrollTrigger.getAll().forEach((t) => t.kill()); };
+    return () => {
+      spin.kill();
+      tl.scrollTrigger?.kill();
+      tl.kill();
+    };
   }, []);
 
   const colW = 100 / COLS.length;

@@ -217,8 +217,12 @@ function WhyChooseMobile() {
 }
 
 function WhyChooseSection() {
-  const containerRef = useRef(null), coreRef = useRef(null), orbitalRef = useRef(null), portalFlashRef = useRef(null)
   if (typeof window !== 'undefined' && isMobileViewport()) return <WhyChooseMobile />
+  return <WhyChooseDesktop />
+}
+
+function WhyChooseDesktop() {
+  const containerRef = useRef(null), coreRef = useRef(null), orbitalRef = useRef(null), portalFlashRef = useRef(null)
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       const cards = gsap.utils.toArray('.why-card'), cardContents = gsap.utils.toArray('.why-card-content')
@@ -308,6 +312,7 @@ function WhyBengaluruSection() {
     // Mobile: CSS scroll-snap handles it — no GSAP, no pin
     if (isMob) return
 
+    let refreshFrame = 0
     const ctx = gsap.context(() => {
       const items = gsap.utils.toArray('.bengaluru-slide')
       const getScrollDistance = () => {
@@ -332,10 +337,13 @@ function WhyBengaluruSection() {
         if (num) gsap.to(num, { x: -100, scrollTrigger: { trigger: slide, containerAnimation: tl, start: 'left right', end: 'right left', scrub: true } })
         if (img) gsap.fromTo(img, { scale: 0.85, opacity: 0 }, { scale: 1, opacity: 1, scrollTrigger: { trigger: slide, containerAnimation: tl, start: 'left 95%', end: 'left 40%', scrub: true } })
       })
-      requestAnimationFrame(() => ScrollTrigger.refresh())
+      refreshFrame = requestAnimationFrame(() => ScrollTrigger.refresh())
     }, triggerRef)
-    return () => ctx.revert()
-  }, [])
+    return () => {
+      if (refreshFrame) cancelAnimationFrame(refreshFrame)
+      ctx.revert()
+    }
+  }, [isMob])
 
   // ── MOBILE: CSS-only horizontal scroll-snap, auto height, zero GSAP pin ──
   if (isMob) {
@@ -596,14 +604,25 @@ function ParallaxTextStrip({ textStripRef }) {
 const About = () => {
   const containerRef = useRef(null), textStripRef = useRef(null)
   useLayoutEffect(() => {
+    const container = containerRef.current
     const ctx = gsap.context(() => {
-      gsap.from('.reveal', { y: 44, opacity: 0, duration: 0.85, stagger: 0.1, ease: 'power3.out', delay: 0.1 })
+      const revealItems = gsap.utils.toArray('.reveal')
+      gsap.set(revealItems, { clearProps: 'opacity,transform' })
+      gsap.fromTo(
+        revealItems,
+        { y: 44, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.85, stagger: 0.1, ease: 'power3.out', delay: 0.1, immediateRender: false }
+      )
       if (!isMobileViewport()) {
         gsap.to('.parallax-canvas', { scrollTrigger: { trigger: containerRef.current, start: 'top top', end: 'bottom top', scrub: true }, y: 120 })
       }
       gsap.to('.parallax-text', { scrollTrigger: { trigger: textStripRef.current, start: 'top bottom', end: 'bottom top', scrub: true, invalidateOnRefresh: true }, xPercent: -18 })
     }, containerRef)
-    return () => ctx.revert()
+    return () => {
+      ctx.revert()
+      gsap.killTweensOf(container?.querySelectorAll('.reveal'))
+      gsap.killTweensOf(container?.querySelectorAll('.parallax-canvas, .parallax-text'))
+    }
   }, [])
 
   return (

@@ -29,6 +29,8 @@ const routeMap = {
   '/add': Add
 }
 
+const ABOUT_ROUTE_VERSION = 'about-responsive-v1'
+
 function getPathname() {
   return window.location.pathname.replace(/\/+$/, '') || '/'
 }
@@ -193,7 +195,6 @@ function App() {
     }
 
     const onPopState = () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
       setPathname(getPathname())
       setLocationHash(window.location.hash)
     }
@@ -223,6 +224,7 @@ function App() {
   }, [pathname])
 
   const Page = routeMap[pathname] ?? Home
+  const pageKey = pathname === '/about' ? `${pathname}:${locationHash}:${ABOUT_ROUTE_VERSION}` : `${pathname}:${locationHash}`
 
   const navigate = (to) => {
     const [rawPath, rawHash = ''] = to.split('#')
@@ -230,7 +232,6 @@ function App() {
     const nextHash = rawHash ? `#${rawHash}` : ''
     if (nextPath === pathname && nextHash === locationHash) return
     setApplyOpen(false)
-    ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
     window.history.pushState({}, '', `${nextPath}${nextHash}`)
     setPathname(nextPath)
     setLocationHash(nextHash)
@@ -250,6 +251,7 @@ function App() {
       <main className="site-main">
         <Suspense fallback={<div className="min-h-screen bg-[#08040f]" />}>
           <Page
+            key={pageKey}
             onNavigate={navigate}
             globalData={globalData}
             setGlobalData={setGlobalData}
