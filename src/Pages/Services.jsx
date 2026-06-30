@@ -44,7 +44,7 @@ const ACCENT = {
 
 const PAGE_BG = '#06020e'
 
-export default function Services({ globalData, locationHash, onNavigate, dataLoading }) {
+export default function Services({ globalData, locationHash, onNavigate, dataLoading, dataError }) {
   const { Universities = [], Colleges = [], Courses = [] } = globalData || {}
   const [universitySearch, setUniversitySearch] = useState('')
   const [collegeSearch, setCollegeSearch] = useState('')
@@ -89,7 +89,29 @@ export default function Services({ globalData, locationHash, onNavigate, dataLoa
   })
 
   const collegesForUniversity = selectedUniversityId
-    ? Colleges.filter((college) => String(college.university_id) === String(selectedUniversityId))
+    ? Colleges.filter((college) => {
+        const selectedKeys = [
+          selectedUniversityId,
+          selectedUniversity?.id,
+          selectedUniversity?.slug,
+          selectedUniversity?.name,
+        ]
+          .filter(Boolean)
+          .map((value) => String(value).trim().toLowerCase())
+
+        const collegeKeys = [
+          college.university_id,
+          college.universityId,
+          college.university,
+          college.university_name,
+          college.universityName,
+          college.affiliation,
+        ]
+          .filter(Boolean)
+          .map((value) => String(value).trim().toLowerCase())
+
+        return collegeKeys.some((key) => selectedKeys.includes(key))
+      })
     : Colleges
   const collegesToDisplay = selectedUniversityId ? collegesForUniversity : Colleges
 
@@ -367,6 +389,12 @@ export default function Services({ globalData, locationHash, onNavigate, dataLoa
           </motion.div>
         </header>
 
+        {dataError && (
+          <div className="mb-8 rounded-2xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-100">
+            {dataError}
+          </div>
+        )}
+
         {/* ── UNIVERSITIES SECTION — Cyan accent ── */}
         {!universityOnlyView && (
           <SectionShell accent={ACCENT.university} id="universities">
@@ -572,48 +600,50 @@ export default function Services({ globalData, locationHash, onNavigate, dataLoa
         )}
 
         {/* ── ALL COLLEGES SECTION — Teal accent ── */}
-        <SectionShell accent={ACCENT.college} id="colleges">
-          <SectionHeader
-            label="Browse All Colleges"
-            title="Leading Colleges"
-            desc="Browse colleges, ratings, and fee ranges across Bengaluru."
-            accent={ACCENT.college}
-          />
-          <div className="relative px-4 py-8 sm:px-6 md:px-10">
-            <div className="relative flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-              <FilterPills
-                options={['All', 'Top Rated', 'Autonomous']}
-                active={collegeFilter}
-                onSelect={setCollegeFilter}
-                accent={ACCENT.college}
-              />
-              <div className="w-full lg:max-w-md">
-                <SearchBar
-                  value={collegeSearch}
-                  onChange={(e) => setCollegeSearch(e.target.value)}
-                  placeholder="Search colleges..."
+        {!universityOnlyView && (
+          <SectionShell accent={ACCENT.college} id="colleges">
+            <SectionHeader
+              label="Browse All Colleges"
+              title="Leading Colleges"
+              desc="Browse colleges, ratings, and fee ranges across Bengaluru."
+              accent={ACCENT.college}
+            />
+            <div className="relative px-4 py-8 sm:px-6 md:px-10">
+              <div className="relative flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                <FilterPills
+                  options={['All', 'Top Rated', 'Autonomous']}
+                  active={collegeFilter}
+                  onSelect={setCollegeFilter}
                   accent={ACCENT.college}
                 />
+                <div className="w-full lg:max-w-md">
+                  <SearchBar
+                    value={collegeSearch}
+                    onChange={(e) => setCollegeSearch(e.target.value)}
+                    placeholder="Search colleges..."
+                    accent={ACCENT.college}
+                  />
+                </div>
               </div>
+              <div className="relative mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {dataLoading && collegePageItems.length === 0 && (
+                  <div className="col-span-full rounded-3xl p-8 text-center" style={{ border: `1px solid ${ACCENT.college.border}`, background: ACCENT.college.glowDim, color: ACCENT.college.colorAlt }}>
+                    Loading colleges...
+                  </div>
+                )}
+                {!dataLoading && collegePageItems.length === 0 && (
+                  <div className="col-span-full rounded-3xl p-8 text-center" style={{ border: `1px solid ${ACCENT.college.border}`, background: ACCENT.college.glowDim, color: ACCENT.college.colorAlt }}>
+                    No colleges found.
+                  </div>
+                )}
+                {collegePageItems.map((item) => (
+                  <CollegeCard key={item.id} item={item} accent={ACCENT.college} getFeeFrom={getFeeFrom} getFeeTo={getFeeTo} getCardImage={getCardImage} getDocumentUrl={getDocumentUrl} onNavigate={onNavigate} />
+                ))}
+              </div>
+              {renderPagination(collegePage, collegePages, setCollegePage, ACCENT.college)}
             </div>
-            <div className="relative mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {dataLoading && collegePageItems.length === 0 && (
-                <div className="col-span-full rounded-3xl p-8 text-center" style={{ border: `1px solid ${ACCENT.college.border}`, background: ACCENT.college.glowDim, color: ACCENT.college.colorAlt }}>
-                  Loading colleges...
-                </div>
-              )}
-              {!dataLoading && collegePageItems.length === 0 && (
-                <div className="col-span-full rounded-3xl p-8 text-center" style={{ border: `1px solid ${ACCENT.college.border}`, background: ACCENT.college.glowDim, color: ACCENT.college.colorAlt }}>
-                  No colleges found.
-                </div>
-              )}
-              {collegePageItems.map((item) => (
-                <CollegeCard key={item.id} item={item} accent={ACCENT.college} getFeeFrom={getFeeFrom} getFeeTo={getFeeTo} getCardImage={getCardImage} getDocumentUrl={getDocumentUrl} onNavigate={onNavigate} />
-              ))}
-            </div>
-            {renderPagination(collegePage, collegePages, setCollegePage, ACCENT.college)}
-          </div>
-        </SectionShell>
+          </SectionShell>
+        )}
 
         {/* ── COURSES SECTION — Gold accent ── */}
         {!universityOnlyView && (
@@ -753,7 +783,7 @@ export default function Services({ globalData, locationHash, onNavigate, dataLoa
         )}
 
         {/* ── Back button — bottom (university drill-down view only) ── */}
-        {universityOnlyView && (
+        {/* {universityOnlyView && (
           <div className="mb-10 flex justify-between">
             <BackButton
               onClick={() => onNavigate?.('/services')}
@@ -761,7 +791,7 @@ export default function Services({ globalData, locationHash, onNavigate, dataLoa
               label="Back to Universities"
             />
           </div>
-        )}
+        )} */}
 
         {/* ── Empty state ── */}
         {Universities.length === 0 && Colleges.length === 0 && Courses.length === 0 && (

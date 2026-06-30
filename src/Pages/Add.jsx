@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { isSupabaseConfigured, supabase, supabaseConfigMessage } from '../lib/supabase.js';
+import { getSupabaseErrorMessage, isSupabaseConfigured, supabase, supabaseConfigMessage } from '../lib/supabase.js';
 import {
   Plus, ArrowLeft, GraduationCap, School, BookOpen, X, Trash2, 
   Send, MapPin, Star, Banknote, Info, Phone, Mail, Globe, ArrowRight,
@@ -30,6 +30,34 @@ function fileToDataUrl(file) {
 function getDocumentPath(file, category) {
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, '_');
   return `${category.toLowerCase()}/${Date.now()}-${safeName}`;
+}
+
+function getStoragePath(file, category, folder) {
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, '_');
+  return `${category.toLowerCase()}/${folder}/${Date.now()}-${safeName}`;
+}
+
+function isDataUrl(value) {
+  return String(value || '').startsWith('data:');
+}
+
+function getStorableUrl(value) {
+  return value && !isDataUrl(value) ? value : '';
+}
+
+function isBucketMissingError(error) {
+  const text = `${error?.message || ''} ${error?.details || ''} ${error?.hint || ''}`.toLowerCase();
+  return text.includes('bucket not found') || text.includes('bucket') && text.includes('not found');
+}
+
+function createSlug(value) {
+  const slug = String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+  return slug || `item-${Date.now()}`;
 }
 
 function buildOpportunityPayload(formData, category) {
@@ -79,8 +107,12 @@ function getTableName(category) {
 }
 
 function buildTablePayload(formData, category, { includeMedia = true } = {}) {
+  const name = formData.name.trim();
+  const imageUrl = getStorableUrl(formData.image_url);
+  const images = parseImageList(formData.images).filter((image) => !isDataUrl(image));
   const payload = {
-    name: formData.name,
+    name,
+    slug: createSlug(name),
     rating: formData.rating || null,
     location: formData.location || null,
     about: formData.about || null,
@@ -93,12 +125,12 @@ function buildTablePayload(formData, category, { includeMedia = true } = {}) {
   };
 
   if (category === 'Universities') {
-    payload.logo_url = formData.image_url || null;
-    payload.image_url = formData.image_url || null;
-    if (includeMedia) payload.images = parseImageList(formData.images);
+    payload.logo_url = imageUrl || null;
+    payload.image_url = imageUrl || null;
+    if (includeMedia) payload.images = images;
   } else {
-    payload.image_url = formData.image_url || null;
-    if (includeMedia) payload.images = parseImageList(formData.images);
+    payload.image_url = imageUrl || null;
+    if (includeMedia) payload.images = images;
     payload.fee_range = buildFeeRange(formData) || null;
     payload.fee_from = formData.feeFrom || null;
     payload.fee_to = formData.feeTo || null;
@@ -149,11 +181,13 @@ function getFeeRange(item) {
   return item.feeRange || item.fee_range || [item.feeFrom || item.fee_from, item.feeTo || item.fee_to].filter(Boolean).join(' - ');
 }
 
-export default function Add({ onNavigate, globalData, setGlobalData, refreshGlobalData, dataLoading }) {
+export default function Add({ onNavigate, globalData, setGlobalData, refreshGlobalData, dataLoading, dataError }) {
   const [activeCategory, setActiveCategory] = useState(null);
-  const [showAll, setShowAll] = useState({ Universities: false, Colleges: false, Courses: false });
+  const [dashboardPage, setDashboardPage] = useState({ Universities: 1, Colleges: 1, Courses: 1 });
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const dashboardItemsPerPage = 6;
   
   const initialFormState = {
     name: '', image_url: '', images: [], rating: '',
@@ -186,39 +220,39 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
 
     if (!isSupabaseConfigured) {
       alert(supabaseConfigMessage);
       return;
     }
 
-    if (activeCategory !== 'Universities' && !formData.document_url) {
-      alert('Please upload a document before publishing.');
+    if (!formData.name.trim()) {
+      alert(`Please enter a ${activeCategory?.slice(0, -1).toLowerCase() || 'record'} name.`);
       return;
     }
 
-    if (activeCategory !== 'Courses' && !formData.image_url) {
-      alert('Please upload or paste an image before publishing.');
-      return;
-    }
+    setIsSubmitting(true);
 
-    const tableName = getTableName(activeCategory);
-    const payload = buildTablePayload(formData, activeCategory);
+    try {
+      const tableName = getTableName(activeCategory);
+      const payload = buildTablePayload(formData, activeCategory);
+      if (!isEditing) payload.id = crypto.randomUUID();
 
-    const saveWithRetry = async (mode) => {
-      if (isEditing) {
+      const saveWithRetry = async (mode) => {
+        if (isEditing) {
+          return supabase
+            .from(tableName)
+            .update(mode)
+            .eq('id', editId)
+            .select();
+        }
+
         return supabase
           .from(tableName)
-          .update(mode)
-          .eq('id', editId)
+          .insert([mode])
           .select();
-      }
-
-      return supabase
-        .from(tableName)
-        .insert([mode])
-        .select();
-    };
+      };
 
     const getErrorText = (error) => {
       return `${error?.message || ''} ${error?.details || ''} ${error?.hint || ''}`.toLowerCase();
@@ -234,13 +268,74 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
       );
     };
 
-    const removeUnsupportedColumns = (error, sourcePayload) => {
+    const getMissingColumnName = (error) => {
+      const text = `${error?.message || ''} ${error?.details || ''} ${error?.hint || ''}`;
+      return (
+        text.match(/'([^']+)'\s+column/i)?.[1] ||
+        text.match(/column\s+"([^"]+)"/i)?.[1] ||
+        text.match(/column\s+([a-zA-Z0-9_]+)/i)?.[1] ||
+        ''
+      );
+    };
+
+    const isNotNullError = (error) => {
+      return getErrorText(error).includes('violates not-null constraint');
+    };
+
+    const isDuplicateError = (error) => {
       const message = getErrorText(error);
+      return message.includes('duplicate key') || error?.code === '23505';
+    };
+
+    const getNotNullColumnName = (error) => {
+      const text = `${error?.message || ''} ${error?.details || ''} ${error?.hint || ''}`;
+      return text.match(/null value in column\s+"([^"]+)"/i)?.[1] || '';
+    };
+
+    const addRequiredFallback = (error, sourcePayload) => {
+      const column = getNotNullColumnName(error);
+      if (!column) return sourcePayload;
+
+      const fallbackByColumn = {
+        slug: createSlug(formData.name),
+        name: formData.name.trim() || `Untitled ${activeCategory?.slice(0, -1) || 'Item'}`,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        status: 'active',
+        category: formData.category || activeCategory?.slice(0, -1) || 'General',
+        type: formData.type || 'General',
+        level: formData.levels || 'General',
+        levels: formData.levels || 'General',
+        mode: formData.mode || 'Offline',
+        images: [],
+      };
+
+      if (!Object.prototype.hasOwnProperty.call(fallbackByColumn, column)) {
+        return sourcePayload;
+      }
+
       const nextPayload = { ...sourcePayload };
+      nextPayload[column] = fallbackByColumn[column];
+      return nextPayload;
+    };
+
+    const removeUnsupportedColumns = (error, sourcePayload) => {
+      const nextPayload = { ...sourcePayload };
+      const missingColumn = getMissingColumnName(error);
+
+      if (missingColumn && Object.prototype.hasOwnProperty.call(nextPayload, missingColumn)) {
+        delete nextPayload[missingColumn];
+        return nextPayload;
+      }
+
+      const message = getErrorText(error);
       const optionalColumns = [
+        'about',
         'images',
         'image_url',
         'logo_url',
+        'rating',
+        'location',
         'document_url',
         'document_name',
         'document_type',
@@ -258,6 +353,8 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
         'phone',
         'email',
         'address',
+        'university_id',
+        'college_id',
       ];
 
       optionalColumns.forEach((column) => {
@@ -265,7 +362,10 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
       });
 
       if (Object.keys(nextPayload).length === Object.keys(sourcePayload).length) {
-        delete nextPayload.images;
+        const fallbackColumn = optionalColumns.find((column) =>
+          Object.prototype.hasOwnProperty.call(nextPayload, column)
+        );
+        if (fallbackColumn) delete nextPayload[fallbackColumn];
       }
 
       return nextPayload;
@@ -275,15 +375,34 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
     let result = await saveWithRetry(activePayload);
     let retries = 0;
 
-    while (result.error && isMissingColumnError(result.error) && retries < 6) {
+    while (result.error && isMissingColumnError(result.error) && retries < Object.keys(payload).length) {
       console.warn('Some optional columns are missing in the database, retrying without unsupported fields.');
+      const previousPayload = activePayload;
       activePayload = removeUnsupportedColumns(result.error, activePayload);
+      if (Object.keys(activePayload).length === Object.keys(previousPayload).length) break;
       result = await saveWithRetry(activePayload);
       retries += 1;
     }
 
+    while (result.error && isNotNullError(result.error) && retries < Object.keys(payload).length + 8) {
+      console.warn('A required database column was missing from the form payload, retrying with a fallback value.');
+      const previousPayload = activePayload;
+      activePayload = addRequiredFallback(result.error, activePayload);
+      if (activePayload === previousPayload) break;
+      result = await saveWithRetry(activePayload);
+      retries += 1;
+    }
+
+    if (result.error && isDuplicateError(result.error) && activePayload.slug) {
+      activePayload = {
+        ...activePayload,
+        slug: `${activePayload.slug}-${Date.now()}`,
+      };
+      result = await saveWithRetry(activePayload);
+    }
+
     if (result.error) {
-      alert(result.error.message);
+      alert(getSupabaseErrorMessage(result.error));
       return;
     }
 
@@ -314,12 +433,28 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
     } else {
       setGlobalData((prev) => ({
         ...prev,
-        [activeCategory]: [...(prev[activeCategory] || []), visibleItem],
+        [activeCategory]: [visibleItem, ...(prev[activeCategory] || [])],
       }));
+      setDashboardPage((prev) => ({ ...prev, [activeCategory]: 1 }));
     }
 
-    refreshGlobalData?.();
-    closeModal();
+      refreshGlobalData?.();
+      closeModal();
+    } catch (error) {
+      console.error('Failed to publish dashboard data:', error);
+      alert(getSupabaseErrorMessage(error));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handlePublishClick = () => {
+    const form = document.getElementById('add-opportunity-form');
+    if (form?.requestSubmit) {
+      form.requestSubmit();
+      return;
+    }
+    form?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
   };
 
   const handleEdit = (category, item) => {
@@ -338,12 +473,38 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
     const file = event.target.files?.[0];
     if (!file) return;
 
+    if (!isSupabaseConfigured) {
+      alert(supabaseConfigMessage);
+      event.target.value = '';
+      return;
+    }
+
     try {
-      const dataUrl = await fileToDataUrl(file);
-      setFormData((prev) => ({ ...prev, image_url: dataUrl }));
+      const path = getStoragePath(file, activeCategory || 'general', 'cover');
+      const { error: uploadError } = await supabase.storage
+        .from('media')
+        .upload(path, file, {
+          cacheControl: '3600',
+          upsert: true,
+          contentType: file.type,
+        });
+
+      if (uploadError) {
+        if (isBucketMissingError(uploadError)) {
+          const dataUrl = await fileToDataUrl(file);
+          setFormData((prev) => ({ ...prev, image_url: dataUrl }));
+          return;
+        }
+
+        alert(getSupabaseErrorMessage(uploadError));
+        return;
+      }
+
+      const { data } = supabase.storage.from('media').getPublicUrl(path);
+      setFormData((prev) => ({ ...prev, image_url: data.publicUrl }));
     } catch (error) {
       console.error('Failed to read image file:', error);
-      alert('Could not read that image file.');
+      alert(getSupabaseErrorMessage(error));
     } finally {
       event.target.value = '';
     }
@@ -385,7 +546,18 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
         });
 
       if (uploadError) {
-        alert(uploadError.message);
+        if (!isBucketMissingError(uploadError)) {
+          alert(getSupabaseErrorMessage(uploadError));
+          return;
+        }
+
+        const dataUrl = await fileToDataUrl(file);
+        setFormData((prev) => ({
+          ...prev,
+          document_url: dataUrl,
+          document_name: file.name,
+          document_type: file.type,
+        }));
         return;
       }
 
@@ -408,15 +580,38 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
     const files = Array.from(event.target.files || []);
     if (!files.length) return;
 
+    if (!isSupabaseConfigured) {
+      alert(supabaseConfigMessage);
+      event.target.value = '';
+      return;
+    }
+
     try {
-      const urls = await Promise.all(files.map(fileToDataUrl));
+      const urls = await Promise.all(files.map(async (file) => {
+        const path = getStoragePath(file, activeCategory || 'general', 'gallery');
+        const { error: uploadError } = await supabase.storage
+          .from('media')
+          .upload(path, file, {
+            cacheControl: '3600',
+            upsert: true,
+            contentType: file.type,
+          });
+
+        if (uploadError) {
+          if (isBucketMissingError(uploadError)) return fileToDataUrl(file);
+          throw uploadError;
+        }
+
+        const { data } = supabase.storage.from('media').getPublicUrl(path);
+        return data.publicUrl;
+      }));
       setFormData((prev) => ({
         ...prev,
         images: [...(Array.isArray(prev.images) ? prev.images : []), ...urls],
       }));
     } catch (error) {
       console.error('Failed to read gallery images:', error);
-      alert('Could not read one or more gallery images.');
+      alert(getSupabaseErrorMessage(error));
     } finally {
       event.target.value = '';
     }
@@ -438,7 +633,7 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
       .eq('id', id);
 
     if (error) {
-      alert(error.message);
+      alert(getSupabaseErrorMessage(error));
       return;
     }
 
@@ -453,7 +648,17 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
 
   const renderSection = (title, Icon) => {
     const items = globalData[title] || [];
-    const displayItems = showAll[title] ? items : items.slice(0, 6);
+    const totalPages = Math.max(1, Math.ceil(items.length / dashboardItemsPerPage));
+    const currentPage = Math.min(dashboardPage[title] || 1, totalPages);
+    const pageStart = (currentPage - 1) * dashboardItemsPerPage;
+    const displayItems = items.slice(pageStart, pageStart + dashboardItemsPerPage);
+
+    const goToDashboardPage = (page) => {
+      setDashboardPage((prev) => ({
+        ...prev,
+        [title]: Math.min(Math.max(page, 1), totalPages),
+      }));
+    };
 
     return (
       <section className="mb-12 sm:mb-14 md:mb-16">
@@ -468,7 +673,12 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
             </div>
           </div>
           <button 
-            onClick={() => { setIsEditing(false); setActiveCategory(title); }}
+            onClick={() => {
+              setIsEditing(false);
+              setEditId(null);
+              setFormData(initialFormState);
+              setActiveCategory(title);
+            }}
             className="w-full rounded-xl bg-white px-5 py-3 text-[11px] font-black uppercase tracking-widest text-black transition-all hover:bg-white hover:text-white sm:w-auto sm:px-8"
           >
             + ADD {title.slice(0, -1)}
@@ -612,10 +822,30 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
           ))}
         </div>
 
-        {items.length > 6 && (
-          <button onClick={() => setShowAll({...showAll, [title]: !showAll[title]})} className="mt-12 mx-auto block text-[10px] font-black uppercase tracking-[0.5em] text-white/20 hover:text-white transition-colors">
-            {showAll[title] ? "Hide Extras" : "See More Options"}
-          </button>
+        {items.length > dashboardItemsPerPage && (
+          <div className="mt-8 flex flex-col items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 sm:flex-row">
+            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/35">
+              Page {currentPage} of {totalPages} · Showing {pageStart + 1}-{Math.min(pageStart + dashboardItemsPerPage, items.length)} of {items.length}
+            </p>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => goToDashboardPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="rounded-xl border border-white/10 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white/60 transition-colors hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                Prev
+              </button>
+              <button
+                type="button"
+                onClick={() => goToDashboardPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="rounded-xl border border-white/10 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white/60 transition-colors hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                Next
+              </button>
+            </div>
+          </div>
         )}
       </section>
     );
@@ -637,6 +867,12 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
         {!isSupabaseConfigured && (
           <div className="mb-10 rounded-2xl border border-white/30 bg-white/10 p-4 text-sm text-white">
             {supabaseConfigMessage}
+          </div>
+        )}
+
+        {dataError && (
+          <div className="mb-10 rounded-2xl border border-red-400/30 bg-red-500/10 p-4 text-sm font-semibold text-red-100">
+            {dataError}
           </div>
         )}
 
@@ -668,6 +904,7 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
               <form
                 id="add-opportunity-form"
                 onSubmit={handleSubmit}
+                noValidate
                 className="custom-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-4"
                 style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}
               >
@@ -1011,8 +1248,13 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
                 
                 <div className="flex w-full gap-4 md:w-auto">
                   <button onClick={closeModal} type="button" className="hidden md:block px-8 text-white/30 text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors">Discard</button>
-                  <button type="submit" form="add-opportunity-form" className="w-full md:w-auto bg-white px-10 py-3 rounded-2xl text-white font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all flex items-center justify-center gap-3 shadow-xl shadow-white/20">
-                      {isEditing ? "SAVE CHANGES" : "PUBLISH DATA"} <Send size={18}/>
+                  <button
+                    type="button"
+                    onClick={handlePublishClick}
+                    disabled={isSubmitting}
+                    className="w-full md:w-auto bg-white px-10 py-3 rounded-2xl text-black font-black uppercase tracking-widest hover:bg-white/90 transition-all flex items-center justify-center gap-3 shadow-xl shadow-white/20 disabled:cursor-wait disabled:opacity-60"
+                  >
+                      {isSubmitting ? "PUBLISHING..." : isEditing ? "SAVE CHANGES" : "PUBLISH DATA"} <Send size={18}/>
                   </button>
                 </div>
                 </div>

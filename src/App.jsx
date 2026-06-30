@@ -6,7 +6,7 @@ import Lenis from 'lenis'
 import Navbar from './Components/Navbar.jsx'
 import Footer from './Components/Footer.jsx'
 import ApplyModal from './Components/ApplyModal.jsx'
-import { isSupabaseConfigured, supabase, supabaseConfigMessage } from './lib/supabase.js'
+import { getSupabaseErrorMessage, isSupabaseConfigured, supabase, supabaseConfigMessage } from './lib/supabase.js'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -95,22 +95,25 @@ function App() {
   const [applyOpen, setApplyOpen] = useState(false)
   const [globalData, setGlobalData] = useState({ Universities: [], Colleges: [], Courses: [] })
   const [dataLoading, setDataLoading] = useState(true)
+  const [dataError, setDataError] = useState('')
   const lenisRef = useRef(null)
   const hasLoadedDataRef = useRef(false)
 
   const loadGlobalData = useCallback(async ({ silent = false } = {}) => {
     if (!silent) setDataLoading(true)
+    setDataError('')
 
     if (!isSupabaseConfigured) {
       console.warn(supabaseConfigMessage)
       setGlobalData({ Universities: [], Colleges: [], Courses: [] })
+      setDataError(supabaseConfigMessage)
       setDataLoading(false)
       hasLoadedDataRef.current = true
       return
     }
 
     const loadTable = async (tableName) => {
-      const ordered = await supabase.from(tableName).select('*').order('created_at', { ascending: true })
+      const ordered = await supabase.from(tableName).select('*').order('created_at', { ascending: false })
       if (!ordered.error) return ordered
 
       const message = `${ordered.error.message || ''} ${ordered.error.details || ''} ${ordered.error.hint || ''}`.toLowerCase()
@@ -142,6 +145,7 @@ function App() {
         colleges: collegesResult.error,
         courses: coursesResult.error,
       })
+      setDataError(getSupabaseErrorMessage(hasError))
     }
 
     setGlobalData(
@@ -258,6 +262,7 @@ function App() {
             refreshGlobalData={() => loadGlobalData({ silent: true })}
             locationHash={locationHash}
             dataLoading={dataLoading}
+            dataError={dataError}
           />
         </Suspense>
       </main>
