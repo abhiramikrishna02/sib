@@ -14,18 +14,39 @@ function isValidSupabaseUrl(value) {
   }
 }
 
+const hasSupabaseUrl = Boolean(supabaseUrl)
+const hasSupabasePublishableKey = Boolean(supabasePublishableKey)
+const hasValidSupabaseUrl = hasSupabaseUrl && isValidSupabaseUrl(supabaseUrl)
+
 export const isSupabaseConfigured = Boolean(
-  supabaseUrl &&
-  supabasePublishableKey &&
-  isValidSupabaseUrl(supabaseUrl)
+  hasSupabaseUrl &&
+  hasSupabasePublishableKey &&
+  hasValidSupabaseUrl
 )
 
 export const supabase = isSupabaseConfigured
   ? createClient(supabaseUrl, supabasePublishableKey)
   : null
 
-export const supabaseConfigMessage =
-  'Supabase is not configured correctly. Add a valid VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to your environment.'
+export const supabaseConfigMessage = (() => {
+  if (!hasSupabaseUrl && !hasSupabasePublishableKey) {
+    return 'Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY in Vercel Project Settings, then redeploy.'
+  }
+
+  if (!hasSupabaseUrl) {
+    return 'Supabase URL is missing. Add VITE_SUPABASE_URL in Vercel Project Settings, then redeploy.'
+  }
+
+  if (!hasSupabasePublishableKey) {
+    return 'Supabase publishable key is missing. Add VITE_SUPABASE_PUBLISHABLE_KEY or VITE_SUPABASE_ANON_KEY in Vercel Project Settings, then redeploy.'
+  }
+
+  if (!hasValidSupabaseUrl) {
+    return 'Supabase URL is invalid. It must be your project URL, for example https://your-project-ref.supabase.co.'
+  }
+
+  return 'Supabase is not configured correctly. Check VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY in Vercel Project Settings.'
+})()
 
 export function isSupabaseFetchError(error) {
   const text = `${error?.message || ''} ${error?.details || ''} ${error?.hint || ''}`.toLowerCase()
@@ -43,7 +64,7 @@ export function getSupabaseErrorMessage(error) {
   if (!text) return 'Unable to fetch data from Supabase.'
 
   if (text.includes('ENOTFOUND') || isSupabaseFetchError(error)) {
-    return 'Unable to reach the Supabase backend. Check that VITE_SUPABASE_URL points to an active Supabase project.'
+    return 'Unable to reach the Supabase backend. If this happens only on Vercel, verify VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY are set in Vercel Project Settings and redeploy.'
   }
 
   if (text.toLowerCase().includes('row-level security')) {
