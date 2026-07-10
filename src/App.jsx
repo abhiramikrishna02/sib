@@ -6,7 +6,8 @@ import Lenis from 'lenis'
 import Navbar from './Components/Navbar.jsx'
 import Footer from './Components/Footer.jsx'
 import ApplyModal from './Components/ApplyModal.jsx'
-import { getSupabaseErrorMessage, isSupabaseConfigured, supabase, supabaseConfigMessage } from './lib/supabase.js'
+import { getSupabaseErrorMessage, isSupabaseConfigured, supabaseConfigMessage } from './lib/supabase.js'
+import { loadTableRows } from './lib/supabase-backend.js'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -105,36 +106,12 @@ function App() {
 
     if (!isSupabaseConfigured) {
       console.warn(supabaseConfigMessage)
-      setGlobalData({ Universities: [], Colleges: [], Courses: [] })
-      setDataError(supabaseConfigMessage)
-      setDataLoading(false)
-      hasLoadedDataRef.current = true
-      return
-    }
-
-    const loadTable = async (tableName) => {
-      const ordered = await supabase.from(tableName).select('*').order('created_at', { ascending: false })
-      if (!ordered.error) return ordered
-
-      const message = `${ordered.error.message || ''} ${ordered.error.details || ''} ${ordered.error.hint || ''}`.toLowerCase()
-      const canRetryWithoutOrder =
-        message.includes('created_at') ||
-        message.includes('order') ||
-        message.includes('does not exist') ||
-        message.includes('schema cache')
-
-      if (canRetryWithoutOrder) {
-        const unordered = await supabase.from(tableName).select('*')
-        if (!unordered.error) return unordered
-      }
-
-      return ordered
     }
 
     const [universitiesResult, collegesResult, coursesResult] = await Promise.all([
-      loadTable('universities'),
-      loadTable('colleges'),
-      loadTable('courses'),
+      loadTableRows('universities'),
+      loadTableRows('colleges'),
+      loadTableRows('courses'),
     ])
 
     const hasError = universitiesResult.error || collegesResult.error || coursesResult.error

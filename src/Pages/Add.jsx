@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getSupabaseErrorMessage, isSupabaseConfigured, isSupabaseFetchError, supabase, supabaseConfigMessage } from '../lib/supabase.js';
+import { getSupabaseErrorMessage, isSupabaseConfigured, isSupabaseFetchError, supabase } from '../lib/supabase.js';
+import { deleteTableRow, saveTableRow } from '../lib/supabase-backend.js';
 import {
   Plus, ArrowLeft, GraduationCap, School, BookOpen, X, Trash2, 
   Send, MapPin, Star, Banknote, Info, Phone, Mail, Globe, ArrowRight,
@@ -219,11 +220,6 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
     e.preventDefault();
     if (isSubmitting) return;
 
-    if (!isSupabaseConfigured) {
-      alert(supabaseConfigMessage);
-      return;
-    }
-
     if (!formData.name.trim()) {
       alert(`Please enter a ${activeCategory?.slice(0, -1).toLowerCase() || 'record'} name.`);
       return;
@@ -237,18 +233,11 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
       if (!isEditing) payload.id = crypto.randomUUID();
 
       const saveWithRetry = async (mode) => {
-        if (isEditing) {
-          return supabase
-            .from(tableName)
-            .update(mode)
-            .eq('id', editId)
-            .select();
-        }
-
-        return supabase
-          .from(tableName)
-          .insert([mode])
-          .select();
+        return saveTableRow(tableName, {
+          payload: mode,
+          id: editId,
+          mode: isEditing ? 'update' : 'insert',
+        });
       };
 
     const getErrorText = (error) => {
@@ -470,12 +459,6 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
     const file = event.target.files?.[0];
     if (!file) return;
 
-    if (!isSupabaseConfigured) {
-      alert(supabaseConfigMessage);
-      event.target.value = '';
-      return;
-    }
-
     try {
       const path = getStoragePath(file, activeCategory || 'general', 'cover');
       const { error: uploadError } = await supabase.storage
@@ -501,7 +484,7 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
       setFormData((prev) => ({ ...prev, image_url: data.publicUrl }));
     } catch (error) {
       console.error('Failed to read image file:', error);
-      if (shouldFallbackToInlineAsset(error)) {
+      if (shouldFallbackToInlineAsset(error) || !isSupabaseConfigured) {
         const dataUrl = await fileToDataUrl(file);
         setFormData((prev) => ({ ...prev, image_url: dataUrl }));
         return;
@@ -516,12 +499,6 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
   const handleDocumentFileChange = async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
-
-    if (!isSupabaseConfigured) {
-      alert(supabaseConfigMessage);
-      event.target.value = '';
-      return;
-    }
 
     const allowedTypes = [
       'application/pdf',
@@ -573,6 +550,17 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
       }));
     } catch (error) {
       console.error('Failed to upload document:', error);
+      if (!isSupabaseConfigured) {
+        const dataUrl = await fileToDataUrl(file);
+        setFormData((prev) => ({
+          ...prev,
+          document_url: dataUrl,
+          document_name: file.name,
+          document_type: file.type,
+        }));
+        return;
+      }
+
       alert('Could not upload that document.');
     } finally {
       event.target.value = '';
@@ -582,12 +570,6 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
   const handleGalleryFileChange = async (event) => {
     const files = Array.from(event.target.files || []);
     if (!files.length) return;
-
-    if (!isSupabaseConfigured) {
-      alert(supabaseConfigMessage);
-      event.target.value = '';
-      return;
-    }
 
     try {
       const urls = await Promise.all(files.map(async (file) => {
@@ -614,6 +596,15 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
       }));
     } catch (error) {
       console.error('Failed to read gallery images:', error);
+      if (!isSupabaseConfigured) {
+        const urls = await Promise.all(files.map((file) => fileToDataUrl(file)));
+        setFormData((prev) => ({
+          ...prev,
+          images: [...(Array.isArray(prev.images) ? prev.images : []), ...urls],
+        }));
+        return;
+      }
+
       alert(getSupabaseErrorMessage(error));
     } finally {
       event.target.value = '';
@@ -623,17 +614,9 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
   const removeItem = async (category, id) => {
     if (!window.confirm("Permanent Delete? This cannot be undone.")) return;
 
-    if (!isSupabaseConfigured) {
-      alert(supabaseConfigMessage);
-      return;
-    }
-
     const tableName = getTableName(category);
 
-    const { error } = await supabase
-      .from(tableName)
-      .delete()
-      .eq('id', id);
+    const { error } = await deleteTableRow(tableName, id);
 
     if (error) {
       alert(getSupabaseErrorMessage(error));
@@ -866,12 +849,6 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
             <ArrowLeft size={16} /> Exit Admin
           </button>
         </header>
-
-        {!isSupabaseConfigured && (
-          <div className="mb-10 rounded-2xl border border-white/30 bg-white/10 p-4 text-sm text-white">
-            {supabaseConfigMessage}
-          </div>
-        )}
 
         {dataError && (
           <div className="mb-10 rounded-2xl border border-red-400/30 bg-red-500/10 p-4 text-sm font-semibold text-red-100">
