@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getSupabaseErrorMessage, isSupabaseConfigured, supabase, supabaseConfigMessage } from '../lib/supabase.js';
+import { getSupabaseErrorMessage, isSupabaseConfigured, isSupabaseFetchError, supabase, supabaseConfigMessage } from '../lib/supabase.js';
 import {
   Plus, ArrowLeft, GraduationCap, School, BookOpen, X, Trash2, 
   Send, MapPin, Star, Banknote, Info, Phone, Mail, Globe, ArrowRight,
@@ -37,12 +37,9 @@ function getStoragePath(file, category, folder) {
   return `${category.toLowerCase()}/${folder}/${Date.now()}-${safeName}`;
 }
 
-function isDataUrl(value) {
-  return String(value || '').startsWith('data:');
-}
-
-function getStorableUrl(value) {
-  return value && !isDataUrl(value) ? value : '';
+function shouldFallbackToInlineAsset(error) {
+  const text = `${error?.message || ''} ${error?.details || ''} ${error?.hint || ''}`.toLowerCase();
+  return isBucketMissingError(error) || isSupabaseFetchError(error) || text.includes('network request failed');
 }
 
 function isBucketMissingError(error) {
@@ -108,8 +105,8 @@ function getTableName(category) {
 
 function buildTablePayload(formData, category, { includeMedia = true } = {}) {
   const name = formData.name.trim();
-  const imageUrl = getStorableUrl(formData.image_url);
-  const images = parseImageList(formData.images).filter((image) => !isDataUrl(image));
+  const imageUrl = String(formData.image_url || '').trim();
+  const images = parseImageList(formData.images);
   const payload = {
     name,
     slug: createSlug(name),
@@ -490,7 +487,7 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
         });
 
       if (uploadError) {
-        if (isBucketMissingError(uploadError)) {
+        if (shouldFallbackToInlineAsset(uploadError)) {
           const dataUrl = await fileToDataUrl(file);
           setFormData((prev) => ({ ...prev, image_url: dataUrl }));
           return;
@@ -504,6 +501,12 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
       setFormData((prev) => ({ ...prev, image_url: data.publicUrl }));
     } catch (error) {
       console.error('Failed to read image file:', error);
+      if (shouldFallbackToInlineAsset(error)) {
+        const dataUrl = await fileToDataUrl(file);
+        setFormData((prev) => ({ ...prev, image_url: dataUrl }));
+        return;
+      }
+
       alert(getSupabaseErrorMessage(error));
     } finally {
       event.target.value = '';
@@ -546,7 +549,7 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
         });
 
       if (uploadError) {
-        if (!isBucketMissingError(uploadError)) {
+        if (!shouldFallbackToInlineAsset(uploadError)) {
           alert(getSupabaseErrorMessage(uploadError));
           return;
         }
@@ -598,7 +601,7 @@ export default function Add({ onNavigate, globalData, setGlobalData, refreshGlob
           });
 
         if (uploadError) {
-          if (isBucketMissingError(uploadError)) return fileToDataUrl(file);
+          if (shouldFallbackToInlineAsset(uploadError)) return fileToDataUrl(file);
           throw uploadError;
         }
 

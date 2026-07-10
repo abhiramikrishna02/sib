@@ -27,11 +27,22 @@ export const supabase = isSupabaseConfigured
 export const supabaseConfigMessage =
   'Supabase is not configured correctly. Add a valid VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to your environment.'
 
+export function isSupabaseFetchError(error) {
+  const text = `${error?.message || ''} ${error?.details || ''} ${error?.hint || ''}`.toLowerCase()
+  return (
+    text.includes('failed to fetch') ||
+    text.includes('fetch failed') ||
+    text.includes('network error') ||
+    text.includes('networkerror') ||
+    text.includes('cors')
+  )
+}
+
 export function getSupabaseErrorMessage(error) {
   const text = `${error?.message || ''} ${error?.details || ''} ${error?.hint || ''}`.trim()
   if (!text) return 'Unable to fetch data from Supabase.'
 
-  if (text.includes('ENOTFOUND') || text.toLowerCase().includes('fetch failed')) {
+  if (text.includes('ENOTFOUND') || isSupabaseFetchError(error)) {
     return 'Unable to reach the Supabase backend. Check that VITE_SUPABASE_URL points to an active Supabase project.'
   }
 
